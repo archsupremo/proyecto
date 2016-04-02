@@ -7,9 +7,63 @@ class Usuarios extends CI_Controller{
       parent::__construct();
   }
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  public function _password_valido($password, $nick) {
+      $usuario = $this->Usuario->por_nick($nick);
+
+      if ($usuario !== FALSE &&
+          password_verify($password, $usuario['password']) === TRUE)
+      {
+          return TRUE;
+      }
+      else
+      {
+          $this->form_validation->set_message('_password_valido',
+              'La {field} no es válida.');
+          return FALSE;
+      }
+  }
+
+  private function limpiar($accion, $valores) {
+      unset($valores[$accion]);
+      $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
+      unset($valores['password_confirm']);
+
+      return $valores;
+  }
+
+  public function _password_anterior_correcto($password_anterior, $id) {
+      $valores = $this->Usuario->password($id);
+      if (password_verify($password_anterior, $valores['password']) === TRUE)
+      {
+          return TRUE;
+      }
+      else
+      {
+          $this->form_validation->set_message('_password_anterior_correcto',
+              'La {field} no es correcta.');
+          return FALSE;
+      }
+  }
+
+  public function _nick_unico($nick, $id) {
+      $res = $this->Usuario->por_nick($nick);
+
+      if ($res === FALSE || $res['id'] === $id)
+      {
+          return TRUE;
+      }
+      else
+      {
+          $this->form_validation->set_message('_nick_unico',
+              'El {field} debe ser único.');
+          return FALSE;
+      }
+  }
+
   public function login() {
     if ($this->Usuario->logueado()) {
-        redirect('/frontend');
+        redirect('/frontend/portada/');
     }
 
     if ($this->input->post('login') !== NULL)
@@ -57,7 +111,7 @@ class Usuarios extends CI_Controller{
             }
             else
             {
-                redirect('portal/juegos');
+                redirect('/frontend/portada/');
             }
         }
     }
@@ -67,14 +121,14 @@ class Usuarios extends CI_Controller{
         $this->session->set_userdata('last_uri',
                         parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
     }
-    $this->output->delete_cache('/frontend');
+    $this->output->delete_cache('/frontend/portada');
     $this->template->load('/usuarios/login');
   }
 
   public function logout() {
-    $this->output->delete_cache('/frontend');
+    $this->output->delete_cache('/frontend/portada/');
     $this->session->sess_destroy();
-    redirect('/frontend');
+    redirect('/frontend/portada/');
   }
 
   function index() {

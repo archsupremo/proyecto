@@ -62,9 +62,16 @@ insert into articulos(nombre, descripcion, usuario_id, categoria_id, precio)
           ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5),
           ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5);
 
-drop view if exists v_articulos;
+drop view if exists v_articulos cascade;
 
 create view v_articulos as
     select a.*, u.nick, c.nombre as nombre_categoria
     from articulos a join usuarios u on a.usuario_id = u.id
          join categorias c on a.categoria_id = c.id;
+
+drop view if exists v_usuarios_validados cascade;
+
+create view v_usuarios_validados as
+    select *
+    from usuarios
+    where registro_verificado = true;

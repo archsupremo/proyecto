@@ -1,20 +1,35 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Usuario extends CI_Model {
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
 
     }
 
-    public function por_id($id)
-    {
+    public function por_id($id) {
         $res = $this->db->get_where('usuarios', array('id' => $id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
-    public function logueado()
-    {
+    public function logueado() {
         return $this->session->has_userdata('usuario');
+    }
+
+    public function por_nick($nick) {
+        $res = $this->db->get_where('usuarios', array('nick' => $nick));
+        return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
+    public function por_nick_registrado($nick) {
+        $res = $this->db->get_where('v_usuarios_validados', array('nick' => $nick));
+        return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
+    public function existe_nick($nick) {
+        return $this->por_nick($nick) !== FALSE;
+    }
+
+    public function existe_nick_registrado($nick) {
+        return $this->por_nick_registrado($nick) !== FALSE;
     }
 }
