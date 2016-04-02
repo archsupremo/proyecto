@@ -15,6 +15,9 @@
         .menu-login {
             margin-top: 3.5em;
         }
+        .flashdata {
+            margin-top: 5em;
+        }
     </style>
   </head>
   <body>
@@ -38,7 +41,7 @@
         </form>
         <?= login() ?>
         <div class="large-1 columns">
-            <a href="/usuarios/registro" class="button small round right" role="button">Registro</a>
+            <a href="/usuarios/registrar" class="button small round right" role="button">Registro</a>
         </div>
     </header>
     <?= mensajes() ?>

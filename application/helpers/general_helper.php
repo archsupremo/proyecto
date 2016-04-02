@@ -9,13 +9,11 @@ function mensajes() {
     if($mensajes !== NULL) {
         foreach ($mensajes as $mensaje) {
             foreach ($mensaje as $clave => $valor) break;
-            $clase = ($clave === 'error') ? 'alert-danger' : 'alert-success';
-            $out .= '<div class="row">';
-                $out .= '<div class="col-md-8 col-md-offset-2">';
-                    $out .= '<div class="alert ' . $clase . '" role="alert">';
-                        $out .= $valor;
-                    $out .= '</div>';
-                $out .= "</div>";
+            $clase = ($clave === 'error') ? 'alert-box alert radius' : 'alert-box success radius';
+            $out .= '<div class="row centered text-center">';
+                $out .= '<div class="large-4 large-offset-4 ' . $clase . ' flashdata">';
+                    $out .= $valor;
+                $out .= '</div>';
             $out .= '</div>';
         }
     }
