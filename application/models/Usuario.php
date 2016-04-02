@@ -5,7 +5,12 @@ class Usuario extends CI_Model {
         parent::__construct();
 
     }
+    // Operaciones Chungas
+    public function insertar($valores) {
+        return $this->db->insert('usuarios', $valores);
+    }
 
+    // Operaciones de Lectura
     public function por_id($id) {
         $res = $this->db->get_where('usuarios', array('id' => $id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
@@ -31,5 +36,19 @@ class Usuario extends CI_Model {
 
     public function existe_nick_registrado($nick) {
         return $this->por_nick_registrado($nick) !== FALSE;
+    }
+
+    public function por_email($email) {
+        $res = $this->db->get_where('usuarios', array('email' => $email));
+        return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
+    public function existe_email($email) {
+        return $this->por_email($email) !== FALSE;
+    }
+
+    public function es_admin() {
+        $usuario = $this->session->userdata("usuario");
+        return $usuario['rol_id'] === '1';
     }
 }

@@ -3,9 +3,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Usuarios extends CI_Controller{
 
-  public function __construct() {
-      parent::__construct();
-  }
+    private $reglas_comunes = array(
+        array(
+            'field' => 'nick',
+            'label' => 'Nick',
+            'rules' => 'trim|required|max_length[15]'
+        ),
+        array(
+            'field' => 'email',
+            'label' => 'Email',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'password',
+            'label' => 'Contraseña',
+            'rules' => 'trim|required'
+        ),
+        array(
+            'field' => 'password_confirm',
+            'label' => 'Confirmar contraseña',
+            'rules' => 'trim|required|matches[password]'
+        )
+    );
+
+    public function __construct() {
+        parent::__construct();
+    }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
   public function _password_valido($password, $nick) {
@@ -265,7 +288,7 @@ class Usuarios extends CI_Controller{
                                  $this->Token->generar($usuario_id));
 
                 $this->load->library('email');
-                $this->email->from('steamClase@gmail.com');
+                $this->email->from('jdkdejava@gmail.com');
                 $this->email->to($valores['email']);
                 $this->email->subject('Confirmar Registro');
                 $this->email->message($enlace);
@@ -278,10 +301,10 @@ class Usuarios extends CI_Controller{
 
                 $this->flashdata->load($mensajes);
 
-                redirect('usuarios/login');
+                redirect('/usuarios/login');
             }
         }
-        $this->template->load('usuarios/registrar');
+        $this->template->load('/usuarios/registrar');
     }
 
     public function recordar() {

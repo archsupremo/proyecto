@@ -31,6 +31,14 @@ create table usuarios(
     baneado             bool         not null default false
 );
 
+drop table if exists tokens cascade;
+
+create table tokens (
+    usuario_id bigint   constraint pk_tokens primary key
+                        constraint fk_tokens_usuarios references usuarios (id),
+    token      char(32) not null
+);
+
 drop table if exists articulos cascade;
 create table articulos(
     id bigserial constraint pk_articulos primary key,
