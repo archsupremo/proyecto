@@ -56,7 +56,11 @@ insert into categorias(nombre)
 insert into articulos(nombre, descripcion, usuario_id, categoria_id, precio)
     values('Movil Xperia M4 Aqua', 'Semi nuevo', 2, 3, 50.3),
           ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5),
-          ('Cancion de Hielo Y Fuego: Juego de Tronos', 'Semi nuevo', 2, 4, 150.3);
+          ('Cancion de Hielo Y Fuego: Juego de Tronos', 'Semi nuevo', 2, 4, 150.3),
+          ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5),
+          ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5),
+          ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5),
+          ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5);
 
 drop view if exists v_articulos;
 

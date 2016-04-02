@@ -7,38 +7,38 @@
     <title>BuyAndSell</title>
     <link rel="stylesheet" href="/css/foundation.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.0/foundation.min.css">
-    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="/js/vendor/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/foundation/6.2.0/foundation.min.js"></script>
   </head>
   <body>
     <header class="expanded row">
         <div class="large-2 columns">
-            <a href="/frontend" class="button" role="button">BuyAndSell</a>
+            <a href="/frontend/portada" class="button" role="button">BuyAndSell</a>
         </div>
         <form action="/frontend/portada/index" class="large-6 columns" method="post">
             <div class="input-group row">
                 <select class="large-4 columns" name="categoria">
-                    <option value="1">Cocina</option>
-                    <option value="2">Deporte</option>
-                    <option value="3">Tecnologia</option>
-                    <option value="4">Libros</option>
+                    <?= busqueda_select() ?>
                 </select>
                 <div class="large-8 columns">
-                    <input class="input-group-field" name="nombre" type="text">
+                    <input class="input-group-field" name="nombre" type="text" value="<?= busqueda() ?>">
                     <div class="input-group-button">
-                      <input type="submit" class="button" value="Buscar...">
+                      <input type="submit" name="buscar" class="button" value="Buscar...">
                     </div>
                 </div>
             </div>
         </form>
         <?= login() ?>
         <div class="large-2 columns">
-            <a href="usuarios/registro" class="button" role="button">Registro</a>
+            <a href="/usuarios/registro" class="button" role="button">Registro</a>
         </div>
     </header>
     <?= mensajes() ?>
     <?= $contents ?>
 
+    <footer>
+
+    </footer>
     <script src="/js/vendor/jquery.min.js"></script>
     <script src="/js/vendor/what-input.min.js"></script>
     <script src="/js/foundation.min.js"></script>

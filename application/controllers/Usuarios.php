@@ -78,7 +78,7 @@ class Usuarios extends CI_Controller{
   }
 
   function index() {
-      redirect('/frontend');
+      redirect('/frontend/portada');
   }
 
   public function foto($id = NULL) {
