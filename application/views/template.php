@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html class="no-js" lang="en">
   <head>
     <meta charset="utf-8" />
@@ -17,6 +17,8 @@
         }
         .flashdata {
             margin-top: 5em;
+        }
+        .fila_especial {
         }
     </style>
   </head>

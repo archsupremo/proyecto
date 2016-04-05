@@ -197,7 +197,11 @@ class Usuarios extends CI_Controller{
 
     public function validar($usuario_id = NULL, $token = NULL) {
         if($usuario_id === NULL || $token === NULL) {
-            redirect('/usuarios/login');
+            $mensajes[] = array('error' =>
+                "Parametros incorrectos para la validación de la cuenta.");
+            $this->flashdata->load($mensajes);
+
+            redirect('/usuarios/login/');
         }
 
         $usuario_id = trim($usuario_id);
@@ -210,7 +214,7 @@ class Usuarios extends CI_Controller{
                 "Parametros incorrectos para la validación de la cuenta.");
             $this->flashdata->load($mensajes);
 
-            redirect('/usuarios/login');
+            redirect('/usuarios/login/');
         }
 
         ######################################################
@@ -226,13 +230,12 @@ class Usuarios extends CI_Controller{
             "Cuenta validada. Ya puede logear en el sistema.");
         $this->flashdata->load($mensajes);
 
-        redirect('/usuarios/login');
+        redirect('/usuarios/login/');
     }
 
     public function registrar() {
 
-        if ($this->input->post('registrar') !== NULL)
-        {
+        if ($this->input->post('registrar') !== NULL) {
             $reglas = $this->reglas_comunes;
             $reglas[0] = array(
                             'field' => 'nick',
@@ -340,7 +343,7 @@ class Usuarios extends CI_Controller{
                 # Mandar correo
 
                 $this->load->library('email');
-                $this->email->from('steamClase@gmail.com');
+                $this->email->from('jdkdejava@gmail.com');
                 $this->email->to($email);
                 $this->email->subject('Regenerar Contraseña');
                 $this->email->message($enlace);
@@ -361,7 +364,11 @@ class Usuarios extends CI_Controller{
 
     public function regenerar($usuario_id = NULL, $token = NULL) {
         if($usuario_id === NULL || $token === NULL) {
-            redirect('/usuarios/login');
+            $mensajes[] = array('error' =>
+                "Párametros incorrectos para la regeneración de contraseña.");
+            $this->flashdata->load($mensajes);
+
+            redirect('/usuarios/login/');
         }
 
         $usuario_id = trim($usuario_id);
@@ -374,7 +381,7 @@ class Usuarios extends CI_Controller{
                 "Párametros incorrectos para la regeneración de contraseña.");
             $this->flashdata->load($mensajes);
 
-            redirect('/usuarios/login');
+            redirect('/usuarios/login/');
         }
 
         ######################################################
@@ -395,7 +402,7 @@ class Usuarios extends CI_Controller{
                     "Su contraseña se ha regenerado correctamente");
                 $this->flashdata->load($mensajes);
 
-                redirect('/usuarios/login');
+                redirect('/usuarios/login/');
             }
         }
 
@@ -405,6 +412,19 @@ class Usuarios extends CI_Controller{
             'usuario_id' => $usuario_id,
             'token' => $token
         );
-        $this->template->load('usuarios/regenerar', $data);
+        $this->template->load('/usuarios/regenerar/', $data);
+    }
+
+    public function perfil($id_usuario = NULL) {
+        if($id_usuario === NULL) {
+            $mensajes[] = array('info' =>
+                "Parametros incorrectos para visualizar el perfil del usuario.");
+            $this->flashdata->load($mensajes);
+
+            redirect('/frontend/portada/');
+        }
+        $data['articulos_usuarios'] = $this->Usuario->por_id_vista($id_usuario);
+        $data['usuario'] = $this->Usuario->por_id($id_usuario);
+        $this->template->load("/usuarios/perfil", $data);
     }
 }

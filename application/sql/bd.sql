@@ -53,7 +53,8 @@ create table articulos(
 
 insert into usuarios(nick, password, email, registro_verificado, rol_id, activado)
     values('admin', crypt('admin', gen_salt('bf')), 'guillermo.lopez@iesdonana.org', true, 1, true),
-          ('guillermo', crypt('guillermo', gen_salt('bf')), 'guillermo.lopez@iesdonana.org', true, 2, true);
+          ('guillermo', crypt('guillermo', gen_salt('bf')), 'guillermo.lopez@iesdonana.org', true, 2, true),
+          ('archsupremo', crypt('archsupremo', gen_salt('bf')), 'jdkdejava@gmail.com', true, 2, true);
 
 insert into categorias(nombre)
     values('Cocina'),
@@ -65,10 +66,10 @@ insert into articulos(nombre, descripcion, usuario_id, categoria_id, precio)
     values('Movil Xperia M4 Aqua', 'Semi nuevo', 2, 3, 50.3),
           ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5),
           ('Cancion de Hielo Y Fuego: Juego de Tronos', 'Semi nuevo', 2, 4, 150.3),
-          ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5),
-          ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5),
-          ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5),
-          ('Cuchillo para cortar verdura', 'Semi nuevo', 2, 1, 12.5);
+          ('Cuchillo para cortar verdura', 'Semi nuevo', 3, 1, 12.5),
+          ('Cuchillo para cortar verdura', 'Semi nuevo', 1, 1, 12.5),
+          ('Cuchillo para cortar verdura', 'Semi nuevo', 3, 1, 12.5),
+          ('Cuchillo para cortar verdura', 'Semi nuevo', 1, 1, 12.5);
 
 drop view if exists v_articulos cascade;
 
