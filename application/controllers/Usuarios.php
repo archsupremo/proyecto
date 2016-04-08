@@ -259,12 +259,18 @@ class Usuarios extends CI_Controller{
                     array('existe_email', function ($email) {
                             return !$this->Usuario->existe_email($email);
                         }
-                    )
+                    ),
+                    array('dominio_email', function ($email) {
+                            return $this->domain_exists($email);
+                        }
+                    ),
                 ),
                 'errors' => array(
                     'existe_email' => 'El email ya existe, por favor, escoja otro.',
+                    'dominio_email' => 'Este email no puede existir, por favor, vuelva a intertarlo.'
                 )
             );
+
             $this->form_validation->set_rules($reglas);
             if ($this->form_validation->run() === TRUE) {
 
@@ -426,5 +432,10 @@ class Usuarios extends CI_Controller{
         $data['articulos_usuarios'] = $this->Usuario->por_id_vista($id_usuario);
         $data['usuario'] = $this->Usuario->por_id($id_usuario);
         $this->template->load("/usuarios/perfil", $data);
+    }
+
+    public function domain_exists($email, $record = 'MX'){
+       list($user, $domain) = explode('@', $email);
+       return checkdnsrr($domain, $record);
     }
 }
