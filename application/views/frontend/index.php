@@ -13,7 +13,13 @@
                 <?= anchor('/articulos/buscar/' . $v['id'], $v['nombre']) ?>
             </div>
             <div class="">
-                <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
+                <?= form_open('/frontend/portada/') ?>
+                    <?= form_hidden('categoria', $v['categoria_id'],
+                                   'id="categoria" class=""') ?>
+                    <?= form_hidden('nombre', '',
+                                   'id="nombre" class=""') ?>
+                    <?= form_submit('buscar', $v['nombre_categoria'], 'class=""') ?>
+                <?= form_close() ?>
             </div>
             <div class="">
                 <?= anchor('/usuarios/perfil/' . $v['usuario_id'], $v['nick']) ?>

@@ -9,7 +9,7 @@
             </div>
         <?php endif ?>
     </div>
-    <div class="large-4 columns" style="border: 1px solid black">
+    <div class="large-4 columns">
         <?php foreach ($articulos_usuarios as $v): ?>
             <div class="">
                 <?= anchor('/articulos/buscar/' . $v['id'], img('/imagenes_articulos/' . $v['id'] . '.jpg')) ?>

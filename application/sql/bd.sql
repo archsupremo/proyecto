@@ -51,6 +51,29 @@ create table articulos(
     precio money not null
 );
 
+drop table if exists ventas;
+create table ventas(
+    vendedor_id bigint constraint fk_ventas_usuarios_vendedor references usuarios (id)
+                      on update cascade on delete cascade,
+    comprador_id bigint constraint fk_ventas_usuarios_comprador references usuarios (id)
+                      on update cascade on delete cascade,
+    articulo_id bigint constraint fk_ventas_articulos references articulos (id)
+                      on update cascade on delete cascade,
+    fecha date not null,
+    constraint pk_ventas primary key (vendedor_id, comprador_id, articulo_id)
+);
+
+drop table if exists valoraciones cascade;
+create table valoraciones (
+    articulo_id bigint    constraint fk_articulos_valoraciones references articulos (id)
+                          on update cascade on delete cascade,
+    usuario_id  bigint    constraint fk_usuarios_valoraciones references usuarios (id)
+                          on update cascade on delete cascade,
+    valoracion  numeric(1) constraint ck_valoraciones_max
+                                        check (valoracion >= 1 AND valoracion <= 5),
+    constraint pk_valoraciones primary key (articulo_id, usuario_id)
+);
+
 insert into usuarios(nick, password, email, registro_verificado, rol_id, activado)
     values('admin', crypt('admin', gen_salt('bf')), 'guillermo.lopez@iesdonana.org', true, 1, true),
           ('guillermo', crypt('guillermo', gen_salt('bf')), 'guillermo.lopez@iesdonana.org', true, 2, true),

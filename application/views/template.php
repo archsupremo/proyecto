@@ -7,6 +7,9 @@
     <title>BuyAndSell</title>
     <link rel="stylesheet" href="/css/foundation.css" />
     <script src="/js/vendor/modernizr.js"></script>
+    <script src="/js/vendor/jquery.js"></script>
+    <script src="/js/foundation.min.js"></script>
+    <script src="/js/foundation.alert.js"></script>
 
     <style media="screen">
         .busqueda {
@@ -52,9 +55,6 @@
     <footer>
 
     </footer>
-
-    <script src="/js/vendor/jquery.js"></script>
-    <script src="/js/foundation.min.js"></script>
     <!-- <script src="/js/foundation.alert.js"></script> -->
     <script>
       $(document).foundation();

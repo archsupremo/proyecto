@@ -422,8 +422,8 @@ class Usuarios extends CI_Controller{
     }
 
     public function perfil($id_usuario = NULL) {
-        if($id_usuario === NULL) {
-            $mensajes[] = array('info' =>
+        if($id_usuario === NULL || $this->Usuario->por_id($id_usuario) === FALSE) {
+            $mensajes[] = array('error' =>
                 "Parametros incorrectos para visualizar el perfil del usuario.");
             $this->flashdata->load($mensajes);
 
