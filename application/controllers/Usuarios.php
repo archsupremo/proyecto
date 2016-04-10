@@ -155,7 +155,7 @@ class Usuarios extends CI_Controller{
   }
 
   function index() {
-      redirect('/frontend/portada');
+      redirect('/frontend/portada/index');
   }
 
   public function foto($id = NULL) {
@@ -431,6 +431,7 @@ class Usuarios extends CI_Controller{
         }
         $data['articulos_usuarios'] = $this->Usuario->por_id_vista($id_usuario);
         $data['usuario'] = $this->Usuario->por_id($id_usuario);
+        $data['articulos_vendidos'] = $this->Usuario->ventas_usuario($id_usuario);
         $this->template->load("/usuarios/perfil", $data);
     }
 

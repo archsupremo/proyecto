@@ -2,7 +2,7 @@
 
 <div class="row">
     <?php foreach ($articulos as $k => $v): ?>
-        <div class="large-4 columns">
+        <div class="large-4 columns left" style="height: 20em;">
             <div class="">
                 <?= anchor('/articulos/buscar/' . $v['id'], img('/imagenes_articulos/' . $v['id'] . '.jpg')) ?>
             </div>

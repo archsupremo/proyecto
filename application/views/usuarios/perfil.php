@@ -28,10 +28,31 @@
     <div class="large-4 columns">
         <h3>Datos del usuario</h3>
         <div class="">
-            <p>Nick => <?= $usuario['nick'] ?></p>
-            <p>Email => <?= $usuario['email'] ?></p>
-            <p>Numero de compras =></p>
-            <p>Valoraciones =></p>
+            <p>Ventas =></p>
+            <div class="">
+                <?php foreach ($articulos_vendidos as $v): ?>
+                    <div class="">
+                        <?= anchor('/articulos/buscar/' . $v['articulo_id'],
+                                    img('/imagenes_articulos/' . $v['articulo_id'] . '.jpg')) ?>
+                    </div>
+                    <div class="">
+                        <?= $v['precio'] ?>
+                    </div>
+                    <div class="">
+                        <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
+                    </div>
+                    <div class="">
+                        <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
+                    </div>
+                    <div class="">
+                        Vendido a =>
+                            <?= anchor('/usuarios/perfil/' . $v['comprador_id'], $v['comprador_nick']) ?>
+                    </div>
+                    <div class="">
+                        <p>Valoracion por parte del comprador => <?= $v['valoracion'] ?></p>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
     <div class="large-4 columns">

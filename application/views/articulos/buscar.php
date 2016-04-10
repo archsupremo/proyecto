@@ -30,13 +30,17 @@
         </div>
         <div class="row text-center alert-box secondary radius">
             <h4>Otros productos de <?= $usuario['nick'] ?></h4>
-            <?php foreach ($articulos_usuarios as $v): ?>
-                <div class="large-4 columns left">
-                    <?= anchor('/articulos/buscar/' . $v['id'],
-                                img('/imagenes_articulos/' . $v['id'] . '.jpg'),
-                                'title="' . $v['nombre'] . '"') ?>
-                </div>
-            <?php endforeach; ?>
+            <?php if(!empty($articulos_usuarios)): ?>
+                <?php foreach ($articulos_usuarios as $v): ?>
+                    <div class="large-4 columns left">
+                        <?= anchor('/articulos/buscar/' . $v['id'],
+                                    img('/imagenes_articulos/' . $v['id'] . '.jpg'),
+                                    'title="' . $v['nombre'] . '"') ?>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <h6>El usuario <?= $usuario['nick'] ?> no tiene mas productos a la venta >.<</h6>
+            <?php endif; ?>
         </div>
     </div>
 </div>

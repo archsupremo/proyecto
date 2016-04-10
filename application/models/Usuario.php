@@ -20,7 +20,7 @@ class Usuario extends CI_Model {
     }
 
     public function por_id_vista($id) {
-        $res = $this->db->get_where('v_articulos', array('usuario_id' => $id));
+        $res = $this->db->get_where('v_articulos_por_vender', array('usuario_id' => $id));
         return $res->num_rows() > 0 ? $res->result_array() : FALSE;
     }
 
@@ -63,5 +63,10 @@ class Usuario extends CI_Model {
     public function actualizar_password($id, $nueva_password) {
         return $this->db->query("update usuarios set password = ? where id::text = ?",
                           array($nueva_password, $id));
+    }
+
+    public function ventas_usuario($id_usuario) {
+        $res = $this->db->query("select * from v_ventas where vendedor_id = ?", array($id_usuario));
+        return ($res->num_rows() > 0) ? $res->result_array() : array();
     }
 }
