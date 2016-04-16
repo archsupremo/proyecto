@@ -14,7 +14,6 @@
     <script src="/js/foundation/foundation.alert.js"></script>
     <script src="/rateyoJquery/jquery.rateyo.js"></script>
 
-    <!-- <script id="rating" src="http://steam.local/js/star-rating.min.js" type="text/javascript"></script> -->
     <style media="screen">
         .busqueda {
             padding: 0;
@@ -27,6 +26,15 @@
         }
         .articulos {
             margin: 0.5em;
+        }
+        #map {
+            height: 600px;
+            width: 600px;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
     </style>
   </head>
