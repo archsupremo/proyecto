@@ -8,34 +8,45 @@ class Articulo extends CI_Model{
   }
 
   public function todos() {
-      $res = $this->db->query("select * from v_articulos_por_vender");
+      $res = $this->db->query("select * from v_articulos");
       return ($res->num_rows() > 0) ? $res->result_array() : array();
   }
 
   public function todos_con_favorito($usuario_id) {
-      $res = $this->db->query("select id, nombre, descripcion, categoria_id, precio, nombre_categoria, a.usuario_id, nick, 1::boolean as favorito " .
-                              "from v_articulos_por_vender a group by id, nombre, descripcion, categoria_id," .
-                              "precio, nombre_categoria, usuario_id, nick " .
-                              "having id in (select articulo_id from favoritos where usuario_id = ?)",
-                              $usuario_id);
-      $res2 = $this->db->query("select id, nombre, descripcion, categoria_id, precio, nombre_categoria, a.usuario_id, nick, 0::boolean as favorito " .
-                              "from v_articulos_por_vender a group by id, nombre, descripcion, categoria_id," .
-                              "precio, nombre_categoria, usuario_id, nick " .
-                              "having not id in (select articulo_id from favoritos where usuario_id = ?)",
-                              $usuario_id);
+      $res = $this->db->get_where('v_favoritos',
+                                   array('usuario_favorito' => $usuario_id));
+      $res2 = $this->db->query('select *
+                                from v_articulos
+                                group by id, nombre, descripcion, usuario_id, categoria_id, precio,
+                                         nick, nombre_categoria, favorito
+                                having id not in (select articulo_id from favoritos where usuario_id = ?)',
+                                array($usuario_id));
 
       $res3 = array_merge($res->result_array(), $res2->result_array());
       return (count($res3) > 0) ? $res3 : array();
   }
 
-  public function busqueda_articulo($categoria_id, $nombre) {
+  public function busqueda_articulo($categoria_id, $nombre, $usuario_id) {
       $res = $this->db->like('lower(nombre)', strtolower($nombre), 'match');
+      
       if($categoria_id <= 0) {
-          $res = $this->db->get('v_articulos_por_vender');
+          $res = $this->todos_con_favorito($usuario_id);
       } else {
-          $res = $this->db->get_where('v_articulos_por_vender', array('categoria_id' => $categoria_id));
+          $res1 = $this->db->get_where('v_favoritos',
+                                    array('usuario_favorito' => $usuario_id,
+                                          'categoria_id' => $categoria_id)
+                                   );
+          $res2 = $this->db->query('select *
+                                    from v_articulos
+                                    where categoria_id = ?
+                                    group by id, nombre, descripcion, usuario_id, categoria_id, precio,
+                                             nick, nombre_categoria, favorito
+                                    having id not in (select articulo_id from favoritos where usuario_id = ?)',
+                                    array($categoria_id, $usuario_id));
+
+          $res = array_merge($res1->result_array(), $res2->result_array());
       }
-      return $res->result_array();
+      return (count($res) > 0) ? $res : array();
   }
 
   public function categorias() {
@@ -49,7 +60,7 @@ class Articulo extends CI_Model{
   }
 
   public function por_id_vista($id_usuario, $id_articulo) {
-      $res = $this->db->query("select * from v_articulos_por_vender where usuario_id = ? and id != ?",
+      $res = $this->db->query("select * from v_articulos where usuario_id = ? and id != ?",
                               array($id_usuario, $id_articulo));
       return $res->num_rows() > 0 ? $res->result_array() : array();
   }

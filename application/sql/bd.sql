@@ -120,7 +120,7 @@ insert into favoritos(usuario_id, articulo_id)
 
 
 drop view if exists v_articulos cascade;
-create view v_articulos as
+create view v_articulos_raw as
     select a.*, u.nick, c.nombre as nombre_categoria
     from articulos a join usuarios u on a.usuario_id = u.id
          join categorias c on a.categoria_id = c.id;
@@ -130,14 +130,14 @@ create view v_ventas as
     select nombre, descripcion, nombre_categoria, precio, a.nick as nick_comprador,
            u.nick as comprador_nick, fecha_venta as fecha_venta, articulo_id,
            vendedor_id, categoria_id, comprador_id, valoracion
-    from v_articulos a join ventas v on a.id = v.articulo_id
+    from v_articulos_raw a join ventas v on a.id = v.articulo_id
          join usuarios u on u.id = v.comprador_id join valoraciones va
          on v.valoracion_id = va.id;
 
-drop view if exists v_articulos_por_vender;
-create view v_articulos_por_vender as
-    select *, 0::boolean as favorito
-    from v_articulos
+drop view if exists v_articulos;
+create view v_articulos as
+    select *, FALSE as favorito
+    from v_articulos_raw
     group by id, nombre, descripcion, usuario_id, categoria_id, precio,
              nick, nombre_categoria
     having id not in (select articulo_id from v_ventas);
@@ -147,3 +147,11 @@ create view v_usuarios_validados as
     select *
     from usuarios
     where registro_verificado = true;
+
+
+drop view if exists v_favoritos cascade;
+create view v_favoritos as
+    select id, nombre, descripcion, a.usuario_id, categoria_id, precio,
+             nick, nombre_categoria, f.usuario_id as usuario_favorito, TRUE as favorito
+    from v_articulos a join favoritos f
+    on a.id = f.articulo_id;

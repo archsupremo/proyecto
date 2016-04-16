@@ -1,7 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-function login()
-{
+function login() {
     $CI =& get_instance();
 
     $out = "";
@@ -13,16 +12,16 @@ function login()
                 $out .= form_submit('logout', 'Logout',
                                     'id="logout" class="button small round right" role="button"');
                 $out .= anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil',
-                            'id="logout" class="button small round right" role="button"');
+                            'id="perfil" class="button small round right" role="button"');
+                $out .= anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar perfil',
+                            'id="editar_perfil" class="button small round right" role="button"');
             $out .= '</div>';
         $out .= form_close();
     else:
-        // $out .= '<div class="row">';
-          $out .= '<div class="large-3 columns">';
-                $out .= anchor('/usuarios/login/', 'Iniciar sesión',
-                                'class="button small round right" role="button"');
-          $out .= '</div>';
-        // $out .= '</div>';
+        $out .= '<div class="large-3 columns">';
+            $out .= anchor('/usuarios/login/', 'Iniciar sesión',
+                            'class="button small round right" role="button"');
+        $out .= '</div>';
     endif;
 
     return $out;
@@ -43,24 +42,23 @@ function registro() {
     return $out;
 }
 
-function usuario_id()
-{
+function usuario_id() {
         $CI =& get_instance();
         return $CI->session->userdata('usuario')['id'];
 }
 
-function logueado()
-{
+function logueado() {
     $CI =& get_instance();
     return $CI->Usuario->logueado();
 }
 
-function nick($usuario_id)
-{
+function nick() {
     $CI =& get_instance();
-    $usuario =  $CI->Usuario->por_id($usuario_id);
-    if ($usuario !== FALSE)
-    {
-        return $usuario['nick'];
+    if($CI->Usuario->logueado()) {
+        $usuario = $CI->session->userdata("usuario");
+        $usuario =  $CI->Usuario->por_id($usuario['id']);
+        if ($usuario !== FALSE) {
+            return $usuario['nick'];
+        }
     }
 }
