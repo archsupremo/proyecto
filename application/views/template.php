@@ -6,11 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BuyAndSell</title>
     <link rel="stylesheet" href="/css/foundation.css" />
+    <link rel="stylesheet" href="/rateyoJquery/jquery.rateyo.css"/>
+    <!-- <link href="http://steam.local/css/star-rating.min.css" rel="stylesheet" type="text/css" /> -->
     <script src="/js/vendor/modernizr.js"></script>
     <script src="/js/vendor/jquery.js"></script>
     <script src="/js/foundation.min.js"></script>
-    <script src="/js/foundation.alert.js"></script>
+    <script src="/js/foundation/foundation.alert.js"></script>
+    <script src="/rateyoJquery/jquery.rateyo.js"></script>
 
+    <!-- <script id="rating" src="http://steam.local/js/star-rating.min.js" type="text/javascript"></script> -->
     <style media="screen">
         .busqueda {
             padding: 0;
@@ -21,7 +25,8 @@
         .flashdata {
             margin-top: 5em;
         }
-        .fila_especial {
+        .articulos {
+            margin: 0.5em;
         }
     </style>
   </head>
@@ -45,17 +50,13 @@
             </div>
         </form>
         <?= login() ?>
-        <div class="large-1 columns">
-            <a href="/usuarios/registrar" class="button small round right" role="button">Registro</a>
-        </div>
+        <?= registro() ?>
     </header>
     <?= mensajes() ?>
     <?= $contents ?>
 
     <footer>
-
     </footer>
-    <!-- <script src="/js/foundation.alert.js"></script> -->
     <script>
       $(document).foundation();
     </script>

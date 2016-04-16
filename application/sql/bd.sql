@@ -81,7 +81,8 @@ create table favoritos(
     usuario_id bigint constraint fk_favoritos_usuarios references usuarios (id)
                       on update cascade on delete cascade,
     articulo_id bigint constraint fk_favoritos_articulos references articulos (id)
-                      on update cascade on delete cascade
+                      on update cascade on delete cascade,
+    constraint pk_favoritos primary key (usuario_id, articulo_id)
 );
 
 insert into usuarios(nick, password, email, registro_verificado, rol_id, activado)
@@ -112,6 +113,11 @@ insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta, valoraci
     values(2, 1, 1, current_date, 1),
           (2, 3, 2, current_date, 2);
 
+insert into favoritos(usuario_id, articulo_id)
+    values(2, 3),
+          (2, 6),
+          (3, 3);
+
 
 drop view if exists v_articulos cascade;
 create view v_articulos as
@@ -130,7 +136,7 @@ create view v_ventas as
 
 drop view if exists v_articulos_por_vender;
 create view v_articulos_por_vender as
-    select *
+    select *, 0::boolean as favorito
     from v_articulos
     group by id, nombre, descripcion, usuario_id, categoria_id, precio,
              nick, nombre_categoria

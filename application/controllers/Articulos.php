@@ -29,4 +29,21 @@ class Articulos extends CI_Controller {
 
       $this->template->load("/articulos/buscar", $data);
   }
+
+  public function favoritos($articulo_id) {
+      if($articulo_id === NULL || $this->Articulo->por_id($articulo_id) === FALSE) {
+          $mensajes[] = array('error' =>
+              "Parametros incorrectos para añadir a favoritos el articulo.");
+          $this->flashdata->load($mensajes);
+
+          redirect('/frontend/portada/');
+      }
+      $usuario = $this->session->userdata('usuario');
+
+      if($this->Articulo->existe_favorito($usuario['id'], $articulo_id)) {
+          $this->Articulo->borrar_favorito($usuario['id'], $articulo_id);
+      } else {
+          $this->Articulo->insertar_favorito($usuario['id'], $articulo_id);
+      }
+  }
 }

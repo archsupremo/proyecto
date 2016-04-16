@@ -10,20 +10,24 @@
         <?php endif ?>
     </div>
     <div class="large-4 columns">
-        <?php foreach ($articulos_usuarios as $v): ?>
-            <div class="">
-                <?= anchor('/articulos/buscar/' . $v['id'], img('/imagenes_articulos/' . $v['id'] . '.jpg')) ?>
-            </div>
-            <div class="">
-                <?= $v['precio'] ?>
-            </div>
-            <div class="">
-                <?= anchor('/articulos/buscar/' . $v['id'], $v['nombre']) ?>
-            </div>
-            <div class="">
-                <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
-            </div>
-        <?php endforeach; ?>
+        <?php if(!empty($articulos_usuarios)): ?>
+            <?php foreach ($articulos_usuarios as $v): ?>
+                <div class="">
+                    <?= anchor('/articulos/buscar/' . $v['id'], img('/imagenes_articulos/' . $v['id'] . '.jpg')) ?>
+                </div>
+                <div class="">
+                    <?= $v['precio'] ?>
+                </div>
+                <div class="">
+                    <?= anchor('/articulos/buscar/' . $v['id'], $v['nombre']) ?>
+                </div>
+                <div class="">
+                    <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <h3>El usuario <?= $usuario['nick'] ?> no tiene productos a la venta actualmente >.<</h3>
+        <?php endif; ?>
     </div>
     <div class="large-4 columns">
         <h3>Datos del usuario</h3>

@@ -21,7 +21,7 @@ class Usuario extends CI_Model {
 
     public function por_id_vista($id) {
         $res = $this->db->get_where('v_articulos_por_vender', array('usuario_id' => $id));
-        return $res->num_rows() > 0 ? $res->result_array() : FALSE;
+        return $res->num_rows() > 0 ? $res->result_array() : array();
     }
 
     public function logueado() {

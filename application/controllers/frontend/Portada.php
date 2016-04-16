@@ -14,7 +14,13 @@ class Portada extends CI_Controller {
           $data['articulos'] = $this->Articulo->busqueda_articulo($categoria_id, $nombre);
         //   var_dump($data['articulos']); die();
       }else {
-          $data['articulos'] = $this->Articulo->todos();
+          if($this->Usuario->logueado()):
+              $usuario = $this->session->userdata("usuario");
+              $data['articulos'] = $this->Articulo->todos_con_favorito($usuario['id']);
+            //   $data['articulos_no_favorito'] = $this->Articulo->todos_con_favorito($usuario['id']);
+          else:
+              $data['articulos'] = $this->Articulo->todos();
+          endif;
       }
       $this->template->load('frontend/index', $data);
   }

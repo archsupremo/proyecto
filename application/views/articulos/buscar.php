@@ -13,6 +13,14 @@
         <div class="">
             <?= anchor('/articulos/buscar/' . $articulo['id'], img('/imagenes_articulos/' . $articulo['id'] . '.jpg')) ?>
         </div>
+        <form>
+            <?php if (logueado()): ?>
+                <label>Tu valoración</label>
+                <input id="input-favorito" class="rating" data-min="0" data-max="1"
+                data-step="1" value="<?= 0 ?>"
+                data-show-clear="false" data-show-caption="false" data-size="xs">
+            <?php endif; ?>
+        </form>
     </div>
     <div class="large-4 columns">
         <h3>Datos del articulo</h3>
@@ -44,3 +52,15 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $("#input-favorito").change(favorito);
+
+    function favorito() {
+        var val = $(this).val();
+        // $.getJSON("<?= base_url() ?>portal/juegos/valoracion/<?= usuario_id() ?>/<?= $juego['id'] ?>/" +
+        //         val, enviar);
+    }
+    function enviar(r) {
+        // $("#input-1").rating('update', r.total);
+    }
+</script>
