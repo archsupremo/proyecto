@@ -2,14 +2,15 @@
 <div class="row">
 </div>
 <div class="row medium-uncollapse large-collapse">
-    <div class="large-3 columns">
+    <div class="large-3 columns mapa">
         <h4>¿Quien esta vendiendo a tu alrededor?</h4>
         <div class="mapa_index" id="map"></div>
-        <script>
+        <!-- <script>
+          var usuario_id = <?= logueado() ? dar_usuario()['id'] : 'undefined' ?>;
           var map;
           function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 14,
+              zoom: 13,
               mapTypeId: google.maps.MapTypeId.ROADMAP,
               mapTypeControl: false,
       		  zoomControl: true,
@@ -27,8 +28,10 @@
           }
 
      	  function mostrarLocalizacion(posicion){
-                var latitud = posicion.coords.latitude;
-                var longitud = posicion.coords.longitude;
+                var latitud = 36.78;
+                var longitud = -6.340;
+                // var latitud = posicion.coords.latitude;
+                // var longitud = posicion.coords.longitude;
 
                 var pos = new google.maps.LatLng(latitud, longitud);
                 map.setCenter(pos);
@@ -38,10 +41,9 @@
                     map: map,
                     title: "Tu estas aquí >.<",
                 });
-                alert("<?= base_url() ?>usuarios/usuarios_cercanos/" + latitud + "/" + longitud);
                 $.ajax({
                     url: "<?= base_url() ?>usuarios/usuarios_cercanos/" + latitud + "/" + longitud,
-                    type: 'POST',
+                    type: 'GET',
                     async: true,
                     success: respuesta,
                     error: error,
@@ -71,30 +73,28 @@
 
           function respuesta(respuesta) {
               for (var usuario in respuesta.usuarios) {
-                  alert(respuesta.usuarios[usuario]);
-                //   var latitud = respuesta.ciudades[ciudad].latlon[0];
-                //   var longitud = respuesta.ciudades[ciudad].latlon[1];
-                //   var prediccion = respuesta.ciudades[ciudad].prediccion;
-                  //
-                //   // alert("Lat: " + latitud + " y Lon: " + longitud + ". Prediccion: " + prediccion);
-                //   var imagen = new google.maps.MarkerImage(
-                //       "http://localhost/maps/tiempo/images/" + prediccion + ".png"
-                //   );
-                //   var pos = new google.maps.LatLng(latitud, longitud);
-                //   var marker = new google.maps.Marker({
-      	// 		      position: pos,
-      	// 		      map: map,
-      	// 		      title: prediccion,
-                //       icon: imagen
-      	// 		  });
+                  var usuario = respuesta.usuarios[usuario];
+                  if (usuario_id == usuario.id) {
+                      continue;
+                  }
+
+                  var latitud = usuario.latitud;
+                  var longitud = usuario.longitud;
+
+                  var pos = new google.maps.LatLng(latitud, longitud);
+                  var marker = new google.maps.Marker({
+      			      position: pos,
+      			      map: map,
+                      title: usuario.nick + " está aquí >.<",
+      			  });
               }
           }
           function error(error) {
               alert("Ha ocurrido el error => " + error.statusText);
           }
-        </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&callback=initMap"
-        async defer></script>
+        </script> -->
+        <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&callback=initMap"
+        async defer></script> -->
     </div>
     <div class="large-9 columns">
         <?php foreach ($articulos as $k => $v): ?>
@@ -117,10 +117,21 @@
                         <?= form_submit('buscar', $v['nombre_categoria'], 'class=""') ?>
                     <?= form_close() ?>
                 </div>
-                <div class="">
+                <div class="clearing-thumbs" data-clearing>
                     <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
-
                     </div>
+                    <?php if(file_exists('/imagenes_usuarios/' . $v['id'] . '.jpg')): ?>
+                        <?php $url = '/imagenes_usuarios/' . $v['id'] . '.jpg' ?>
+                    <?php else: ?>
+                        <?php $url = '/imagenes_usuarios/gallifreyan.png' ?>
+                    <?php endif; ?>
+                    <?= anchor('/usuarios/perfil/' . $v['usuario_id'],
+                                img(array(
+                                    'src' => $url,
+                                    'title' => $v['nick'],
+                                    'alt' => $v['nick'],
+                                    'class' => 'imagen_nick',
+                                ))) ?>
                     <?= anchor('/usuarios/perfil/' . $v['usuario_id'], $v['nick']) ?>
                 </div>
             </div>

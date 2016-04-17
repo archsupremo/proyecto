@@ -33,7 +33,16 @@
         }
         .mapa_index {
             height: 450px;
-            width: 100%;
+            width: 140%;
+        }
+        .mapa {
+            margin-left: -8em;
+            margin-right: 8em;
+        }
+        .imagen_nick {
+            height: 40%;
+            width: 40%;
+            border-radius: 25px;
         }
         html, body {
             height: 100%;

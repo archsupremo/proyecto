@@ -62,3 +62,9 @@ function nick() {
         }
     }
 }
+
+function dar_usuario() {
+    $CI =& get_instance();
+
+    return $CI->session->userdata('usuario');
+}

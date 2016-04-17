@@ -442,17 +442,28 @@ class Usuarios extends CI_Controller{
     }
 
     public function usuarios_cercanos($latitud = NULL, $longitud = NULL) {
-        // echo json_encode(array('asd' => 'asd'));
-        // die();
-        // $usuarios_cercanos = array('usuarios' => 'asd');
+        $usuarios_cercanos = array();
         if($latitud !== NULL && $longitud !== NULL) {
+            $latitud = (int) $latitud;
+            $longitud = (int) $longitud;
             $usuarios_cercanos = $this->Usuario->usuarios_cercanos($latitud, $longitud);
-            echo json_encode(
-                    array(
-                        'usuarios' => $usuarios_cercanos,
-                    )
-                );
-            // echo json_encode(array('usuarios' => 'asd'));
         }
+        echo json_encode(
+                array(
+                    'usuarios' => $usuarios_cercanos
+                )
+            );
+    }
+
+    public function editar_perfil($usuario_id = NULL) {
+        if($usuario_id === NULL || $this->Usuario->por_id($usuario_id) === FALSE) {
+            $mensajes[] = array('error' =>
+                "Parametros incorrectos para visualizar la configuracion del perfil del usuario.");
+            $this->flashdata->load($mensajes);
+
+            redirect('/frontend/portada/');
+        }
+        $data['usuario'] = $this->Usuario->por_id($usuario_id);
+        $this->template->load("/usuarios/editar_perfil", $data);
     }
 }

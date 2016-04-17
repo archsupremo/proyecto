@@ -29,8 +29,8 @@ create table usuarios(
                                                         on update cascade,
     activado            bool         not null default true,
     baneado             bool         not null default false,
-    latitud             bigint default null,
-    longitud            bigint default null
+    latitud             double precision default null,
+    longitud            double precision default null
 );
 
 drop table if exists tokens cascade;
