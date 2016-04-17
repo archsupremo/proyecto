@@ -1,7 +1,5 @@
 <?php template_set('title', 'Perfil de Usuario') ?>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&callback=initMap"
-async defer></script>
 <div class="row">
     <div class="row large-6 columns menu-login">
         <?php if ( ! empty(error_array())): ?>
@@ -64,83 +62,107 @@ async defer></script>
     </div>
     <div class="large-4 columns">
         <h3>Geolocalizacion</h3>
-        <div class="" id="map"></div>
-        <script>
-          var map;
-          function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 6,
-              mapTypeId: google.maps.MapTypeId.SATELLITE,
-              mapTypeControl: false,
-      		  zoomControl: false,
-      		  scaleControl: false,
-      		  streetViewControl: false,
-      		  fullscreenControl: false
-            });
+        <?php if($usuario['latitud'] !== NULL && $usuario['longitud'] !== NULL): ?>
+            <div id="map" class="mapa_perfil"></div>
+            <script>
+              var map;
+              function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                  zoom: 14,
+                  mapTypeId: google.maps.MapTypeId.ROADMAP,
+                  mapTypeControl: false,
+          		  zoomControl: true,
+          		  scaleControl: true,
+          		  streetViewControl: false,
+          		  fullscreenControl: false
+                });
 
-            if (navigator.geolocation){
-				navigator.geolocation.getCurrentPosition(mostrarLocalizacion, manejadorDeError);
-			}
-			else{
-				alert("Su navegador no soporta Geolocalizacion");
-			}
-          }
-
-     	  function mostrarLocalizacion(posicion){
-                var pos = new google.maps.LatLng(40.4155, -3.6968);
-                map.setCenter(pos);
-
-                // $.ajax({
-                //     url: './tiempo/prevision.php',
-                //     type: 'POST',
-                //     async: true,
-                //     success: respuesta,
-                //     error: error,
-                //     dataType: "json"
-                // });
-          }
-
-          function manejadorDeError(error) {
-			switch(error.code) {
-                case error.PERMISSION_DENIED: alert("El usuario no permite compartir datos de geolocalizacion");
-                break;
-
-                case error.POSITION_UNAVAILABLE: alert("Imposible detectar la posicio actual");
-                break;
-
-                case error.TIMEOUT: alert("La posicion debe recuperar el tiempo de espera");
-                break;
-
-                default: alert("Error desconocido");
-                break;
-            }
-    	  }
-
-          function obtener_antipodas(latitud, longitud) {
-              return {anti_latitud: -latitud, anti_longitud: (180 - Math.abs(longitud))};
-          }
-
-          function respuesta(respuesta) {
-              for (var ciudad in respuesta.ciudades) {
-                  var latitud = respuesta.ciudades[ciudad].latlon[0];
-                  var longitud = respuesta.ciudades[ciudad].latlon[1];
-                  var prediccion = respuesta.ciudades[ciudad].prediccion;
-                  // alert("Lat: " + latitud + " y Lon: " + longitud + ". Prediccion: " + prediccion);
-                  var imagen = new google.maps.MarkerImage(
-                      "http://localhost/maps/tiempo/images/" + prediccion + ".png"
-                  );
-                  var pos = new google.maps.LatLng(latitud, longitud);
-                  var marker = new google.maps.Marker({
-      			      position: pos,
-      			      map: map,
-      			      title: prediccion,
-                      icon: imagen
-      			  });
+                if (navigator.geolocation){
+    				navigator.geolocation.getCurrentPosition(mostrarLocalizacion, manejadorDeError);
+    			}
+    			else {
+    				alert("Su navegador no soporta Geolocalizacion");
+    			}
               }
-          }
-          function error(error) {
-              alert("Ha ocurrido el error => " + error.statusText);
-          }
-        </script>
+
+         	  function mostrarLocalizacion(posicion){
+                    <?php if($usuario['latitud'] !== NULL): ?>
+                        var latitud = <?= $usuario['latitud'] ?>;
+                    <?php else: ?>
+                        var latitud = 40.4155;
+                    <?php endif; ?>
+
+                    <?php if($usuario['longitud'] !== NULL): ?>
+                        var longitud = <?= $usuario['longitud'] ?>;
+                    <?php else: ?>
+                        var longitud = -3.6968;
+                    <?php endif; ?>
+
+                    var pos = new google.maps.LatLng(latitud, longitud);
+                    map.setCenter(pos);
+
+                    var marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: "<?= $usuario['nick'] ?> está aquí >.<",
+                    });
+                    // $.ajax({
+                    //     url: "usuarios/usuarios_cercanos/",
+                    //     type: 'POST',
+                    //     async: true,
+                    //     success: respuesta,
+                    //     error: error,
+                    //     dataType: "json"
+                    // });
+              }
+
+              function manejadorDeError(error) {
+    			switch(error.code) {
+                    case error.PERMISSION_DENIED: alert("El usuario no permite compartir datos de geolocalizacion");
+                    break;
+
+                    case error.POSITION_UNAVAILABLE: alert("Imposible detectar la posicio actual");
+                    break;
+
+                    case error.TIMEOUT: alert("La posicion debe recuperar el tiempo de espera");
+                    break;
+
+                    default: alert("Error desconocido");
+                    break;
+                }
+        	  }
+
+              function obtener_antipodas(latitud, longitud) {
+                  return {anti_latitud: -latitud, anti_longitud: (180 - Math.abs(longitud))};
+              }
+
+              function respuesta(respuesta) {
+                  for (var ciudad in respuesta.ciudades) {
+                      var latitud = respuesta.ciudades[ciudad].latlon[0];
+                      var longitud = respuesta.ciudades[ciudad].latlon[1];
+                      var prediccion = respuesta.ciudades[ciudad].prediccion;
+
+                      // alert("Lat: " + latitud + " y Lon: " + longitud + ". Prediccion: " + prediccion);
+                      var imagen = new google.maps.MarkerImage(
+                          "http://localhost/maps/tiempo/images/" + prediccion + ".png"
+                      );
+                      var pos = new google.maps.LatLng(latitud, longitud);
+                      var marker = new google.maps.Marker({
+          			      position: pos,
+          			      map: map,
+          			      title: prediccion,
+                          icon: imagen
+          			  });
+                  }
+              }
+              function error(error) {
+                  alert("Ha ocurrido el error => " + error.statusText);
+              }
+            </script>
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&callback=initMap"
+            async defer></script>
+        <?php else: ?>
+            El usuario <?= $usuario['nick'] ?> no ha aceptado dar su ubicacion.
+        <?php endif; ?>
     </div>
 </div>

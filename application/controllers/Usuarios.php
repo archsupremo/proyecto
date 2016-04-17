@@ -144,7 +144,7 @@ class Usuarios extends CI_Controller{
         $this->session->set_userdata('last_uri',
                         parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
     }
-    $this->output->delete_cache('/frontend/portada');
+    $this->output->delete_cache('/frontend/portada/');
     $this->template->load('/usuarios/login');
   }
 
@@ -278,6 +278,7 @@ class Usuarios extends CI_Controller{
 
                 unset($valores['registrar']);
                 unset($valores['password_confirm']);
+                unset($valores['geolocalizacion']);
 
                 $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
                 $valores['registro_verificado'] = FALSE;
@@ -438,5 +439,20 @@ class Usuarios extends CI_Controller{
     public function domain_exists($email, $record = 'MX'){
        list($user, $domain) = explode('@', $email);
        return checkdnsrr($domain, $record);
+    }
+
+    public function usuarios_cercanos($latitud = NULL, $longitud = NULL) {
+        // echo json_encode(array('asd' => 'asd'));
+        // die();
+        // $usuarios_cercanos = array('usuarios' => 'asd');
+        if($latitud !== NULL && $longitud !== NULL) {
+            $usuarios_cercanos = $this->Usuario->usuarios_cercanos($latitud, $longitud);
+            echo json_encode(
+                    array(
+                        'usuarios' => $usuarios_cercanos,
+                    )
+                );
+            // echo json_encode(array('usuarios' => 'asd'));
+        }
     }
 }

@@ -28,7 +28,9 @@ create table usuarios(
                                                         on delete no action
                                                         on update cascade,
     activado            bool         not null default true,
-    baneado             bool         not null default false
+    baneado             bool         not null default false,
+    latitud             bigint default null,
+    longitud            bigint default null
 );
 
 drop table if exists tokens cascade;
@@ -85,10 +87,13 @@ create table favoritos(
     constraint pk_favoritos primary key (usuario_id, articulo_id)
 );
 
-insert into usuarios(nick, password, email, registro_verificado, rol_id, activado)
-    values('admin', crypt('admin', gen_salt('bf')), 'guillermo.lopez@iesdonana.org', true, 1, true),
-          ('guillermo', crypt('guillermo', gen_salt('bf')), 'guillermo.lopez@iesdonana.org', true, 2, true),
-          ('archsupremo', crypt('archsupremo', gen_salt('bf')), 'jdkdejava@gmail.com', true, 2, true);
+insert into usuarios(nick, password, email, registro_verificado, rol_id, activado, latitud, longitud)
+    values('admin', crypt('admin', gen_salt('bf')), 'guillermo.lopez@iesdonana.org',
+            true, 1, true, null, null),
+          ('guillermo', crypt('guillermo', gen_salt('bf')), 'guillermo.lopez@iesdonana.org',
+            true, 2, true, 36.7726, -6.3530),
+          ('archsupremo', crypt('archsupremo', gen_salt('bf')), 'jdkdejava@gmail.com',
+            true, 2, true, 36.7730, -6.3530);
 
 insert into categorias(nombre)
     values('Cocina'),
@@ -155,3 +160,9 @@ create view v_favoritos as
              nick, nombre_categoria, f.usuario_id as usuario_favorito, TRUE as favorito
     from v_articulos a join favoritos f
     on a.id = f.articulo_id;
+
+drop view if exists v_usuarios_localizacion cascade;
+create view v_usuarios_localizacion as
+    select *
+    from usuarios
+    where latitud is not NULL and longitud is not NULL;

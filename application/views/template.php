@@ -27,9 +27,13 @@
         .articulos {
             margin: 0.5em;
         }
-        #map {
+        .mapa_perfil {
             height: 600px;
-            width: 600px;
+            width: 155%;
+        }
+        .mapa_index {
+            height: 450px;
+            width: 100%;
         }
         html, body {
             height: 100%;

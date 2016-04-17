@@ -69,4 +69,10 @@ class Usuario extends CI_Model {
         $res = $this->db->query("select * from v_ventas where vendedor_id = ?", array($id_usuario));
         return ($res->num_rows() > 0) ? $res->result_array() : array();
     }
+
+    public function usuarios_cercanos($latitud, $longitud) {
+        $res = $this->db->query("select * from v_usuarios_localizacion where latitud - ? < 500 and longitud - ? < 500",
+                                 array($latitud, $longitud));
+        return $res->result_array();
+    }
 }
