@@ -433,6 +433,18 @@ class Usuarios extends CI_Controller{
         $data['articulos_usuarios'] = $this->Usuario->por_id_vista($id_usuario);
         $data['usuario'] = $this->Usuario->por_id($id_usuario);
         $data['articulos_vendidos'] = $this->Usuario->ventas_usuario($id_usuario);
+        $data['articulos_favoritos'] = array();
+        $data['pm'] = array();
+        $data['usuario_perfil'] = FALSE;
+
+        if ($this->Usuario->logueado()) {
+            if ($this->session->userdata('usuario')['id'] === $id_usuario) {
+                $data['articulos_favoritos'] = $this->Articulo->articulos_favoritos($id_usuario);
+                $data['pm'] = $this->Usuario->pm($id_usuario);
+                $data['usuario_perfil'] = TRUE;
+            }
+        }
+
         $this->template->load("/usuarios/perfil", $data);
     }
 

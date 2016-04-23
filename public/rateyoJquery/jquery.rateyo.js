@@ -180,7 +180,7 @@
       options.starWidth = options.starHeight = newWidth;
 
       starWidth = parseFloat(options.starWidth.replace("px", ""));
- 
+
       $normalGroup.find("svg")
                   .attr({width: options.starWidth,
                          height: options.starHeight});
@@ -190,15 +190,15 @@
                         height: options.starHeight});
 
       setContainerWidth();
-       
+
       return $node;
     }
 
     function setSpacing (newSpacing) {
-      
+
       if (!isDefined(newSpacing)) {
-      
-        return options.spacing;  
+
+        return options.spacing;
       }
 
       options.spacing = newSpacing;
@@ -209,7 +209,7 @@
                   .css({"margin-left": newSpacing});
 
       $ratedGroup.find("svg:not(:first-child)")
-                 .css({"margin-left": newSpacing}); 
+                 .css({"margin-left": newSpacing});
 
       setContainerWidth();
 
@@ -286,8 +286,8 @@
       step = options.maxValue/options.numStars;
 
       if (options.rating > newValue) {
-      
-        setRating(newValue); 
+
+        setRating(newValue);
       }
 
       showRating();
@@ -312,8 +312,8 @@
     function setHalfStar (newValue) {
 
       if (!isDefined(newValue)) {
-      
-        return options.halfStar;  
+
+        return options.halfStar;
       }
 
       options.halfStar = newValue;
@@ -322,10 +322,10 @@
     }
 
     function setFullStar (newValue) {
-    
+
       if (!isDefined(newValue))   {
-      
-        return options.fullStar;  
+
+        return options.fullStar;
       }
 
       options.fullStar = newValue;
@@ -334,26 +334,26 @@
     }
 
     function round (value) {
-      
+
       var remainder = value%step,
           halfStep = step/2,
           isHalfStar = options.halfStar,
           isFullStar = options.fullStar;
 
       if (!isFullStar && !isHalfStar) {
-      
-        return value;  
+
+        return value;
       }
 
       if (isFullStar || (isHalfStar && remainder > halfStep)) {
-      
+
         value += step - remainder;
       } else {
-      
+
         value = value - remainder;
-        
+
         if (remainder > 0) {
-          
+
           value += halfStep;
         }
       }
@@ -390,7 +390,7 @@
           var remPrcnt = calcPrcnt;
 
           while (remPrcnt > 0) {
-            
+
             if (remPrcnt > percentOfStar) {
 
               calculatedRating += step;
@@ -399,11 +399,11 @@
 
               calculatedRating += remPrcnt/percentOfStar*step;
               remPrcnt = 0;
-            }  
+            }
           }
         } else {
-        
-          calculatedRating = calcPrcnt * (options.maxValue);  
+
+          calculatedRating = calcPrcnt * (options.maxValue);
         }
 
         calculatedRating = round(calculatedRating);
@@ -653,7 +653,7 @@
           method = setHalfStar;
           break;
         case "fullStar":
-        
+
           method = setFullStar;
           break;
         case "readOnly":
@@ -661,7 +661,7 @@
           method = setReadOnly;
           break;
         case "spacing":
-        
+
           method = setSpacing;
           break;
         case "onSet":

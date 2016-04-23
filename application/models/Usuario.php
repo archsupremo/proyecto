@@ -75,4 +75,10 @@ class Usuario extends CI_Model {
                                  array($latitud, $longitud));
         return $res->result_array();
     }
+
+    public function pm($usuario_id) {
+        $res = $this->db->query("select * from v_usuarios_pm where receptor_id = ?",
+                                array($usuario_id));
+        return $res->result_array();
+    }
 }

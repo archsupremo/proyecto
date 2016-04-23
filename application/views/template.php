@@ -5,14 +5,18 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BuyAndSell - <?= nick() ?></title>
+    <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/foundation.css" />
     <link rel="stylesheet" href="/rateyoJquery/jquery.rateyo.css"/>
-    <!-- <link href="http://steam.local/css/star-rating.min.css" rel="stylesheet" type="text/css" /> -->
+
     <script src="/js/vendor/modernizr.js"></script>
     <script src="/js/vendor/jquery.js"></script>
     <script src="/js/foundation.min.js"></script>
     <script src="/js/foundation/foundation.alert.js"></script>
     <script src="/rateyoJquery/jquery.rateyo.js"></script>
+
+    <script src="/js/velocity.min.js"></script>
+    <script src="/js/tabtab.min.js"></script>
 
     <style media="screen">
         .busqueda {
@@ -29,7 +33,6 @@
         }
         .mapa_perfil {
             height: 600px;
-            width: 155%;
         }
         .mapa_index {
             height: 450px;

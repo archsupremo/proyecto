@@ -34,7 +34,6 @@ create table usuarios(
 );
 
 drop table if exists tokens cascade;
-
 create table tokens (
     usuario_id bigint   constraint pk_tokens primary key
                         constraint fk_tokens_usuarios references usuarios (id),
@@ -87,6 +86,18 @@ create table favoritos(
     constraint pk_favoritos primary key (usuario_id, articulo_id)
 );
 
+drop table if exists pm cascade;
+create table pm(
+    id bigserial constraint pk_pm primary key,
+    emisor_id bigint constraint fk_pm_usuarios_emisor references usuarios (id)
+                             on update cascade on delete cascade,
+    receptor_id bigint constraint fk_pm_usuarios_receptor references usuarios (id)
+                               on update cascade on delete cascade,
+    mensaje varchar(500) not null,
+    fecha timestamp not null,
+    visto bool not null default false
+);
+
 insert into usuarios(nick, password, email, registro_verificado, rol_id, activado, latitud, longitud)
     values('admin', crypt('admin', gen_salt('bf')), 'guillermo.lopez@iesdonana.org',
             true, 1, true, null, null),
@@ -123,6 +134,11 @@ insert into favoritos(usuario_id, articulo_id)
           (2, 6),
           (3, 3);
 
+insert into pm(emisor_id, receptor_id, mensaje, fecha, visto)
+    values(1, 2, 'Primer Mensaje', current_timestamp, false),
+          (3, 1, 'Segundo Mensaje', current_timestamp, false),
+          (3, 1, 'Tercer Mensaje', current_timestamp, true),
+          (3, 1, 'Cuarto Mensaje', current_timestamp, false);
 
 drop view if exists v_articulos cascade;
 create view v_articulos_raw as
@@ -166,3 +182,14 @@ create view v_usuarios_localizacion as
     select *
     from usuarios
     where latitud is not NULL and longitud is not NULL;
+
+drop view if exists v_usuarios_pm cascade;
+create view v_usuarios_pm as
+    select p.*, u.nick as nick_emisor, u.email as email_emisor,
+           us.nick as nick_receptor, us.email as email_receptor,
+           to_char(fecha, 'DD-MM-YYYY HH24:MI') as fecha_mensaje
+    from pm p join usuarios u
+         on p.emisor_id = u.id
+         join usuarios us
+         on p.receptor_id = us.id
+    order by visto asc;

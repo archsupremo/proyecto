@@ -13,22 +13,28 @@ class Articulo extends CI_Model{
   }
 
   public function todos_con_favorito($usuario_id) {
-      $res = $this->db->get_where('v_favoritos',
-                                   array('usuario_favorito' => $usuario_id));
-      $res2 = $this->db->query('select *
+    //   $res = $this->db->get_where('v_favoritos',
+    //                                array('usuario_favorito' => $usuario_id));
+      $res = $this->db->query('select *
                                 from v_articulos
                                 group by id, nombre, descripcion, usuario_id, categoria_id, precio,
                                          nick, nombre_categoria, favorito
                                 having id not in (select articulo_id from favoritos where usuario_id = ?)',
                                 array($usuario_id));
 
-      $res3 = array_merge($res->result_array(), $res2->result_array());
-      return (count($res3) > 0) ? $res3 : array();
+    //   $res3 = array_merge($res->result_array(), $res2->result_array());
+    //   return (count($res3) > 0) ? $res3 : array();
+    return $res->result_array();
+  }
+  public function articulos_favoritos($usuario_id) {
+      $res = $this->db->get_where('v_favoritos',
+                                   array('usuario_favorito' => $usuario_id));
+      return $res->result_array();
   }
 
   public function busqueda_articulo($categoria_id, $nombre, $usuario_id) {
       $res = $this->db->like('lower(nombre)', strtolower($nombre), 'match');
-      
+
       if($categoria_id <= 0) {
           $res = $this->todos_con_favorito($usuario_id);
       } else {

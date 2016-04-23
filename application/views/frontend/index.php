@@ -5,7 +5,7 @@
     <div class="large-3 columns mapa">
         <h4>¿Quien esta vendiendo a tu alrededor?</h4>
         <div class="mapa_index" id="map"></div>
-        <!-- <script>
+        <script>
           var usuario_id = <?= logueado() ? dar_usuario()['id'] : 'undefined' ?>;
           var map;
           function initMap() {
@@ -28,10 +28,8 @@
           }
 
      	  function mostrarLocalizacion(posicion){
-                var latitud = 36.78;
-                var longitud = -6.340;
-                // var latitud = posicion.coords.latitude;
-                // var longitud = posicion.coords.longitude;
+                var latitud = posicion.coords.latitude;
+                var longitud = posicion.coords.longitude;
 
                 var pos = new google.maps.LatLng(latitud, longitud);
                 map.setCenter(pos);
@@ -92,9 +90,9 @@
           function error(error) {
               alert("Ha ocurrido el error => " + error.statusText);
           }
-        </script> -->
-        <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&callback=initMap"
-        async defer></script> -->
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&callback=initMap"
+        async defer></script>
     </div>
     <div class="large-9 columns">
         <?php foreach ($articulos as $k => $v): ?>
