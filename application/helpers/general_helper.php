@@ -12,7 +12,7 @@ function mensajes() {
             $clase = ($clave === 'error') ? 'alert-box alert radius' : 'alert-box success radius';
 
             $out .= '<div class="row centered text-center">';
-                $out .= '<div class="large-4 large-offset-4 ' . $clase . ' flashdata">';
+                $out .= '<div data-alert class="large-4 large-offset-4 ' . $clase . ' flashdata">';
                     $out .= $valor;
                     $out .= "<a href=\"#\" class=\"close\">&times;</a>";
                 $out .= '</div>';
@@ -34,13 +34,12 @@ function busqueda() {
 function busqueda_select() {
     $CI =& get_instance();
 
-    $categorias = $CI->Articulo->categorias();
-    $opciones = '<option value="0">Todo</option>';
-    foreach ($categorias as $v) {
-        $opciones .= '<option value="' . $v['id'] . '"' . selected($v['id']) . '>' . $v['nombre'] . '</option>';
+    $categorias_raw = $CI->Articulo->categorias();
+    $categorias = array(0 => 'Todo');
+    foreach ($categorias_raw as $categoria) {
+        $categorias[$categoria['id']] = $categoria['nombre'];
     }
-
-    return $opciones;
+    return $categorias;
 }
 
 function selected($categoria_id) {

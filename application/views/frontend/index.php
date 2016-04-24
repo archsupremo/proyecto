@@ -95,10 +95,22 @@
         async defer></script>
     </div>
     <div class="large-9 columns">
-        <?php foreach ($articulos as $k => $v): ?>
+        <?php foreach ($articulos as $v): ?>
             <div class="large-4 columns left articulos" id="<?= $v['id'] ?>">
                 <div class="">
-                    <?= anchor('/articulos/buscar/' . $v['id'], img('/imagenes_articulos/' . $v['id'] . '.jpg')) ?>
+                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['id'] . '.jpg')): ?>
+                        <?php $url = '/imagenes_articulos/' . $v['id'] . '.jpg' ?>
+                    <?php else: ?>
+                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                    <?php endif; ?>
+
+                    <?= anchor('/articulos/buscar/' . $v['id'],
+                                img(array(
+                                    'src' => $url,
+                                    'title' => $v['nombre'],
+                                    'alt' => $v['nombre'],
+                                    // 'class' => 'imagen_nick',
+                                ))) ?>
                 </div>
                 <div class="">
                     <?= $v['precio'] ?>
@@ -118,10 +130,10 @@
                 <div class="clearing-thumbs" data-clearing>
                     <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
                     </div>
-                    <?php if(file_exists('/imagenes_usuarios/' . $v['id'] . '.jpg')): ?>
+                    <?php if(file_exists($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['id'] . '.jpg')): ?>
                         <?php $url = '/imagenes_usuarios/' . $v['id'] . '.jpg' ?>
                     <?php else: ?>
-                        <?php $url = '/imagenes_usuarios/gallifreyan.png' ?>
+                        <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
                     <?php endif; ?>
                     <?= anchor('/usuarios/perfil/' . $v['usuario_id'],
                                 img(array(

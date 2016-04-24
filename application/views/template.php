@@ -8,13 +8,18 @@
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/foundation.css" />
     <link rel="stylesheet" href="/rateyoJquery/jquery.rateyo.css"/>
+    <link rel="stylesheet" href="/slick/slick.css">
+    <link rel="stylesheet" href="/slick/slick-theme.css">
 
+    <!-- Foundation y rateYo -->
     <script src="/js/vendor/modernizr.js"></script>
     <script src="/js/vendor/jquery.js"></script>
     <script src="/js/foundation.min.js"></script>
     <script src="/js/foundation/foundation.alert.js"></script>
     <script src="/rateyoJquery/jquery.rateyo.js"></script>
+    <script src="/slick/slick.min.js"></script>
 
+    <!-- TabTab -->
     <script src="/js/velocity.min.js"></script>
     <script src="/js/tabtab.min.js"></script>
 
@@ -61,9 +66,7 @@
         </div>
         <form action="/frontend/portada/index" class="large-6 columns" method="post">
             <div class="row">
-                <select class="large-4 columns" name="categoria">
-                    <?= busqueda_select() ?>
-                </select>
+                <?= form_dropdown('categoria', busqueda_select(), '', 'class="large-4 columns"') ?>
                 <div class="large-4 columns busqueda">
                     <input class="" name="nombre" type="text" value="<?= busqueda() ?>">
                 </div>

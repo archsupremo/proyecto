@@ -46,4 +46,55 @@ class Articulos extends CI_Controller {
           $this->Articulo->insertar_favorito($usuario['id'], $articulo_id);
       }
   }
+
+  public function subir() {
+      if (!$this->Usuario->logueado()) {
+          $mensajes[] = array('error' =>
+                  "No puedes insertar articulos si no estas logueado.");
+          $this->flashdata->load($mensajes);
+          redirect('/frontend/portada/');
+      }
+      $categorias_raw = $this->Articulo->categorias();
+      $categorias = array();
+      foreach ($categorias_raw as $categoria) {
+          $categorias[$categoria['id']] = $categoria['nombre'];
+      }
+      $data['categorias'] = $categorias;
+
+      if ($this->input->post('subir') !== NULL) {
+          $articulo = $this->input->post();
+          unset($articulo['subir']);
+
+          $articulo['usuario_id'] = $this->session->userdata('usuario')['id'];
+          $this->Articulo->insertar($articulo);
+          $mensajes[] = array('info' =>
+                  "Articulo insertado correctamente :)");
+          $this->flashdata->load($mensajes);
+
+          $articulo_insertado = $this->Articulo->ultimo_articulo();
+          $articulo_id = $articulo_insertado['id'];
+
+          $data['error'] = array();
+
+          $config['upload_path'] = 'imagenes_articulos/';
+          $config['allowed_types'] = 'jpeg|jpg|jpe';
+          $config['overwrite'] = TRUE;
+          $config['max_width'] = '5000';
+          $config['max_height'] = '5000';
+          $config['max_size'] = '500';
+          $config['file_name'] = $articulo_id . '.jpg';
+
+          $this->load->library('upload', $config);
+
+          if ( ! $this->upload->do_upload('foto')) {
+            $data['error'] = $this->upload->display_errors();
+          }
+          else {
+            $data = array('upload_data' => $this->upload->data());
+          }
+          redirect('/frontend/portada');
+      }
+
+      $this->template->load('/articulos/subir', $data);
+  }
 }

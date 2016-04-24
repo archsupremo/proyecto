@@ -6,7 +6,13 @@ class Articulo extends CI_Model{
   public function __construct() {
     parent::__construct();
   }
+  // Operaciones chungas
+  public function insertar($articulo) {
+      $res = $this->db->insert('articulos', $articulo);
+      return $res;
+  }
 
+  // Operaciones de lectura
   public function todos() {
       $res = $this->db->query("select * from v_articulos");
       return ($res->num_rows() > 0) ? $res->result_array() : array();
@@ -86,5 +92,10 @@ class Articulo extends CI_Model{
   public function borrar_favorito($usuario_id, $articulo_id) {
       return $this->db->query("delete from favoritos where usuario_id = ? and articulo_id = ?",
                        array($usuario_id, $articulo_id));
+  }
+
+  public function ultimo_articulo() {
+      $res = $this->db->query('select * from articulos order by id desc limit 1');
+      return $res->row_array();
   }
 }

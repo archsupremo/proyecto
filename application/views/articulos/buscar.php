@@ -31,18 +31,30 @@
         <div class="row text-center alert-box secondary radius">
             <h4>Otros productos de <?= $usuario['nick'] ?></h4>
             <?php if(!empty($articulos_usuarios)): ?>
-                <?php foreach ($articulos_usuarios as $v): ?>
-                    <div class="large-4 columns left">
-                        <?= anchor('/articulos/buscar/' . $v['id'],
-                                    img('/imagenes_articulos/' . $v['id'] . '.jpg'),
-                                    'title="' . $v['nombre'] . '"') ?>
-                    </div>
-                <?php endforeach; ?>
+                <div class="slider lazy">
+                    <?php foreach ($articulos_usuarios as $v): ?>
+                        <div class="large-4 columns left">
+                            <?= anchor('/articulos/buscar/' . $v['id'],
+                                       img(array(
+                                           'alt' => $v['nombre'],
+                                           'title' => $v['nombre'],
+                                           'data-lazy' => '/imagenes_articulos/' . $v['id'] . '.jpg'
+                                       )),
+                                       'title="' . $v['nombre'] . '"') ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             <?php else: ?>
                 <h6>El usuario <?= $usuario['nick'] ?> no tiene mas productos a la venta >.<</h6>
             <?php endif; ?>
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
+    $('.lazy').slick({
+        lazyLoad: 'ondemand',
+        slidesToShow: 3,
+        slidesToScroll: 1
+    });
 </script>

@@ -15,6 +15,8 @@ function login() {
                             'id="perfil" class="button small round right" role="button"');
                 $out .= anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar perfil',
                             'id="editar_perfil" class="button small round right" role="button"');
+                $out .= anchor('/articulos/subir/', 'Subir articulo',
+                            'id="subir_articulo" class="button small round right" role="button"');
             $out .= '</div>';
         $out .= form_close();
     else:
