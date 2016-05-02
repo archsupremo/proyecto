@@ -453,12 +453,13 @@ class Usuarios extends CI_Controller{
        return checkdnsrr($domain, $record);
     }
 
-    public function usuarios_cercanos($latitud = NULL, $longitud = NULL) {
+    public function usuarios_cercanos($latitud = NULL, $longitud = NULL, $distancia = NULL) {
         $usuarios_cercanos = array();
-        if($latitud !== NULL && $longitud !== NULL) {
-            $latitud = (int) $latitud;
-            $longitud = (int) $longitud;
-            $usuarios_cercanos = $this->Usuario->usuarios_cercanos($latitud, $longitud);
+        if($latitud !== NULL && $longitud !== NULL && $distancia !== NULL) {
+            $latitud = (double) $latitud;
+            $longitud = (double) $longitud;
+            $distancia = (((double) $distancia) * 1.60934) / 2;
+            $usuarios_cercanos = $this->Usuario->usuarios_cercanos($latitud, $longitud, $distancia);
         }
         echo json_encode(
                 array(
@@ -468,14 +469,130 @@ class Usuarios extends CI_Controller{
     }
 
     public function editar_perfil($usuario_id = NULL) {
-        if($usuario_id === NULL || $this->Usuario->por_id($usuario_id) === FALSE) {
+        if(!$this->Usuario->logueado() ||
+           $usuario_id === NULL ||
+           $this->Usuario->por_id($usuario_id) === FALSE) {
+
             $mensajes[] = array('error' =>
                 "Parametros incorrectos para visualizar la configuracion del perfil del usuario.");
             $this->flashdata->load($mensajes);
 
             redirect('/frontend/portada/');
         }
+        $reglas = $this->reglas_comunes;
+        $reglas[0] = array(
+                        'field' => 'nick',
+                        'label' => 'Nick',
+                        'rules' => array(
+                            'trim', 'required',
+                            array('existe_nick', function ($nick) {
+                                    return !$this->Usuario->existe_nick_id($nick,
+                                            $this->session->userdata('usuario')['id']);
+                                }
+                            )
+                        ),
+                        'errors' => array(
+                            'existe_nick' => 'El nick ya existe, por favor, escoja otro.',
+                        )
+                    );
+        $reglas[1] = array(
+            'field' => 'email',
+            'label' => 'Email',
+            'rules' => array(
+                'trim', 'required',
+                array('existe_email', function ($email) {
+                        return !$this->Usuario->existe_email_id($email,
+                                $this->session->userdata('usuario')['id']);
+                    }
+                ),
+                array('dominio_email', function ($email) {
+                        return $this->domain_exists($email);
+                    }
+                ),
+            ),
+            'errors' => array(
+                'existe_email' => 'El email ya existe, por favor, escoja otro.',
+                'dominio_email' => 'Este email no puede existir, por favor, vuelva a intertarlo.'
+            )
+        );
+
+        $reglas[] = array(
+            'field' => 'password_old',
+            'label' => 'Constraseña Antigua',
+            'rules' => array(
+                'trim', 'required',
+                array('password_old', function ($password_old) {
+                        $usuario = $this->Usuario->por_id($this->session->userdata('usuario')['id']);
+                        return password_verify($password_old, $usuario['password']);
+                    }
+                ),
+            ),
+            'errors' => array(
+                'password_old' => "La contraseña antigua no es correcta. Por favor, vuelva a intentarlo.",
+            )
+        );
+
+        $this->form_validation->set_rules($reglas);
+        if ($this->form_validation->run() === TRUE) {
+
+            $valores = $this->input->post();
+
+            unset($valores['editar']);
+            unset($valores['password_confirm']);
+            unset($valores['password_old']);
+            unset($valores['geolocalizacion']);
+
+            $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
+            $this->Usuario->editar($valores, $usuario_id);
+
+            $mensajes[] = array('info' =>
+                    "Informacion Personal actualizada.");
+            $this->flashdata->load($mensajes);
+
+            redirect('/frontend/portada/');
+        }
         $data['usuario'] = $this->Usuario->por_id($usuario_id);
         $this->template->load("/usuarios/editar_perfil", $data);
+    }
+
+    public function usuarios_nick($nick = NULL, $usuario_id = NULL) {
+        $sugerencias_nick = array();
+        $nick_ocupado = false;
+        $usuario_id = (int) $usuario_id;
+        if($nick !== NULL && $usuario_id !== NULL) {
+            $nick_ocupado = $this->Usuario->usuarios_nick($nick, $usuario_id);
+        }
+        if($nick_ocupado) {
+            $sugerencia = "";
+            for ($i = 0; true; $i++) {
+                $sugerencia = $nick . rand();
+                if( ! $this->Usuario->usuarios_nick($sugerencia, $usuario_id)) {
+                    $sugerencias_nick[] = $sugerencia;
+                }
+                if(count($sugerencias_nick) === 2) {
+                    break;
+                }
+            }
+        }
+        echo json_encode(
+                array(
+                    'nick_ocupado' => $nick_ocupado,
+                    'sugerencias_nick' => $sugerencias_nick,
+                )
+            );
+    }
+
+    public function usuarios_email($email = NULL, $usuario_id = NULL) {
+        $email_ocupado = false;
+        $usuario_id = (int) $usuario_id;
+        $email = urldecode($email);
+        if($email !== NULL && $usuario_id !== NULL) {
+            $email_ocupado = $this->Usuario->usuarios_email($email, $usuario_id);
+        }
+        echo json_encode(
+                array(
+                    'email_ocupado' => $email_ocupado,
+                )
+            );
     }
 }

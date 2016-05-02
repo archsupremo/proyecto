@@ -48,18 +48,18 @@ class Articulos extends CI_Controller {
   }
 
   public function subir() {
+      if (!empty($_FILES)) {
+          $tempFile = $_FILES['file']['tmp_name'];
+          $targetPath = $_SERVER['DOCUMENT_ROOT'] . '/imagenes_articulos/';
+          $targetFile = $targetPath . "asd.jpg";
+          move_uploaded_file($tempFile, $targetFile);
+      }
       if (!$this->Usuario->logueado()) {
           $mensajes[] = array('error' =>
                   "No puedes insertar articulos si no estas logueado.");
           $this->flashdata->load($mensajes);
           redirect('/frontend/portada/');
       }
-      $categorias_raw = $this->Articulo->categorias();
-      $categorias = array();
-      foreach ($categorias_raw as $categoria) {
-          $categorias[$categoria['id']] = $categoria['nombre'];
-      }
-      $data['categorias'] = $categorias;
 
       if ($this->input->post('subir') !== NULL) {
           $articulo = $this->input->post();
@@ -74,27 +74,52 @@ class Articulos extends CI_Controller {
           $articulo_insertado = $this->Articulo->ultimo_articulo();
           $articulo_id = $articulo_insertado['id'];
 
-          $data['error'] = array();
-
-          $config['upload_path'] = 'imagenes_articulos/';
-          $config['allowed_types'] = 'jpeg|jpg|jpe';
-          $config['overwrite'] = TRUE;
-          $config['max_width'] = '5000';
-          $config['max_height'] = '5000';
-          $config['max_size'] = '500';
-          $config['file_name'] = $articulo_id . '.jpg';
-
-          $this->load->library('upload', $config);
-
-          if ( ! $this->upload->do_upload('foto')) {
-            $data['error'] = $this->upload->display_errors();
+          if (!empty($_FILES)) {
+              $tempFile = $_FILES['file']['tmp_name'];
+      	      $targetPath = $_SERVER['DOCUMENT_ROOT'] . '/imagenes_articulos/';
+      	      $targetFile = $targetPath . $articulo_id . ".jpg";
+      	      move_uploaded_file($tempFile, $targetFile);
           }
-          else {
-            $data = array('upload_data' => $this->upload->data());
-          }
+        //   $data['error'] = array();
+          //
+        //   $config['upload_path'] = 'imagenes_articulos/';
+        //   $config['allowed_types'] = 'jpeg|jpg|jpe';
+        //   $config['overwrite'] = TRUE;
+        //   $config['max_width'] = '5000';
+        //   $config['max_height'] = '5000';
+        //   $config['max_size'] = '500';
+        //   $config['file_name'] = $articulo_id . '.jpg';
+          //
+        //   $this->load->library('upload', $config);
+          //
+        //   if ( ! $this->upload->do_upload('foto')) {
+        //     $data['error'] = $this->upload->display_errors();
+        //   }
+        //   else {
+        //     $data = array('upload_data' => $this->upload->data());
+        //   }
           redirect('/frontend/portada');
       }
 
+      $categorias_raw = $this->Articulo->categorias();
+      $categorias = array();
+      foreach ($categorias_raw as $categoria) {
+          $categorias[$categoria['id']] = $categoria['nombre'];
+      }
+      $data['categorias'] = $categorias;
       $this->template->load('/articulos/subir', $data);
+  }
+
+  public function upload() {
+    if (!empty($_FILES)) {
+        $tempFile = $_FILES['file']['tmp_name'];
+	    $targetPath = $_SERVER['DOCUMENT_ROOT'] . '/imagenes_articulos/';
+
+        $articulo_insertado = $this->Articulo->ultimo_articulo();
+        $articulo_id = $articulo_insertado['id'];
+
+	    $targetFile = $targetPath . $articulo_id . ".jpg";
+	    move_uploaded_file($tempFile, $targetFile);
+    }
   }
 }

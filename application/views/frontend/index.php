@@ -8,6 +8,9 @@
         <script>
           var usuario_id = <?= logueado() ? dar_usuario()['id'] : 'undefined' ?>;
           var map;
+          var zoom;
+          var markers = [];
+
           function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
               zoom: 13,
@@ -19,28 +22,64 @@
       		  fullscreenControl: false
             });
 
+            zoom = map.getZoom();
+
             if (navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(mostrarLocalizacion, manejadorDeError);
 			}
 			else {
 				alert("Su navegador no soporta Geolocalizacion");
 			}
+
+            map.addListener('zoom_changed', function() {
+                if(zoom > map.getZoom()) {
+                    draw_circle.setRadius(draw_circle.getRadius() * 2);
+                } else {
+                    draw_circle.setRadius(draw_circle.getRadius() / 2);
+                }
+                zoom = map.getZoom();
+                for (var marker in markers) {
+                    markers[marker].setMap(null);
+                }
+                $.ajax({
+                    url: "<?= base_url() ?>usuarios/usuarios_cercanos/" +
+                          latitud + "/" + longitud + "/" + draw_circle.getRadius(),
+                    type: 'GET',
+                    async: true,
+                    success: respuesta,
+                    error: error,
+                    dataType: "json"
+                });
+            });
           }
 
      	  function mostrarLocalizacion(posicion){
-                var latitud = posicion.coords.latitude;
-                var longitud = posicion.coords.longitude;
+                latitud = posicion.coords.latitude;
+                longitud = posicion.coords.longitude;
+                // var latitud = 36.8725774;
+                // var longitud = -6.3529689;
 
-                var pos = new google.maps.LatLng(latitud, longitud);
+                pos = new google.maps.LatLng(latitud, longitud);
                 map.setCenter(pos);
 
                 var marker = new google.maps.Marker({
                     position: pos,
                     map: map,
-                    title: "Tu estas aquí >.<",
+                    title: "Tu estas aquí >.<"
+                });
+                draw_circle = new google.maps.Circle({
+                    center: pos,
+                    radius: 2000,
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.6,
+                    strokeWeight: 1,
+                    fillColor: "#FF0000",
+                    fillOpacity: 0.35,
+                    map: map
                 });
                 $.ajax({
-                    url: "<?= base_url() ?>usuarios/usuarios_cercanos/" + latitud + "/" + longitud,
+                    url: "<?= base_url() ?>usuarios/usuarios_cercanos/" +
+                          latitud + "/" + longitud + "/" + draw_circle.getRadius(),
                     type: 'GET',
                     async: true,
                     success: respuesta,
@@ -78,13 +117,21 @@
 
                   var latitud = usuario.latitud;
                   var longitud = usuario.longitud;
+                  var distancia = usuario.distancia;
+
+                  if(distancia > 1000) {
+                      distancia = parseFloat(distancia / 1000).toFixed(1) + " kilometros";
+                  } else {
+                      distancia = parseInt(distancia) + " metros";
+                  }
 
                   var pos = new google.maps.LatLng(latitud, longitud);
                   var marker = new google.maps.Marker({
       			      position: pos,
-      			      map: map,
-                      title: usuario.nick + " está aquí >.<",
+                      title: usuario.nick + " está aquí >.<, a " + distancia + " de distancia.",
       			  });
+                  markers.push(marker);
+                  marker.setMap(map);
               }
           }
           function error(error) {

@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="/rateyoJquery/jquery.rateyo.css"/>
     <link rel="stylesheet" href="/slick/slick.css">
     <link rel="stylesheet" href="/slick/slick-theme.css">
+    <link rel="stylesheet" href="/css/basic.css">
+    <link rel="stylesheet" href="/css/dropzone.css">
 
     <!-- Foundation y rateYo -->
     <script src="/js/vendor/modernizr.js"></script>
@@ -23,6 +25,8 @@
     <script src="/js/velocity.min.js"></script>
     <script src="/js/tabtab.min.js"></script>
 
+    <!-- DropZone -->
+    <script src="/js/dropzone.js"></script>
     <style media="screen">
         .busqueda {
             padding: 0;
@@ -51,6 +55,9 @@
             height: 40%;
             width: 40%;
             border-radius: 25px;
+        }
+        .input_validation {
+            margin-bottom: 0em;
         }
         html, body {
             height: 100%;

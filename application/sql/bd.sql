@@ -23,14 +23,16 @@ create table usuarios(
                                               check (length(password) = 60),
     email               varchar(100) not null,
     registro_verificado bool         not null default false,
-    rol_id              bigint       not null default 2 constraint fk_usuarios_roles
-                                                        references roles(id)
-                                                        on delete no action
-                                                        on update cascade,
     activado            bool         not null default true,
-    baneado             bool         not null default false,
     latitud             double precision default null,
     longitud            double precision default null
+);
+
+drop table if exists usuarios_baneados cascade;
+create table usuarios_baneados(
+    usuario_id bigint constraint fk_usuarios_baneados_usuarios references usuarios (id),
+    baneado bool not null default false,
+    constraint pk_usuarios_baneados primary key (usuario_id)
 );
 
 drop table if exists tokens cascade;
@@ -98,13 +100,13 @@ create table pm(
     visto bool not null default false
 );
 
-insert into usuarios(nick, password, email, registro_verificado, rol_id, activado, latitud, longitud)
+insert into usuarios(nick, password, email, registro_verificado, activado, latitud, longitud)
     values('admin', crypt('admin', gen_salt('bf')), 'guillermo.lopez@iesdonana.org',
-            true, 1, true, null, null),
+            true, true, null, null),
           ('guillermo', crypt('guillermo', gen_salt('bf')), 'guillermo.lopez@iesdonana.org',
-            true, 2, true, 36.7726, -6.3530),
+            true, true, 36.7736776, -6.3529689),
           ('archsupremo', crypt('archsupremo', gen_salt('bf')), 'jdkdejava@gmail.com',
-            true, 2, true, 36.7730, -6.3530);
+            true, true, 36.7795776, -6.3529689);
 
 insert into categorias(nombre)
     values('Cocina'),

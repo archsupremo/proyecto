@@ -33,6 +33,18 @@ class Usuario extends CI_Model {
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
+    public function por_password_old($password_old, $usuario_id) {
+        $res = $this->db->query("select * from usuarios where password = ? and id = ?",
+                                array($password_old, $usuario_id));
+        return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
+    public function existe_nick_id($nick, $usuario_id) {
+        $res = $this->db->query("select * from usuarios where nick = ? and id != ?",
+                                array($nick, $usuario_id));
+        return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
     public function por_nick_registrado($nick) {
         $res = $this->db->get_where('v_usuarios_validados', array('nick' => $nick));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
@@ -48,6 +60,12 @@ class Usuario extends CI_Model {
 
     public function por_email($email) {
         $res = $this->db->get_where('usuarios', array('email' => $email));
+        return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
+    public function existe_email_id($email, $usuario_id) {
+        $res = $this->db->query("select * from usuarios where email = ? and id != ?",
+                                array($email, $usuario_id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
@@ -70,9 +88,15 @@ class Usuario extends CI_Model {
         return ($res->num_rows() > 0) ? $res->result_array() : array();
     }
 
-    public function usuarios_cercanos($latitud, $longitud) {
-        $res = $this->db->query("select * from v_usuarios_localizacion where latitud - ? < 500 and longitud - ? < 500",
-                                 array($latitud, $longitud));
+    public function usuarios_cercanos($latitud, $longitud, $distancia) {
+        $res = $this->db->query("select *, earth_distance(ll_to_earth(?, ?),".
+                                " ll_to_earth(latitud, longitud)) as distancia".
+                                " from v_usuarios_localizacion".
+                                " where earth_distance(ll_to_earth(?, ?),".
+                                " ll_to_earth(latitud, longitud)) < ?",
+                                 array($latitud, $longitud, $latitud, $longitud, $distancia));
+        // $res = $this->db->query("select * from v_usuarios_localizacion",
+        //                         array());
         return $res->result_array();
     }
 
@@ -80,5 +104,17 @@ class Usuario extends CI_Model {
         $res = $this->db->query("select * from v_usuarios_pm where receptor_id = ?",
                                 array($usuario_id));
         return $res->result_array();
+    }
+
+    public function usuarios_nick($nick, $usuario_id) {
+        $res = $this->db->query("select * from usuarios where nick = ? and id != ?",
+                                array($nick, $usuario_id));
+        return $res->num_rows() > 0 ? TRUE : FALSE;
+    }
+
+    public function usuarios_email($email, $usuario_id) {
+        $res = $this->db->query("select * from usuarios where email = ? and id != ?",
+                                array($email, $usuario_id));
+        return $res->num_rows() > 0 ? TRUE : FALSE;
     }
 }

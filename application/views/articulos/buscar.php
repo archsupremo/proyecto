@@ -41,6 +41,7 @@
                                            'data-lazy' => '/imagenes_articulos/' . $v['id'] . '.jpg'
                                        )),
                                        'title="' . $v['nombre'] . '"') ?>
+
                         </div>
                     <?php endforeach; ?>
                 </div>
