@@ -8,8 +8,18 @@ class Articulo extends CI_Model{
   }
   // Operaciones chungas
   public function insertar($articulo) {
-      $res = $this->db->insert('articulos', $articulo);
-      return $res;
+      $res = $this->db->query("insert into articulos(nombre, descripcion, usuario_id,".
+                              "categoria_id, precio) ".
+                              "values(?, ?, ?, ?, ?) ".
+                              "returning id",
+                              array(
+                                  $articulo['nombre'],
+                                  $articulo['descripcion'],
+                                  $articulo['usuario_id'],
+                                  $articulo['categoria_id'],
+                                  $articulo['precio'],
+                              ));
+      return $res->row_array();
   }
 
   // Operaciones de lectura
@@ -92,10 +102,5 @@ class Articulo extends CI_Model{
   public function borrar_favorito($usuario_id, $articulo_id) {
       return $this->db->query("delete from favoritos where usuario_id = ? and articulo_id = ?",
                        array($usuario_id, $articulo_id));
-  }
-
-  public function ultimo_articulo() {
-      $res = $this->db->query('select * from articulos order by id desc limit 1');
-      return $res->row_array();
   }
 }

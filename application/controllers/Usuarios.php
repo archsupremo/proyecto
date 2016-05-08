@@ -123,7 +123,6 @@ class Usuarios extends CI_Controller{
             $this->session->set_userdata('usuario', array(
                 'id' => $usuario['id'],
                 'nick' => $nick,
-                'rol_id' => $usuario['rol_id']
             ));
 
             if($this->session->has_userdata('last_uri'))

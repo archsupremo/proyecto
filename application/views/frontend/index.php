@@ -145,8 +145,8 @@
         <?php foreach ($articulos as $v): ?>
             <div class="large-4 columns left articulos" id="<?= $v['id'] ?>">
                 <div class="">
-                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['id'] . '.jpg')): ?>
-                        <?php $url = '/imagenes_articulos/' . $v['id'] . '.jpg' ?>
+                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['id'] . '_1' . '.jpg')): ?>
+                        <?php $url = '/imagenes_articulos/' . $v['id'] . '_1' . '.jpg' ?>
                     <?php else: ?>
                         <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
                     <?php endif; ?>
