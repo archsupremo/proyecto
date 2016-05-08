@@ -96,7 +96,7 @@ create table pm(
     receptor_id bigint constraint fk_pm_usuarios_receptor references usuarios (id)
                                on update cascade on delete cascade,
     mensaje varchar(500) not null,
-    fecha timestamp not null,
+    fecha timestamp not null default current_timestamp,
     visto bool not null default false
 );
 

@@ -12,6 +12,9 @@ class Usuario extends CI_Model {
     public function editar($valores, $id) {
         return $this->db->where('id', $id)->update('usuarios', $valores);
     }
+    public function insertar_pm($valores) {
+        return $this->db->insert('pm', $valores);
+    }
 
     // Operaciones de Lectura
     public function por_id($id) {

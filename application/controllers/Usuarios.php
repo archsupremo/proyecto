@@ -435,9 +435,10 @@ class Usuarios extends CI_Controller{
         $data['articulos_favoritos'] = array();
         $data['pm'] = array();
         $data['usuario_perfil'] = FALSE;
+        $data['usuario_propio'] = $this->session->userdata('usuario');
 
         if ($this->Usuario->logueado()) {
-            if ($this->session->userdata('usuario')['id'] === $id_usuario) {
+            if ($data['usuario_propio']['id'] === $id_usuario) {
                 $data['articulos_favoritos'] = $this->Articulo->articulos_favoritos($id_usuario);
                 $data['pm'] = $this->Usuario->pm($id_usuario);
                 $data['usuario_perfil'] = TRUE;
@@ -593,5 +594,46 @@ class Usuarios extends CI_Controller{
                     'email_ocupado' => $email_ocupado,
                 )
             );
+    }
+
+    public function insertar_pm($id_usuario = NULL) {
+        if($id_usuario === NULL || $this->Usuario->por_id($id_usuario) === FALSE) {
+            $mensajes[] = array('error' =>
+                "Parametros incorrectos para realizar un pm.");
+            $this->flashdata->load($mensajes);
+
+            redirect('/frontend/portada/');
+        }
+        if ($this->input->post('enviar') !== NULL) {
+            $mensaje = $this->input->post();
+            $mensaje['receptor_id'] = $id_usuario;
+            unset($mensaje['enviar']);
+
+            $reglas = array(
+                array(
+                    'field' => 'mensaje',
+                    'label' => 'Mensaje',
+                    'rules' => array(
+                        'trim', 'required',
+                    ),
+                ),
+            );
+
+            $this->form_validation->set_rules($reglas);
+            if ($this->form_validation->run() === TRUE) {
+                $this->Usuario->insertar_pm($mensaje);
+            } else {
+                $mensajes[] = array('error' =>
+                    "Se requiere de un texto en mensaje.");
+                $this->flashdata->load($mensajes);
+
+                redirect('/usuarios/perfil/' . $id_usuario);
+            }
+        }
+
+        $mensajes[] = array('info' =>
+            "PM realizado correctamente.");
+        $this->flashdata->load($mensajes);
+        redirect('/usuarios/perfil/' . $id_usuario);
     }
 }

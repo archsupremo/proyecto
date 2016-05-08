@@ -9,19 +9,19 @@
             </div>
         <?php endif ?>
         <?= form_open('/usuarios/login') ?>
-        <div class="nick-field">
-          <?= form_label('Nick:', 'nick') ?>
-          <?= form_input('nick', set_value('nick', '', FALSE),
-                         'id="nick" class=""') ?>
-        </div>
-        <div class="">
-          <?= form_label('Contraseña:', 'password') ?>
-          <?= form_password('password', '',
-                            'id="password" class=""') ?>
-        </div>
-        <?= form_submit('login', 'Login', 'class="success button small radius"') ?>
-        <?= anchor('/usuarios/recordar', 'Recordar Contraseña', 'class="button small radius" role="button"') ?>
-        <?= anchor('/usuarios/registrar', 'Registrame', 'class="button small radius" role="button"') ?>
+            <div class="nick-field">
+              <?= form_label('Nick:', 'nick') ?>
+              <?= form_input('nick', set_value('nick', '', FALSE),
+                             'id="nick" class=""') ?>
+            </div>
+            <div class="">
+              <?= form_label('Contraseña:', 'password') ?>
+              <?= form_password('password', '',
+                                'id="password" class=""') ?>
+            </div>
+            <?= form_submit('login', 'Login', 'class="success button small radius"') ?>
+            <?= anchor('/usuarios/recordar', 'Recordar Contraseña', 'class="button small radius" role="button"') ?>
+            <?= anchor('/usuarios/registrar', 'Registrame', 'class="button small radius" role="button"') ?>
         <?= form_close() ?>
     </div>
 </div>

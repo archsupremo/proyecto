@@ -13,6 +13,9 @@
         <ul class="tabdemo__menu menu">
             <li><a href="#">Articulos Disponibles</a></li>
             <li><a href="#">Ventas</a></li>
+            <?php if($usuario_perfil !== TRUE): ?>
+                <li><a href="#">Escribir PM</a></li>
+            <?php endif; ?>
             <?php if($usuario_perfil === TRUE): ?>
                 <li><a href="#">Favoritos</a></li>
                 <li><a href="#">PM</a></li>
@@ -25,7 +28,8 @@
                         <?php foreach ($articulos_usuarios as $v): ?>
                             <div class="large-6 columns left">
                                 <div class="">
-                                    <?= anchor('/articulos/buscar/' . $v['id'], img('/imagenes_articulos/' . $v['id'] . '.jpg')) ?>
+                                    <?= anchor('/articulos/buscar/' . $v['id'],
+                                        img('/imagenes_articulos/' . $v['id'] . '_1' . '.jpg')) ?>
                                 </div>
                                 <div class="">
                                     <?= $v['precio'] ?>
@@ -49,7 +53,7 @@
                         <div class="large-6 columns left">
                             <div class="">
                                 <?= anchor('/articulos/buscar/' . $v['articulo_id'],
-                                            img('/imagenes_articulos/' . $v['articulo_id'] . '.jpg')) ?>
+                                            img('/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')) ?>
                             </div>
                             <div class="">
                                 <?= $v['precio'] ?>
@@ -70,6 +74,27 @@
                     <?php endforeach; ?>
                 </div>
             </div>
+            <?php if($usuario_perfil !== TRUE): ?>
+                <div class="tabdemo__content-item">
+                    <div class="row">
+                        <?php if ( ! empty(error_array())): ?>
+                            <div data-alert class="alert-box alert radius alerta">
+                              <?= validation_errors() ?>
+                              <a href="#" class="close">&times;</a>
+                            </div>
+                        <?php endif ?>
+                        <?= form_open('/usuarios/insertar_pm/' . $usuario['id']) ?>
+                            <?= form_hidden('emisor_id', $usuario_propio['id'], 'id="emisor_id" class=""') ?>
+                            <div class="nick-field">
+                              <?= form_label('Mensaje:', 'mensaje') ?>
+                              <?= form_textarea('mensaje', set_value('mensaje', '', FALSE),
+                                             'id="mensaje" class=""') ?>
+                            </div>
+                            <?= form_submit('enviar', 'Enviar', 'class="success button small radius"') ?>
+                        <?= form_close() ?>
+                    </div>
+                </div>
+            <?php endif; ?>
             <?php if($usuario_perfil === TRUE): ?>
                 <div class="tabdemo__content-item">
                     <div class="row">
@@ -77,7 +102,7 @@
                             <div class="large-6 columns left">
                                 <div class="">
                                     <?= anchor('/articulos/buscar/' . $v['id'],
-                                                img('/imagenes_articulos/' . $v['id'] . '.jpg')) ?>
+                                                img('/imagenes_articulos/' . $v['id'] . '_1' . '.jpg')) ?>
                                 </div>
                                 <div class="">
                                     <?= $v['precio'] ?>
@@ -99,7 +124,7 @@
                                 <?php if(file_exists('/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
                                     <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
                                 <?php else: ?>
-                                    <?php $url = '/imagenes_usuarios/gallifreyan.png' ?>
+                                    <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
                                 <?php endif; ?>
                                 <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
                                             img(array(
