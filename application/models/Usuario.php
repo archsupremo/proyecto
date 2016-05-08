@@ -16,6 +16,10 @@ class Usuario extends CI_Model {
         return $this->db->insert('pm', $valores);
     }
 
+    public function update_pm($valores, $id) {
+        return $this->db->where('id', $id)->update('pm', $valores);
+    }
+
     // Operaciones de Lectura
     public function por_id($id) {
         $res = $this->db->get_where('usuarios', array('id' => $id));
@@ -103,8 +107,14 @@ class Usuario extends CI_Model {
         return $res->result_array();
     }
 
-    public function pm($usuario_id) {
-        $res = $this->db->query("select * from v_usuarios_pm where receptor_id = ?",
+    public function pm_no_vistos($usuario_id) {
+        $res = $this->db->query("select * from v_usuarios_pm_no_vistos where receptor_id = ?",
+                                array($usuario_id));
+        return $res->result_array();
+    }
+
+    public function pm_vistos($usuario_id) {
+        $res = $this->db->query("select * from v_usuarios_pm_vistos where receptor_id = ?",
                                 array($usuario_id));
         return $res->result_array();
     }
@@ -119,5 +129,10 @@ class Usuario extends CI_Model {
         $res = $this->db->query("select * from usuarios where email = ? and id != ?",
                                 array($email, $usuario_id));
         return $res->num_rows() > 0 ? TRUE : FALSE;
+    }
+
+    public function get_pm($pm_id) {
+        $res = $this->db->get_where('pm', array('id' => $pm_id));
+        return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 }

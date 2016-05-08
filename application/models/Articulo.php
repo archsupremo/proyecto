@@ -28,7 +28,7 @@ class Articulo extends CI_Model{
       return ($res->num_rows() > 0) ? $res->result_array() : array();
   }
 
-  public function todos_con_favorito($usuario_id) {
+  public function todos_sin_favorito($usuario_id) {
     //   $res = $this->db->get_where('v_favoritos',
     //                                array('usuario_favorito' => $usuario_id));
       $res = $this->db->query('select *
@@ -49,11 +49,10 @@ class Articulo extends CI_Model{
   }
 
   public function busqueda_articulo($categoria_id, $nombre, $usuario_id) {
-      $res = $this->db->like('lower(nombre)', strtolower($nombre), 'match');
-
       if($categoria_id <= 0) {
-          $res = $this->todos_con_favorito($usuario_id);
+          $res = $this->todos_sin_favorito($usuario_id);
       } else {
+          $res = $this->db->like('lower(nombre)', strtolower($nombre), 'match');
           $res1 = $this->db->get_where('v_favoritos',
                                     array('usuario_favorito' => $usuario_id,
                                           'categoria_id' => $categoria_id)

@@ -1,14 +1,14 @@
 <?php template_set('title', 'Editar Perfil de Usuario') ?>
 
 <div class="row">
-    <div class="large-6 large-centered columns menu-login">
+    <div class="large-6 columns menu-login">
         <?php if ( ! empty(error_array())): ?>
           <div data-alert class="alert-box alert radius alerta">
             <?= validation_errors() ?>
             <a href="#" class="close">&times;</a>
           </div>
         <?php endif ?>
-        <?= form_open('/usuarios/editar_perfil/' . $usuario['id']) ?>
+        <?= form_open_multipart('/usuarios/editar_perfil/' . $usuario['id']) ?>
           <div class="">
             <?= form_label('Nick:', 'nick') ?>
             <?= form_input('nick', set_value('nick', $usuario['nick'], FALSE),
@@ -57,7 +57,92 @@
           <?= anchor('/usuarios/login', 'Volver', 'class="alert button small radius" role="button"') ?>
         <?= form_close() ?>
     </div>
+    <div class="large-4 columns menu-login dropzone needsclick" id="dropzone">
+        <div class="dz-message needsclick">
+          <div class="alert-box success radius alerta text-center" role="alert">
+              <p>Formatos Admitidos: jpeg, jpg y jpe</p>
+              <p>Tamaño Maximo: 500 Kbytes</p>
+              <p>Alto Maximo: 5000 pixeles</p>
+              <p>Ancho Maximo: 5000 pixeles</p>
+          </div>
+          <span class="note needsclick">Clicka aqui para
+              <strong>subir</strong> imagenes.
+          </span>
+        </div>
+    </div>
 </div>
+
+<script type="text/javascript">
+    Dropzone.options.dropzone = {
+        addRemoveLinks: true,
+        paramName: "foto",
+        maxFilesize: 0.5, // MB, maximo de archivos
+        maxThumbnailFilesize: 1,// MB,  Cuando el peso del archivo excede este límite, no se generará la imagen en miniatura
+        maxFiles: 1,
+        method: "post",
+        acceptedFiles: ".jpeg,.jpg,.jpe,.JPEG,.JPG,.JPE",// Archivos permitidos
+        url: '/usuarios/subir_imagen',
+        accept: function(file, done) {
+            done();
+        },
+        init: function() {
+            var drop = this;
+            drop.on("maxfilesexceeded", function(file){
+                drop.removeFile(file);
+                alert("Solo se permiten una imagen por perfil.");
+            });
+            drop.on("addedfile", function (file) {
+                if(drop.files.length > 1) {
+                    drop.removeFile(drop.files[0]);
+                }
+            });
+            drop.on("removedfile", function (file) {
+                $.ajax({
+                    url: "<?= base_url() ?>usuarios/borrar_imagen/" + <?= $usuario['id'] ?>,
+                    type: 'GET',
+                    async: true,
+                    success: function() {
+                    },
+                    error: function (error) {
+                    },
+                });
+            });
+            $.ajax({
+                url: "<?= base_url() ?>usuarios/obtener_imagen/" + <?= $usuario['id'] ?>,
+                type: 'GET',
+                async: true,
+                success: function(respuesta) {
+                    if(respuesta.imagen.name != undefined) {
+                        $.each(respuesta, function(key, value){
+                            var mockFile = { name: value.name, size: value.size };
+                            drop.options.addedfile.call(drop, mockFile);
+                            drop.createThumbnailFromUrl(mockFile, "/imagenes_usuarios/" + value.imagen);
+                            drop.files.push(mockFile);
+                            mockFile.previewElement.classList.add('dz-success');
+                            mockFile.previewElement.classList.add('dz-complete');
+                        });
+                    }
+                },
+                error: function (error) {
+                },
+                dataType: 'json'
+            });
+
+            this.on("sendingmultiple", function() {
+            });
+            this.on("successmultiple", function(files, response) {
+            });
+            this.on("errormultiple", function(files, response) {
+            });
+        },
+        dictCancelUpload: true, //cancelar archivo al subir
+        dictCancelUploadConfirmation: true, //confirma la cancelacion
+        dictRemoveFile: 'Eliminar',
+        dictMaxFilesExceeded: 'No se admiten mas ficheros.',
+        dictFallbackMessage: 'Tu navegador web no permite el drag de subida de imagenes.',
+        dictInvalidFileType: 'Archivo invalido.',
+    };
+</script>
 
 <script type="text/javascript">
     var usuario_id = <?= logueado() ? dar_usuario()['id'] : 'undefined' ?>;

@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="/slick/slick-theme.css">
     <link rel="stylesheet" href="/css/basic.css">
     <link rel="stylesheet" href="/css/dropzone.css">
+    <link rel="stylesheet" href="/css/nestable.css">
+    <link rel="stylesheet" href="/toogle/css/toggles.css">
+    <link rel="stylesheet" href="/toogle/css/toggles-full.css">
+    <link rel="stylesheet" href="/toogle/css/themes/toggles-all.css">
 
     <!-- Foundation y rateYo -->
     <script src="/js/vendor/modernizr.js"></script>
@@ -27,6 +31,12 @@
 
     <!-- DropZone -->
     <script src="/js/dropzone.js"></script>
+
+    <!-- Toggle -->
+    <script src="/toogle/toggles.js"></script>
+
+    <!-- Nestable -->
+    <script src="/js/nestable.js"></script>
     <style media="screen">
         .busqueda {
             padding: 0;
@@ -73,7 +83,8 @@
         </div>
         <form action="/frontend/portada/index" class="large-6 columns" method="post">
             <div class="row">
-                <?= form_dropdown('categoria', busqueda_select(), '', 'class="large-4 columns"') ?>
+                <?= form_dropdown('categoria', busqueda_select(),
+                    set_value('categoria', '', FALSE), 'class="large-4 columns"') ?>
                 <div class="large-4 columns busqueda">
                     <input class="" name="nombre" type="text" value="<?= busqueda() ?>">
                 </div>

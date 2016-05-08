@@ -16,7 +16,7 @@ class Portada extends CI_Controller {
         //   var_dump($data['articulos']); die();
       }else {
           if($this->Usuario->logueado()):
-              $data['articulos'] = $this->Articulo->todos_con_favorito($usuario['id']);
+              $data['articulos'] = $this->Articulo->todos_sin_favorito($usuario['id']);
           else:
               $data['articulos'] = $this->Articulo->todos();
           endif;

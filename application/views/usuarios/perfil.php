@@ -118,31 +118,82 @@
                     </div>
                 </div>
                 <div class="tabdemo__content-item">
-                    <?php foreach ($pm as $v): ?>
-                        <div class="row">
-                            <div class="">
-                                <?php if(file_exists('/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
-                                    <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
-                                <?php else: ?>
-                                    <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
-                                <?php endif; ?>
-                                <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
-                                            img(array(
-                                                'src' => $url,
-                                                'title' => $v['nick_emisor'],
-                                                'alt' => $v['nick_emisor'],
-                                                'class' => 'imagen_nick',
-                                            ))) ?>
-                                <?= anchor('/usuarios/perfil/' . $v['emisor_id'], $v['nick_emisor']) ?>
-                            </div>
-                            <div class="">
-                                <?= $v['mensaje'] ?>
-                            </div>
-                            <div class="">
-                                <?= $v['fecha_mensaje'] ?>
-                            </div>
+                    <div class="cf nestable-lists">
+                        <div class="dd" id="nestable">
+                            <ol class="dd-list">
+                                <li class="dd-item" data-id="1">
+                                    <div class="dd-handle">PM's No Vistos</div>
+                                    <ol class="dd-list">
+                                        <?php foreach ($pm_no_vistos as $v): ?>
+                                            <div class="row">
+                                                <div class="">
+                                                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
+                                                        <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
+                                                    <?php else: ?>
+                                                        <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+                                                    <?php endif; ?>
+                                                    <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
+                                                                img(array(
+                                                                    'src' => $url,
+                                                                    'title' => $v['nick_emisor'],
+                                                                    'alt' => $v['nick_emisor'],
+                                                                    'class' => 'imagen_nick',
+                                                                ))) ?>
+                                                    <?= anchor('/usuarios/perfil/' . $v['emisor_id'], $v['nick_emisor']) ?>
+                                                </div>
+                                                <div class="toggle toggle-light"
+                                                     data-toggle-on="false"
+                                                     data-toggle-height="50"
+                                                     data-toggle-width="90"
+                                                     id="<?= $v['id'] ?>"></div>
+                                                <div class="">
+                                                    <?= $v['mensaje'] ?>
+                                                </div>
+                                                <div class="">
+                                                    <?= $v['fecha_mensaje'] ?>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </ol>
+                                </li>
+                                <li class="dd-item dd-collapsed" data-id="2">
+                                    <div class="dd-handle">PM's Vistos</div>
+                                    <ol class="dd-list">
+                                        <?php foreach ($pm_vistos as $v): ?>
+                                            <div class="row">
+                                                <div class="">
+                                                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
+                                                        <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
+                                                    <?php else: ?>
+                                                        <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+                                                    <?php endif; ?>
+                                                    <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
+                                                                img(array(
+                                                                    'src' => $url,
+                                                                    'title' => $v['nick_emisor'],
+                                                                    'alt' => $v['nick_emisor'],
+                                                                    'class' => 'imagen_nick',
+                                                                ))) ?>
+                                                    <?= anchor('/usuarios/perfil/' . $v['emisor_id'], $v['nick_emisor']) ?>
+                                                </div>
+                                                <div class="toggle toggle-light"
+                                                     data-toggle-on="true"
+                                                     data-toggle-height="50"
+                                                     data-toggle-width="90"
+                                                     id="<?= $v['id'] ?>"></div>
+                                                <div class="">
+                                                    <?= $v['mensaje'] ?>
+                                                </div>
+                                                <div class="">
+                                                    <?= $v['fecha_mensaje'] ?>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </ol>
+                                </li>
+                            </ol>
                         </div>
-                    <?php endforeach; ?>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
@@ -157,6 +208,54 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $('.toggle').toggles({
+        drag: true,
+        click: true,
+        text: {
+            on: 'Visto',
+            off: 'No'
+        },
+        animate: 250, // animation time (ms)
+        easing: 'swing', // animation transition easing function
+        checkbox: null, // the checkbox to toggle (for use in forms)
+        clicker: null,
+        // width: 50, // width used if not set in css
+        // height: 20, // height if not set in css
+        type: 'compact'
+    });
+    $('.toggle').on('toggle', function(e, active) {
+        var pm_id = $(this).prop('id');
+        $.ajax({
+            url: "<?= base_url() ?>usuarios/update_pm/" + pm_id,
+            type: 'GET',
+            async: true,
+            success: function (response) {
+            },
+            error: function (error) {
+            },
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        var updateOutput = function(e) {
+            var list   = e.length ? e : $(e.target),
+                output = list.data('output');
+            if (window.JSON) {
+                output.val(window.JSON.stringify(list.nestable('serialize')));
+            } else {
+                output.val('JSON browser support required for this demo.');
+            }
+        };
+
+        $('#nestable').nestable({
+            group: 1
+        }).on('change', updateOutput);
+
+        updateOutput($('#nestable').data('output', $('#nestable-output')));
+    });
+</script>
 <script type="text/javascript">
     var valores_defecto = {
         numStars: 5,
@@ -176,7 +275,8 @@
         $(".tabs").tabtab({
             animateHeight: !1,
             fixedHeight: !1
-        }), $(".tabdemo--one").tabtab({
+        }),
+        $(".tabdemo--one").tabtab({
             animateHeight: !0,
             fixedHeight: !1,
             scale: 1,
@@ -189,7 +289,8 @@
             tabMenu: ".tabdemo__menu",
             tabContent: ".tabdemo__content",
             startSlide: 1
-        }), $(".package-managers-toggle").toggle({
+        }),
+        $(".package-managers-toggle").toggle({
             "class": "open",
             target: !1
         })

@@ -177,8 +177,8 @@
                 <div class="clearing-thumbs" data-clearing>
                     <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
                     </div>
-                    <?php if(file_exists($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['id'] . '.jpg')): ?>
-                        <?php $url = '/imagenes_usuarios/' . $v['id'] . '.jpg' ?>
+                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['usuario_id'] . '.jpg')): ?>
+                        <?php $url = '/imagenes_usuarios/' . $v['usuario_id'] . '.jpg' ?>
                     <?php else: ?>
                         <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
                     <?php endif; ?>

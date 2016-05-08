@@ -195,3 +195,17 @@ create view v_usuarios_pm as
          join usuarios us
          on p.receptor_id = us.id
     order by visto asc;
+
+drop view if exists v_usuarios_pm_vistos cascade;
+create view v_usuarios_pm_vistos as
+    select *
+    from v_usuarios_pm
+    where visto is true
+    order by fecha_mensaje;
+
+drop view if exists v_usuarios_pm_no_vistos cascade;
+create view v_usuarios_pm_no_vistos as
+    select *
+    from v_usuarios_pm
+    where visto is false
+    order by fecha_mensaje;

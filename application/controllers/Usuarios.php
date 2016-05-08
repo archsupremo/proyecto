@@ -440,7 +440,8 @@ class Usuarios extends CI_Controller{
         if ($this->Usuario->logueado()) {
             if ($data['usuario_propio']['id'] === $id_usuario) {
                 $data['articulos_favoritos'] = $this->Articulo->articulos_favoritos($id_usuario);
-                $data['pm'] = $this->Usuario->pm($id_usuario);
+                $data['pm_no_vistos'] = $this->Usuario->pm_no_vistos($id_usuario);
+                $data['pm_vistos'] = $this->Usuario->pm_vistos($id_usuario);
                 $data['usuario_perfil'] = TRUE;
             }
         }
@@ -470,11 +471,19 @@ class Usuarios extends CI_Controller{
 
     public function editar_perfil($usuario_id = NULL) {
         if(!$this->Usuario->logueado() ||
-           $usuario_id === NULL ||
-           $this->Usuario->por_id($usuario_id) === FALSE) {
+            $usuario_id === NULL ||
+            $this->Usuario->por_id($usuario_id) === FALSE) {
 
             $mensajes[] = array('error' =>
                 "Parametros incorrectos para visualizar la configuracion del perfil del usuario.");
+            $this->flashdata->load($mensajes);
+
+            redirect('/frontend/portada/');
+        }
+        $id_propio = $this->session->userdata('usuario')['id'];
+        if($id_propio !== $usuario_id) {
+            $mensajes[] = array('error' =>
+                "No puedes modificar un perfil que no es el tuyo.");
             $this->flashdata->load($mensajes);
 
             redirect('/frontend/portada/');
@@ -635,5 +644,78 @@ class Usuarios extends CI_Controller{
             "PM realizado correctamente.");
         $this->flashdata->load($mensajes);
         redirect('/usuarios/perfil/' . $id_usuario);
+    }
+
+    public function subir_imagen() {
+        if (!$this->Usuario->logueado()) {
+            $mensajes[] = array('error' =>
+                    "No puedes editar un perfil si no estas logueado.");
+            $this->flashdata->load($mensajes);
+            redirect('/frontend/portada/');
+        }
+
+        $data['error'] = array();
+
+        $config['upload_path'] = 'imagenes_usuarios/';
+        $config['allowed_types'] = 'jpeg|jpg|jpe';
+        $config['overwrite'] = TRUE;
+        $config['max_width'] = '5000';
+        $config['max_height'] = '5000';
+        $config['max_size'] = '500';
+        $usuario_id = $this->session->userdata('usuario')['id'];
+        $config['file_name'] = $usuario_id . '.jpg';
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('foto')) {
+          $data['error'] = $this->upload->display_errors();
+        }
+        else {
+          $data = array('upload_data' => $this->upload->data());
+        }
+        $this->template->load('/usuarios/editar_perfil');
+    }
+
+    public function borrar_imagen($usuario_id = NULL) {
+        if($usuario_id !== NULL) {
+            unlink($_SERVER["DOCUMENT_ROOT"] .
+                        '/imagenes_usuarios/' .
+                        $usuario_id . '.jpg');
+        }
+    }
+
+    public function obtener_imagen($usuario_id = NULL) {
+        $datos = array();
+        if($usuario_id !== NULL) {
+            if(is_file($_SERVER["DOCUMENT_ROOT"] .
+                        '/imagenes_usuarios/' .
+                        $usuario_id . '.jpg')):
+
+                $usuario = $this->Usuario->por_id($usuario_id);
+                $datos['name'] = $usuario['nick'];
+                $datos['imagen'] = $usuario_id . '.jpg';
+                $datos['size'] = '3200';
+                $datos['type'] = "image/jpeg";
+            endif;
+        }
+
+        echo json_encode(
+            array(
+                'imagen' => $datos,
+            )
+        );
+    }
+
+    public function update_pm($pm_id = NULL) {
+        if($pm_id !== NULL) {
+            $pm_id = (double) $pm_id;
+
+            $pm = $this->Usuario->get_pm($pm_id);
+
+            if($pm !== FALSE) {
+                $valores = array();
+                $valores['visto'] = ($pm['visto'] === "f") ? TRUE : FALSE;
+                $this->Usuario->update_pm($valores, $pm_id);
+            }
+        }
     }
 }
