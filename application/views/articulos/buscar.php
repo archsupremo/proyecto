@@ -10,8 +10,64 @@
         <?php endif ?>
     </div>
     <div class="large-6 columns">
-        <div class="">
-            <?= anchor('/articulos/buscar/' . $articulo['id'], img('/imagenes_articulos/' . $articulo['id'] . '.jpg')) ?>
+        <div class="wrapper">
+            <!-- SLIDER PREVIEW - begin -->
+            <style>
+                .slider-nested {
+                    width: 700px;
+                    padding: 5px;
+                    margin-left: -10em;
+                    background-color: #fff;
+                    border-radius: 3px;
+                    box-shadow: 0 1px 1px hsla(0,0%,0%,.5);
+                }
+                @media only screen and (max-width: 959px) {
+                    .slider-nested {
+                        margin-left: 0em;
+                        width: 100%;
+                    }
+                }
+                @media only screen and (max-width: 479px) {
+                    .slider-nested {
+                        position: static;
+                        margin-left: 0em;
+                        width: auto;
+                        margin-top: 5px;
+                        border: 1px solid #e5e5e5;
+                        box-shadow: none;
+                    }
+                }
+            </style>
+
+            <div class="container">
+                <div class="rt01 slider-nested rt01timer-arcTop"
+                    data-tabs='{
+                        "isAutoInit"  : true,
+                        "optionsPlus" : "slider",
+                        "fx"          : "line",
+                        "speed"       : 600,
+                        "width"       : 940,
+                        "height"      : 500,
+                        "widthSlide"  : [ 0.95, [748, 768, 959], [940, 960, 3000] ],
+                        "margin"      : [ 2, [5, 480, 767], [10, 768, 959], [30, 960, 3000] ],
+                        "pag"         : { "sizeMarkTo": "padding" },
+
+                        "isLoop"      : true,
+                        "isNav"       : false,
+                        "isSlideshow" : true,
+                        "slideshow"   : { "delay": 5000, "isAutoRun": false },
+                        "timerArc"    : { "stroke" : "#cc0055" },
+
+                        "mobile"      : { "speed": 400 }
+                    }'>
+
+                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
+                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
+                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
+                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
+                </div>
+            </div>
+            <!-- SLIDER PREVIEW - end -->
         </div>
     </div>
     <div class="large-4 columns">

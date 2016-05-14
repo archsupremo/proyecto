@@ -56,6 +56,7 @@ create table articulos(
 
 drop table if exists ventas;
 create table ventas(
+    id          bigserial constraint pk_ventas primary key,
     vendedor_id bigint constraint fk_ventas_usuarios_vendedor references usuarios (id)
                       on update cascade on delete cascade,
     comprador_id bigint constraint fk_ventas_usuarios_comprador references usuarios (id)
@@ -63,20 +64,37 @@ create table ventas(
     articulo_id bigint constraint fk_ventas_articulos references articulos (id)
                       on update cascade on delete cascade,
     fecha_venta date not null,
-    valoracion_id bigint constraint fk_ventas_valoraciones references valoraciones (id)
-                  on update cascade on delete cascade,
-    constraint pk_ventas primary key (vendedor_id, comprador_id, articulo_id)
+    constraint uq_ventas unique (vendedor_id, comprador_id, articulo_id)
 );
 
-drop table if exists valoraciones cascade;
-create table valoraciones (
+drop table if exists valoraciones_vendedor cascade;
+create table valoraciones_vendedor (
     id bigserial constraint pk_valoraciones primary key,
-    usuario_valorado bigint    constraint fk_usuarios_valorado references usuarios (id)
+    vendedor_id_va bigint    constraint fk_usuarios_valorado references usuarios (id)
                           on update cascade on delete cascade,
-    usuario_valorador  bigint    constraint fk_usuarios_valorador references usuarios (id)
+    comprador_id_va bigint  constraint fk_usuarios_valorador references usuarios (id)
                           on update cascade on delete cascade,
-    valoracion  numeric(1) constraint ck_valoraciones_max
-                                        check (valoracion >= 1 AND valoracion <= 5)
+    venta_id bigint       constraint fk_valoraciones_vendedor_ventas references ventas (id)
+                          on update cascade on delete cascade,
+    valoracion numeric(1) constraint ck_valoraciones_max
+                                        check (valoracion >= 1 AND valoracion <= 5),
+    valoracion_text varchar(200),
+    constraint uq_valoraciones_vendedor unique (vendedor_id_va, comprador_id_va, venta_id)
+);
+
+drop table if exists valoraciones_comprador cascade;
+create table valoraciones_comprador (
+    id bigserial constraint pk_valoraciones primary key,
+    vendedor_id_va bigint    constraint fk_usuarios_valorado references usuarios (id)
+                          on update cascade on delete cascade,
+    comprador_id_va bigint  constraint fk_usuarios_valorador references usuarios (id)
+                          on update cascade on delete cascade,
+    venta_id bigint       constraint fk_valoraciones_comprador_ventas references ventas (id)
+                          on update cascade on delete cascade,
+    valoracion numeric(1) constraint ck_valoraciones_max
+                                        check (valoracion >= 1 AND valoracion <= 5),
+    valoracion_text varchar(200),
+    constraint uq_valoraciones_comprador unique (vendedor_id_va, comprador_id_va, venta_id)
 );
 
 drop table if exists favoritos cascade;
@@ -123,13 +141,16 @@ insert into articulos(nombre, descripcion, usuario_id, categoria_id, precio)
           ('Cuchillo para cortar verdura de archsupremo 2', 'Semi nuevo', 3, 1, 12.5),
           ('Cuchillo para cortar verdura de admin 2', 'Semi nuevo', 1, 1, 12.5);
 
-insert into valoraciones(usuario_valorado, usuario_valorador, valoracion)
-    values(2, 1, 3),
-          (2, 1, 5);
+insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta)
+    values(2, 1, 1, current_date),
+          (2, 3, 2, current_date);
 
-insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta, valoracion_id)
-    values(2, 1, 1, current_date, 1),
-          (2, 3, 2, current_date, 2);
+insert into valoraciones_vendedor(vendedor_id_va, comprador_id_va, venta_id, valoracion, valoracion_text)
+    values(2, 1, 1, 3, ''),
+          (2, 1, 2, 5, '');
+insert into valoraciones_vendedor(vendedor_id_va, comprador_id_va, venta_id, valoracion, valoracion_text)
+    values(2, 1, 1, 3, ''),
+          (2, 1, 2, 5, '');
 
 insert into favoritos(usuario_id, articulo_id)
     values(2, 3),
@@ -155,7 +176,7 @@ create view v_ventas as
            vendedor_id, categoria_id, comprador_id, valoracion
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
          join usuarios u on u.id = v.comprador_id join valoraciones va
-         on v.valoracion_id = va.id;
+         on v.id = va.venta_id;
 
 drop view if exists v_articulos;
 create view v_articulos as

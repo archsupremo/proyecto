@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="/slick/slick-theme.css">
     <link rel="stylesheet" href="/css/basic.css">
     <link rel="stylesheet" href="/css/dropzone.css">
-    <link rel="stylesheet" href="/css/nestable.css">
     <link rel="stylesheet" href="/toogle/css/toggles.css">
     <link rel="stylesheet" href="/toogle/css/toggles-full.css">
     <link rel="stylesheet" href="/toogle/css/themes/toggles-all.css">
+    <link rel="stylesheet" href="/rubytabs/rubytabs.css">
 
     <!-- Foundation y rateYo -->
     <script src="/js/vendor/modernizr.js"></script>
@@ -35,8 +35,8 @@
     <!-- Toggle -->
     <script src="/toogle/toggles.js"></script>
 
-    <!-- Nestable -->
-    <script src="/js/nestable.js"></script>
+    <!-- RubyTabs -->
+    <script src="/rubytabs/rubytabs.js"></script>
     <style media="screen">
         .busqueda {
             padding: 0;
