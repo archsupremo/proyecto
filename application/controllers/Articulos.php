@@ -122,12 +122,78 @@ class Articulos extends CI_Controller {
   }
 
   public function borrar_imagen($numero = NULL) {
-      if($numero !== NULL) {
+      if($numero !== NULL && $this->Usuario->logueado()) {
           $articulo_id = $this->session->userdata('usuario')['ultimo_articulo'];
           unlink($_SERVER["DOCUMENT_ROOT"] .
                       '/imagenes_articulos/' .
                       $articulo_id . '_' . $numero .
                       '.jpg');
       }
+  }
+
+  public function vender($articulo_id = NULL) {
+      if (!$this->Usuario->logueado()) {
+          $mensajes[] = array('error' =>
+                  "No puedes vender articulos si no estas logueado.");
+          $this->flashdata->load($mensajes);
+          redirect('/frontend/portada/');
+      }
+      $usuario_id = $this->session->userdata('usuario')['id'];
+      if(!$this->Articulo->es_propietario($usuario_id, $articulo_id)) {
+          redirect('/frontend/portada/');
+      }
+      else if($this->Articulo->articulo_vendido($articulo_id)) {
+          redirect('/frontend/portada/');
+      }
+
+      if ($this->input->post('vender') !== NULL) {
+          $reglas = array(
+              array(
+                  'field' => 'nick_comprador',
+                  'label' => 'Nick comprador',
+                  'rules' => array(
+                      'trim', 'required',
+                      array('existe_nick', array($this->Usuario, 'existe_nick')),
+                      array('existe_nick_registrado', array($this->Usuario, 'existe_nick_registrado'))
+                  ),
+                  'errors' => array(
+                      'existe_nick' => 'El nick debe ser de un usuario valido.',
+                      'existe_nick_registrado' => 'El nick debe ser de un usuario valido.'
+                  ),
+              ),
+          );
+
+          $venta = $this->input->post();
+          unset($venta['venta']);
+          $valores = array(
+              'vendedor_id' => $usuario_id,
+              'comprador_id' => 0,
+              'articulo_id' => $articulo_id,
+          );
+
+          if($venta['nick_comprador'] !== NULL) {
+              $this->form_validation->set_rules($reglas);
+              if ($this->form_validation->run() === TRUE) {
+                  $comprador = $this->Usuario->por_nick($venta['nick_comprador']);
+                  $valores['comprador_id'] = $comprador['id'];
+              }
+          }
+
+          $this->Articulo->vender($valores);
+          redirect('/frontend/portada/');
+      }
+
+
+      $data['articulo'] = $this->Articulo->por_id($articulo_id);
+      $usuario_id = $data['articulo']['usuario_id'];
+      $data['usuario'] = $this->Usuario->por_id($usuario_id);
+
+      $data['opciones_venta'] = array(
+          0 => "Venta normal",
+          1 => "Venta con valoracion",
+          2 => "Venta sin usuario",
+      );
+
+      $this->template->load('/articulos/vender', $data);
   }
 }

@@ -54,7 +54,7 @@ create table articulos(
     precio money not null
 );
 
-drop table if exists ventas;
+drop table if exists ventas cascade;
 create table ventas(
     id          bigserial constraint pk_ventas primary key,
     vendedor_id bigint constraint fk_ventas_usuarios_vendedor references usuarios (id)
@@ -63,13 +63,13 @@ create table ventas(
                       on update cascade on delete cascade,
     articulo_id bigint constraint fk_ventas_articulos references articulos (id)
                       on update cascade on delete cascade,
-    fecha_venta date not null,
+    fecha_venta date not null default current_date,
     constraint uq_ventas unique (vendedor_id, comprador_id, articulo_id)
 );
 
 drop table if exists valoraciones_vendedor cascade;
 create table valoraciones_vendedor (
-    id bigserial constraint pk_valoraciones primary key,
+    id bigserial constraint pk_valoraciones_vendedor primary key,
     vendedor_id_va bigint    constraint fk_usuarios_valorado references usuarios (id)
                           on update cascade on delete cascade,
     comprador_id_va bigint  constraint fk_usuarios_valorador references usuarios (id)
@@ -84,7 +84,7 @@ create table valoraciones_vendedor (
 
 drop table if exists valoraciones_comprador cascade;
 create table valoraciones_comprador (
-    id bigserial constraint pk_valoraciones primary key,
+    id bigserial constraint pk_valoraciones_comprador primary key,
     vendedor_id_va bigint    constraint fk_usuarios_valorado references usuarios (id)
                           on update cascade on delete cascade,
     comprador_id_va bigint  constraint fk_usuarios_valorador references usuarios (id)
@@ -148,7 +148,7 @@ insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta)
 insert into valoraciones_vendedor(vendedor_id_va, comprador_id_va, venta_id, valoracion, valoracion_text)
     values(2, 1, 1, 3, ''),
           (2, 1, 2, 5, '');
-insert into valoraciones_vendedor(vendedor_id_va, comprador_id_va, venta_id, valoracion, valoracion_text)
+insert into valoraciones_comprador(vendedor_id_va, comprador_id_va, venta_id, valoracion, valoracion_text)
     values(2, 1, 1, 3, ''),
           (2, 1, 2, 5, '');
 
@@ -173,10 +173,9 @@ drop view if exists v_ventas;
 create view v_ventas as
     select nombre, descripcion, nombre_categoria, precio, a.nick as nick_comprador,
            u.nick as comprador_nick, fecha_venta as fecha_venta, articulo_id,
-           vendedor_id, categoria_id, comprador_id, valoracion
+           vendedor_id, categoria_id, comprador_id
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
-         join usuarios u on u.id = v.comprador_id join valoraciones va
-         on v.id = va.venta_id;
+         join usuarios u on u.id = v.comprador_id;
 
 drop view if exists v_articulos;
 create view v_articulos as

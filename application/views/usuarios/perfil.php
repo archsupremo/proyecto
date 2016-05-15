@@ -76,12 +76,17 @@
                             </div>
                             <div class="">
                                 <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
-                            </div>
-                            <div class="">
-                                Vendido a =>
-                                    <?= anchor('/usuarios/perfil/' . $v['comprador_id'], $v['comprador_nick']) ?>
-                            </div>
-                            <div class="valoracion" value="<?= $v['valoracion'] ?>">
+                                <p>
+                                    <a href=""
+                                       class="small secondary radius button split">
+                                       Opciones
+                                       <span data-dropdown="drop<?= $v['articulo_id']?>"></span>
+                                    </a>
+                                    <br>
+                               </p>
+                               <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
+                                  <li><a href="/articulos/borrar/<?= $v['articulo_id'] ?>">Borrar</a></li>
+                               </ul>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -89,7 +94,7 @@
             </div>
             <div class="tabdemo__content-item">
                 <div class="row">
-                    
+
                 </div>
             </div>
             <?php if($usuario_perfil !== TRUE): ?>

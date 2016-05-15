@@ -21,6 +21,17 @@ class Articulo extends CI_Model{
                               ));
       return $res->row_array();
   }
+  public function vender($venta) {
+      $res = $this->db->query("insert into ventas(vendedor_id, comprador_id, ".
+                              "articulo_id, fecha_venta) values(?, ?, ?, current_date) ".
+                              "returning id",
+                              array(
+                                  $venta['vendedor_id'],
+                                  $venta['comprador_id'],
+                                  $venta['articulo_id'],
+                              ));
+      return $res->row_array();
+  }
 
   // Operaciones de lectura
   public function todos() {
@@ -101,5 +112,17 @@ class Articulo extends CI_Model{
   public function borrar_favorito($usuario_id, $articulo_id) {
       return $this->db->query("delete from favoritos where usuario_id = ? and articulo_id = ?",
                        array($usuario_id, $articulo_id));
+  }
+
+  public function es_propietario($usuario_id, $articulo_id) {
+      $res = $this->db->query("select * from articulos where id = ? and usuario_id = ?",
+                               array($articulo_id, $usuario_id));
+      return ($res->num_rows() > 0) ? TRUE : FALSE;
+  }
+
+  public function articulo_vendido($articulo_id) {
+      $res = $this->db->query("select * from ventas where articulo_id = ?",
+                               array($articulo_id));
+      return ($res->num_rows() > 0) ? TRUE : FALSE;
   }
 }

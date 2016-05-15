@@ -89,8 +89,7 @@ class Usuarios extends CI_Controller{
         redirect('/frontend/portada/');
     }
 
-    if ($this->input->post('login') !== NULL)
-    {
+    if ($this->input->post('login') !== NULL) {
         $nick = $this->input->post('nick');
 
         $reglas = array(
@@ -233,6 +232,9 @@ class Usuarios extends CI_Controller{
     }
 
     public function registrar() {
+        if ($this->Usuario->logueado()) {
+            redirect('/frontend/portada/');
+        }
 
         if ($this->input->post('registrar') !== NULL) {
             $reglas = $this->reglas_comunes;
