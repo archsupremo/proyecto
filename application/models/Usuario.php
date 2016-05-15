@@ -91,7 +91,7 @@ class Usuario extends CI_Model {
     }
 
     public function ventas_usuario($id_usuario) {
-        $res = $this->db->query("select * from v_ventas where vendedor_id = ?", array($id_usuario));
+        $res = $this->db->query("select * from v_ventas_vendedor where vendedor_id = ?", array($id_usuario));
         return ($res->num_rows() > 0) ? $res->result_array() : array();
     }
 
@@ -134,5 +134,14 @@ class Usuario extends CI_Model {
     public function get_pm($pm_id) {
         $res = $this->db->get_where('pm', array('id' => $pm_id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
+    public function valoraciones_compras($usuario_id) {
+        $res = $this->db->get_where('v_ventas_vendedor',
+                                    array(
+                                        'comprador_id' => $usuario_id,
+                                       )
+                                    );
+        return $res->num_rows() > 0 ? $res->result_array() : array();
     }
 }

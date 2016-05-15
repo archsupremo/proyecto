@@ -18,6 +18,7 @@
                 <li class="tab"><a href="#" class="tab">Escribir PM</a></li>
             <?php endif; ?>
             <?php if($usuario_perfil === TRUE): ?>
+                <li class="tab"><a href="#" class="tab">Compras</a></li>
                 <li class="tab"><a href="#" class="tab">Favoritos</a></li>
                 <li class="tab"><a href="#" class="tab">PM</a></li>
             <?php endif; ?>
@@ -40,18 +41,20 @@
                                 </div>
                                 <div class="">
                                     <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
-                                    <p>
-                                        <a href=""
-                                           class="small secondary radius button split">
-                                           Opciones
-                                           <span data-dropdown="drop<?= $v['id']?>"></span>
-                                       </a>
-                                       <br>
-                                   </p>
-                                   <ul id="drop<?= $v['id'] ?>" class="f-dropdown" data-dropdown-content>
-                                      <li><a href="/articulos/borrar/<?= $v['id'] ?>">Borrar</a></li>
-                                      <li><a href="/articulos/vender/<?= $v['id'] ?>">Vender</a></li>
-                                   </ul>
+                                    <?php if($usuario_perfil === TRUE): ?>
+                                        <p>
+                                            <a href=""
+                                               class="small secondary radius button split">
+                                               Opciones
+                                               <span data-dropdown="drop<?= $v['id']?>"></span>
+                                           </a>
+                                           <br>
+                                        </p>
+                                        <ul id="drop<?= $v['id'] ?>" class="f-dropdown" data-dropdown-content>
+                                           <li><a href="/articulos/vender/<?= $v['id'] ?>">Vender Articulo</a></li>
+                                           <li><a href="/articulos/borrar/<?= $v['id'] ?>">Borrar Articulo</a></li>
+                                        </ul>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -76,26 +79,56 @@
                             </div>
                             <div class="">
                                 <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
-                                <p>
-                                    <a href=""
-                                       class="small secondary radius button split">
-                                       Opciones
-                                       <span data-dropdown="drop<?= $v['articulo_id']?>"></span>
-                                    </a>
-                                    <br>
-                               </p>
-                               <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
-                                  <li><a href="/articulos/borrar/<?= $v['articulo_id'] ?>">Borrar</a></li>
-                               </ul>
+                                <?php if($usuario_perfil === TRUE): ?>
+                                    <p>
+                                        <a href=""
+                                           class="small secondary radius button split">
+                                           Opciones
+                                           <span data-dropdown="drop<?= $v['articulo_id']?>"></span>
+                                        </a>
+                                        <br>
+                                    </p>
+                                    <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
+                                      <li><a href="/articulos/borrar/<?= $v['articulo_id'] ?>">Borrar Articulo</a></li>
+                                    </ul>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
             </div>
             <div class="tabdemo__content-item">
-                <div class="row">
-
-                </div>
+                <ul class="accordion" data-accordion>
+                  <li class="accordion-navigation">
+                    <a href="#panel1a">Ventas</a>
+                    <div id="panel1a" class="content active">
+                    </div>
+                  </li>
+                  <li class="accordion-navigation">
+                    <a href="#panel2a">Compras</a>
+                    <div id="panel2a" class="content">
+                        <div class="row">
+                            <?php foreach ($valoraciones_compras as $v): ?>
+                                <?php if($v['valoracion'] === NULL) continue; ?>
+                                <div class="large-6 columns left">
+                                    <div class="">
+                                        <h5>Vendedor => <?= $v['vendedor_nick'] ?></h5>
+                                    </div>
+                                    <div class="">
+                                        <p><?= $v['vendedor_nick'] ?> le
+                                            vendio <?= $v['nombre'] ?></p>
+                                    </div>
+                                    <div class="valoracion" value="<?= $v['valoracion'] ?>">
+                                    </div>
+                                    <div class="">
+                                        <p><?= $v['valoracion_text'] ?></p>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                  </li>
+                </ul>
             </div>
             <?php if($usuario_perfil !== TRUE): ?>
                 <div class="tabdemo__content-item">
@@ -121,17 +154,18 @@
             <?php if($usuario_perfil === TRUE): ?>
                 <div class="tabdemo__content-item">
                     <div class="row">
-                        <?php foreach ($articulos_favoritos as $v): ?>
+                        <?php foreach ($compras as $v): ?>
                             <div class="large-6 columns left">
                                 <div class="">
-                                    <?= anchor('/articulos/buscar/' . $v['id'],
-                                                img('/imagenes_articulos/' . $v['id'] . '_1' . '.jpg')) ?>
+                                    <?= anchor('/articulos/buscar/' . $v['articulo_id'],
+                                                img('/imagenes_articulos/' .
+                                                    $v['articulo_id'] . '_1' . '.jpg')) ?>
                                 </div>
                                 <div class="">
                                     <?= $v['precio'] ?>
                                 </div>
                                 <div class="">
-                                    <?= anchor('/articulos/buscar/' . $v['id'], $v['nombre']) ?>
+                                    <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
                                     <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
@@ -139,12 +173,46 @@
                                         <a href=""
                                            class="small secondary radius button split">
                                            Opciones
-                                           <span data-dropdown="drop<?= $v['id']?>"></span>
+                                           <span data-dropdown="drop<?= $v['articulo_id']?>"></span>
                                         </a>
                                         <br>
                                    </p>
-                                   <ul id="drop<?= $v['id'] ?>" class="f-dropdown" data-dropdown-content>
-                                      <li><a href="/articulos/eliminar_favorito/<?= $v['id'] ?>">Borrar</a></li>
+                                   <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
+                                       <li><a href="/articulos/valoracion_comprador/<?= $v['articulo_id'] ?>">Valorar al vendedor</a></li>
+                                      <li><a href="/articulos/borrar_compra/<?= $v['articulo_id'] ?>">Yo no he comprado esto!!!</a></li>
+                                   </ul>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="tabdemo__content-item">
+                    <div class="row">
+                        <?php foreach ($articulos_favoritos as $v): ?>
+                            <div class="large-6 columns left">
+                                <div class="">
+                                    <?= anchor('/articulos/buscar/' . $v['articulo_id'],
+                                                img('/imagenes_articulos/' .
+                                                    $v['articulo_id'] . '_1' . '.jpg')) ?>
+                                </div>
+                                <div class="">
+                                    <?= $v['precio'] ?>
+                                </div>
+                                <div class="">
+                                    <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
+                                </div>
+                                <div class="">
+                                    <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
+                                    <p>
+                                        <a href=""
+                                           class="small secondary radius button split">
+                                           Opciones
+                                           <span data-dropdown="drop<?= $v['articulo_id']?>"></span>
+                                        </a>
+                                        <br>
+                                   </p>
+                                   <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
+                                      <li><a href="/articulos/eliminar_favorito/<?= $v['articulo_id'] ?>">Eliminar de Favoritos</a></li>
                                    </ul>
                                 </div>
                             </div>

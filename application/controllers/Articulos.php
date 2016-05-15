@@ -167,20 +167,63 @@ class Articulos extends CI_Controller {
           unset($venta['venta']);
           $valores = array(
               'vendedor_id' => $usuario_id,
-              'comprador_id' => 0,
+              'comprador_id' => NULL,
               'articulo_id' => $articulo_id,
           );
 
-          if($venta['nick_comprador'] !== NULL) {
+          if(isset($venta['nick_comprador']) && $venta['nick_comprador'] !== NULL) {
+              if(isset($venta['valoracion']) && $venta['valoracion'] !== NULL &&
+                 isset($venta['valoracion_text']) && $venta['valoracion_text'] !== NULL) {
+                  $reglas[1] = array(
+                      'field' => 'valoracion',
+                      'label' => 'Valoracion',
+                      'rules' => array(
+                          'trim', 'required',
+                          array('valoracion_correcta', function ($valoracion) {
+                                  return ((int) $valoracion >= 0 && (int) $valoracion <= 5);
+                              }),
+                      ),
+                      'errors' => array(
+                          'valoracion_correcta' => 'La valoracion debe ser un numero comprendido entre 0 y 5.',
+                      ),
+                  );
+                  $reglas[2] = array(
+                      'field' => 'valoracion_text',
+                      'label' => 'Valoracion Texto',
+                      'rules' => array(
+                          'trim',
+                          array('valoracion_texto_size', function ($valoracion_texto) {
+                                  return !(strlen($valoracion_texto) > 200);
+                              }),
+                      ),
+                      'errors' => array(
+                          'valoracion_texto_size' => "La valoracion en texto no debe superar los 200 caracteres."
+                      ),
+                  );
+              }
               $this->form_validation->set_rules($reglas);
               if ($this->form_validation->run() === TRUE) {
                   $comprador = $this->Usuario->por_nick($venta['nick_comprador']);
                   $valores['comprador_id'] = $comprador['id'];
-              }
-          }
+                  $venta_realizada = $this->Articulo->vender($valores);
 
-          $this->Articulo->vender($valores);
-          redirect('/frontend/portada/');
+                  if(isset($venta['valoracion']) && $venta['valoracion'] !== NULL &&
+                     isset($venta['valoracion_text']) && $venta['valoracion_text'] !== NULL) {
+                      $valoracion = array(
+                          'vendedor_id_va' => $usuario_id,
+                          'comprador_id_va' => $comprador['id'],
+                          'venta_id' => $venta_realizada['id'],
+                          'valoracion' => $venta['valoracion'],
+                          'valoracion_text' => $venta['valoracion_text'],
+                      );
+                      $this->Articulo->insertar_valoracion_vendedor($valoracion);
+                  }
+                  redirect('/frontend/portada/');
+              }
+          } else {
+              $this->Articulo->vender($valores);
+              redirect('/frontend/portada/');
+          }
       }
 
 
@@ -195,5 +238,38 @@ class Articulos extends CI_Controller {
       );
 
       $this->template->load('/articulos/vender', $data);
+  }
+
+  public function borrar($articulo_id = NULL) {
+      if (!$this->Usuario->logueado()) {
+          $mensajes[] = array('error' =>
+                  "No puedes borrar articulos si no estas logueado.");
+          $this->flashdata->load($mensajes);
+          redirect('/frontend/portada/');
+      }
+      $usuario_id = $this->session->userdata('usuario')['id'];
+      if(!$this->Articulo->es_propietario($usuario_id, $articulo_id)) {
+          redirect('/frontend/portada/');
+      }
+
+      $this->Articulo->borrar($articulo_id);
+
+      for ($i = 1; $i <= 4; $i++) {
+          unlink($_SERVER["DOCUMENT_ROOT"] .
+                      '/imagenes_articulos/' .
+                      $articulo_id . '_' . $i .
+                      '.jpg');
+      }
+
+      if (isset($_SERVER['HTTP_REFERER']) && !$this->session->has_userdata('last_uri')) {
+          $this->session->set_userdata('last_uri',
+                          parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
+      }
+
+      if($this->session->has_userdata('last_uri')) {
+          $uri = $this->session->userdata('last_uri');
+          $this->session->unset_userdata('last_uri');
+          redirect($uri);
+      }
   }
 }

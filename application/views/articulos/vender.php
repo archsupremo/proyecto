@@ -99,6 +99,7 @@
     </div>
 </div>
 <script type="text/javascript">
+    $('input[type="hidden"]').first().val("0");
     var rating = 0;
     var valores_defecto = {
         numStars: 5,
@@ -121,12 +122,12 @@
     var comprador = $('.comprador');
     valoracion_comprador.remove();
 
-    $('#forma_venta').change(function() {
-        if($(this).val() == 2) {
+    function tomar_valores(elemento) {
+        if(elemento.val() == 2) {
             comprador.remove();
             valoracion_comprador.remove();
         }
-        else if($(this).val() == 1) {
+        else if(elemento.val() == 1) {
             $(".valoracion").rateYo("destroy");
             $('.venta').after(comprador);
             $('.comprador').after(valoracion_comprador);
@@ -138,5 +139,10 @@
             $('.venta').after(comprador);
             valoracion_comprador.remove();
         }
+    }
+    $('#forma_venta').change(function () {
+        tomar_valores($(this));
     });
+
+    tomar_valores($('#forma_venta'));
 </script>

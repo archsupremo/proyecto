@@ -116,29 +116,25 @@ class Usuarios extends CI_Controller{
         );
 
         $this->form_validation->set_rules($reglas);
-        if ($this->form_validation->run() === TRUE)
-        {
+        if ($this->form_validation->run() === TRUE) {
             $usuario = $this->Usuario->por_nick($nick);
             $this->session->set_userdata('usuario', array(
                 'id' => $usuario['id'],
                 'nick' => $nick,
             ));
 
-            if($this->session->has_userdata('last_uri'))
-            {
+            if($this->session->has_userdata('last_uri')) {
                 $uri = $this->session->userdata('last_uri');
                 $this->session->unset_userdata('last_uri');
                 redirect($uri);
             }
-            else
-            {
+            else {
                 redirect('/frontend/portada/');
             }
         }
     }
 
-    if (isset($_SERVER['HTTP_REFERER']) && !$this->session->has_userdata('last_uri'))
-    {
+    if (isset($_SERVER['HTTP_REFERER']) && !$this->session->has_userdata('last_uri')) {
         $this->session->set_userdata('last_uri',
                         parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
     }
@@ -423,27 +419,31 @@ class Usuarios extends CI_Controller{
         $this->template->load('/usuarios/regenerar/', $data);
     }
 
-    public function perfil($id_usuario = NULL) {
-        if($id_usuario === NULL || $this->Usuario->por_id($id_usuario) === FALSE) {
+    public function perfil($usuario_id = NULL) {
+        if($usuario_id === NULL || $this->Usuario->por_id($usuario_id) === FALSE) {
             $mensajes[] = array('error' =>
                 "Parametros incorrectos para visualizar el perfil del usuario.");
             $this->flashdata->load($mensajes);
 
             redirect('/frontend/portada/');
         }
-        $data['articulos_usuarios'] = $this->Usuario->por_id_vista($id_usuario);
-        $data['usuario'] = $this->Usuario->por_id($id_usuario);
-        $data['articulos_vendidos'] = $this->Usuario->ventas_usuario($id_usuario);
+        $data['articulos_usuarios'] = $this->Usuario->por_id_vista($usuario_id);
+        $data['usuario'] = $this->Usuario->por_id($usuario_id);
+        $data['articulos_vendidos'] = $this->Usuario->ventas_usuario($usuario_id);
         $data['articulos_favoritos'] = array();
         $data['pm'] = array();
         $data['usuario_perfil'] = FALSE;
         $data['usuario_propio'] = $this->session->userdata('usuario');
 
+        $data['compras'] = array();
+        $data['valoraciones_compras'] = $this->Usuario->valoraciones_compras($usuario_id);
+        $data['valoraciones_ventas'] = array();
+        
         if ($this->Usuario->logueado()) {
-            if ($data['usuario_propio']['id'] === $id_usuario) {
-                $data['articulos_favoritos'] = $this->Articulo->articulos_favoritos($id_usuario);
-                $data['pm_no_vistos'] = $this->Usuario->pm_no_vistos($id_usuario);
-                $data['pm_vistos'] = $this->Usuario->pm_vistos($id_usuario);
+            if ($data['usuario_propio']['id'] === $usuario_id) {
+                $data['articulos_favoritos'] = $this->Articulo->articulos_favoritos($usuario_id);
+                $data['pm_no_vistos'] = $this->Usuario->pm_no_vistos($usuario_id);
+                $data['pm_vistos'] = $this->Usuario->pm_vistos($usuario_id);
                 $data['usuario_perfil'] = TRUE;
             }
         }

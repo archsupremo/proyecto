@@ -33,6 +33,15 @@ class Articulo extends CI_Model{
       return $res->row_array();
   }
 
+  public function borrar($articulo_id) {
+      return $this->db->query("delete from articulos where id = ?",
+                               array($articulo_id));
+  }
+
+  public function insertar_valoracion_vendedor($valoracion) {
+      return $this->db->insert('valoraciones_vendedor', $valoracion);
+  }
+
   // Operaciones de lectura
   public function todos() {
       $res = $this->db->query("select * from v_articulos");
