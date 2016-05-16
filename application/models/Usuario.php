@@ -95,6 +95,15 @@ class Usuario extends CI_Model {
         return ($res->num_rows() > 0) ? $res->result_array() : array();
     }
 
+    public function compras_usuario($usuario_id) {
+        $res = $this->db->get_where('v_ventas_comprador',
+                                    array(
+                                        'comprador_id' => $usuario_id,
+                                       )
+                                    );
+        return $res->num_rows() > 0 ? $res->result_array() : array();
+    }
+
     public function usuarios_cercanos($latitud, $longitud, $distancia) {
         $res = $this->db->query("select *, earth_distance(ll_to_earth(?, ?),".
                                 " ll_to_earth(latitud, longitud)) as distancia".
@@ -136,10 +145,19 @@ class Usuario extends CI_Model {
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
-    public function valoraciones_compras($usuario_id) {
+    public function valoraciones_a_comprador($usuario_id) {
         $res = $this->db->get_where('v_ventas_vendedor',
                                     array(
                                         'comprador_id' => $usuario_id,
+                                       )
+                                    );
+        return $res->num_rows() > 0 ? $res->result_array() : array();
+    }
+
+    public function valoraciones_a_vendedor($usuario_id) {
+        $res = $this->db->get_where('v_ventas_comprador',
+                                    array(
+                                        'vendedor_id' => $usuario_id,
                                        )
                                     );
         return $res->num_rows() > 0 ? $res->result_array() : array();

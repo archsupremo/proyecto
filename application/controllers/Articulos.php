@@ -216,7 +216,7 @@ class Articulos extends CI_Controller {
                           'valoracion' => $venta['valoracion'],
                           'valoracion_text' => $venta['valoracion_text'],
                       );
-                      $this->Articulo->insertar_valoracion_vendedor($valoracion);
+                      $this->Valoracion->insertar_valoracion_vendedor($valoracion);
                   }
                   redirect('/frontend/portada/');
               }
@@ -227,7 +227,7 @@ class Articulos extends CI_Controller {
       }
 
 
-      $data['articulo'] = $this->Articulo->por_id($articulo_id);
+      $data['venta'] = $this->Articulo->por_id($articulo_id);
       $usuario_id = $data['articulo']['usuario_id'];
       $data['usuario'] = $this->Usuario->por_id($usuario_id);
 

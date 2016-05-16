@@ -89,7 +89,18 @@
                                         <br>
                                     </p>
                                     <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
-                                      <li><a href="/articulos/borrar/<?= $v['articulo_id'] ?>">Borrar Articulo</a></li>
+                                        <?php if($v['valoracion'] === NULL && $v['comprador_id'] !== NULL): ?>
+                                            <li>
+                                                <a href="/usuarios/valorar_comprador/<?= $v['venta_id'] ?>">
+                                                    Valorar al comprador
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
+                                      <li>
+                                          <a href="/articulos/borrar/<?= $v['articulo_id'] ?>">
+                                              Borrar Articulo
+                                          </a>
+                                      </li>
                                     </ul>
                                 <?php endif; ?>
                             </div>
@@ -102,6 +113,25 @@
                   <li class="accordion-navigation">
                     <a href="#panel1a">Ventas</a>
                     <div id="panel1a" class="content active">
+                        <div class="row">
+                            <?php foreach ($valoraciones_ventas as $v): ?>
+                                <?php if($v['valoracion'] === NULL) continue; ?>
+                                <div class="large-6 columns left">
+                                    <div class="">
+                                        <h5>Comprador => <?= $v['comprador_nick'] ?></h5>
+                                    </div>
+                                    <div class="">
+                                        <p>Le vendió a <?= $v['comprador_nick'] ?>
+                                            <?= $v['nombre'] ?></p>
+                                    </div>
+                                    <div class="valoracion" value="<?= $v['valoracion'] ?>">
+                                    </div>
+                                    <div class="">
+                                        <p><?= $v['valoracion_text'] ?></p>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                   </li>
                   <li class="accordion-navigation">
@@ -154,7 +184,7 @@
             <?php if($usuario_perfil === TRUE): ?>
                 <div class="tabdemo__content-item">
                     <div class="row">
-                        <?php foreach ($compras as $v): ?>
+                        <?php foreach ($articulos_comprados as $v): ?>
                             <div class="large-6 columns left">
                                 <div class="">
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
@@ -178,8 +208,18 @@
                                         <br>
                                    </p>
                                    <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
-                                       <li><a href="/articulos/valoracion_comprador/<?= $v['articulo_id'] ?>">Valorar al vendedor</a></li>
-                                      <li><a href="/articulos/borrar_compra/<?= $v['articulo_id'] ?>">Yo no he comprado esto!!!</a></li>
+                                       <?php if($v['valoracion'] === NULL): ?>
+                                           <li>
+                                               <a href="/usuarios/valorar_vendedor/<?= $v['venta_id'] ?>">
+                                                   Valorar al vendedor
+                                               </a>
+                                           </li>
+                                       <?php endif; ?>
+                                       <li>
+                                           <a href="/articulos/borrar_compra/<?= $v['articulo_id'] ?>">
+                                               Yo no he comprado esto!!!
+                                           </a>
+                                       </li>
                                    </ul>
                                 </div>
                             </div>

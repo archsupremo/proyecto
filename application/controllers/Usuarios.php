@@ -435,10 +435,10 @@ class Usuarios extends CI_Controller{
         $data['usuario_perfil'] = FALSE;
         $data['usuario_propio'] = $this->session->userdata('usuario');
 
-        $data['compras'] = array();
-        $data['valoraciones_compras'] = $this->Usuario->valoraciones_compras($usuario_id);
-        $data['valoraciones_ventas'] = array();
-        
+        $data['articulos_comprados'] = $this->Usuario->compras_usuario($usuario_id);
+        $data['valoraciones_compras'] = $this->Usuario->valoraciones_a_comprador($usuario_id);
+        $data['valoraciones_ventas'] = $this->Usuario->valoraciones_a_vendedor($usuario_id);
+
         if ($this->Usuario->logueado()) {
             if ($data['usuario_propio']['id'] === $usuario_id) {
                 $data['articulos_favoritos'] = $this->Articulo->articulos_favoritos($usuario_id);
@@ -719,5 +719,66 @@ class Usuarios extends CI_Controller{
                 $this->Usuario->update_pm($valores, $pm_id);
             }
         }
+    }
+
+    public function valorar_vendedor($venta_id = NULL) {
+        if (!$this->Usuario->logueado()) {
+            $mensajes[] = array('error' =>
+                    "No puedes valorar nada si no estas logueado.");
+            $this->flashdata->load($mensajes);
+            redirect('/frontend/portada/');
+        }
+        $usuario_id = $this->session->userdata('usuario')['id'];
+        if(!$this->Venta->es_comprador($usuario_id, $venta_id)) {
+            redirect('/frontend/portada/');
+        }
+
+        $venta = $this->Venta->por_id($venta_id);
+        if ($this->input->post('valorar') !== NULL) {
+            $venta_form = $this->input->post();
+            $reglas = array(
+                array(
+                    'field' => 'valoracion',
+                    'label' => 'Valoracion',
+                    'rules' => array(
+                        'trim', 'required',
+                        array('valoracion_correcta', function ($valoracion) {
+                                return ((int) $valoracion >= 0 && (int) $valoracion <= 5);
+                            }),
+                    ),
+                    'errors' => array(
+                        'valoracion_correcta' => 'La valoracion debe ser un numero comprendido entre 0 y 5.',
+                    ),
+                ),
+                array(
+                    'field' => 'valoracion_text',
+                    'label' => 'Valoracion Texto',
+                    'rules' => array(
+                        'trim',
+                        array('valoracion_texto_size', function ($valoracion_texto) {
+                                return !(strlen($valoracion_texto) > 200);
+                            }),
+                    ),
+                    'errors' => array(
+                        'valoracion_texto_size' => "La valoracion en texto no debe superar los 200 caracteres."
+                    ),
+                ),
+            );
+
+            $valoracion = array(
+                'vendedor_id_va' => $venta['vendedor_id'],
+                'comprador_id_va' => $venta['comprador_id'],
+                'venta_id' => $venta['venta_id'],
+                'valoracion' => $venta_form['valoracion'],
+                'valoracion_text' => $venta_form['valoracion_text'],
+            );
+
+            $this->Valoracion->insertar_valoracion_comprador($valoracion);
+            redirect('/frontend/portada/');
+        }
+
+        $data['venta'] = $venta;
+
+        $this->template->load('/usuarios/valorar_vendedor', $data);
     }
 }
