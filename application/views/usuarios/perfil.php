@@ -173,7 +173,7 @@
                                         <a href=""
                                            class="small secondary radius button split">
                                            Opciones
-                                           <span data-dropdown="drop<?= $v['articulo_id']?>"></span>
+                                           <span data-dropdown="drop<?= $v['articulo_id'] ?>"></span>
                                         </a>
                                         <br>
                                    </p>
@@ -207,11 +207,11 @@
                                         <a href=""
                                            class="small secondary radius button split">
                                            Opciones
-                                           <span data-dropdown="drop<?= $v['articulo_id']?>"></span>
+                                           <span data-dropdown="drop<?= $v['articulo_id'].$v['articulo_id'] ?>"></span>
                                         </a>
                                         <br>
                                    </p>
-                                   <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
+                                   <ul id="drop<?= $v['articulo_id'].$v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
                                       <li><a href="/articulos/eliminar_favorito/<?= $v['articulo_id'] ?>">Eliminar de Favoritos</a></li>
                                    </ul>
                                 </div>
