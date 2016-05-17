@@ -608,6 +608,12 @@ class Usuarios extends CI_Controller{
     }
 
     public function insertar_pm($id_usuario = NULL) {
+        if (!$this->Usuario->logueado()) {
+            $mensajes[] = array('error' =>
+                    "No puedes enviar un pm si no estas logueado.");
+            $this->flashdata->load($mensajes);
+            redirect('/frontend/portada/');
+        }
         if($id_usuario === NULL || $this->Usuario->por_id($id_usuario) === FALSE) {
             $mensajes[] = array('error' =>
                 "Parametros incorrectos para realizar un pm.");
