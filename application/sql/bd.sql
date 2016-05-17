@@ -163,7 +163,7 @@ create view v_articulos_raw as
     from articulos a join usuarios u on a.usuario_id = u.id
          join categorias c on a.categoria_id = c.id;
 
-drop view if exists v_ventas_vendedor;
+drop view if exists v_ventas;
 create view v_ventas as
  select v.id as venta_id, nombre, descripcion, nombre_categoria,
         precio, u.nick as comprador_nick, uu.nick as vendedor_nick,
@@ -181,8 +181,8 @@ create view v_ventas_vendedor as
            vendedor_id, comprador_id, categoria_id, valoracion,
            valoracion_text
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
-         join usuarios u on u.id = v.comprador_id
          join usuarios uu on uu.id = v.vendedor_id
+         left join usuarios u on u.id = v.comprador_id
          left join valoraciones_vendedor vv on vv.venta_id = v.id;
 
 drop view if exists v_ventas_comprador;
@@ -194,7 +194,7 @@ create view v_ventas_comprador as
            valoracion_text
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
          join usuarios u on u.id = v.comprador_id
-         join usuarios uu on uu.id = v.vendedor_id
+         left join usuarios uu on uu.id = v.vendedor_id
          left join valoraciones_comprador vv on vv.venta_id = v.id;
 
 drop view if exists v_articulos;
