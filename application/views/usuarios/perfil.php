@@ -40,17 +40,23 @@
                                     <?= anchor('/articulos/buscar/' . $v['id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
-                                    <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
+                                    <?= form_open('/frontend/portada/') ?>
+                                        <?= form_hidden('categoria', $v['categoria_id'],
+                                                       'id="categoria" class=""') ?>
+                                        <?= form_hidden('nombre', '',
+                                                       'id="nombre" class=""') ?>
+                                        <?= form_submit('buscar', $v['nombre_categoria'], 'class="front_button"') ?>
+                                    <?= form_close() ?>
                                     <?php if($usuario_perfil === TRUE): ?>
                                         <p>
                                             <a href=""
                                                class="small secondary radius button split">
                                                Opciones
-                                               <span data-dropdown="drop<?= $v['id']?>"></span>
+                                               <span data-dropdown="drop_articulo_disponible_<?= $v['id']?>"></span>
                                            </a>
                                            <br>
                                         </p>
-                                        <ul id="drop<?= $v['id'] ?>" class="f-dropdown" data-dropdown-content>
+                                        <ul id="drop_articulo_disponible_<?= $v['id'] ?>" class="f-dropdown" data-dropdown-content>
                                            <li><a href="/articulos/vender/<?= $v['id'] ?>">Vender Articulo</a></li>
                                            <li><a href="/articulos/borrar/<?= $v['id'] ?>">Borrar Articulo</a></li>
                                         </ul>
@@ -78,17 +84,23 @@
                                 <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                             </div>
                             <div class="">
-                                <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
+                                <?= form_open('/frontend/portada/') ?>
+                                    <?= form_hidden('categoria', $v['categoria_id'],
+                                                   'id="categoria" class=""') ?>
+                                    <?= form_hidden('nombre', '',
+                                                   'id="nombre" class=""') ?>
+                                    <?= form_submit('buscar', $v['nombre_categoria'], 'class="front_button"') ?>
+                                <?= form_close() ?>
                                 <?php if($usuario_perfil === TRUE): ?>
                                     <p>
                                         <a href=""
                                            class="small secondary radius button split">
                                            Opciones
-                                           <span data-dropdown="drop<?= $v['articulo_id']?>"></span>
+                                           <span data-dropdown="drop_articulo_vendido_<?= $v['articulo_id']?>"></span>
                                         </a>
                                         <br>
                                     </p>
-                                    <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
+                                    <ul id="drop_articulo_vendido_<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
                                         <?php if($v['valoracion'] === NULL && $v['comprador_id'] !== NULL): ?>
                                             <li>
                                                 <a href="/usuarios/valorar_comprador/<?= $v['venta_id'] ?>">
@@ -206,16 +218,22 @@
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
-                                    <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
+                                    <?= form_open('/frontend/portada/') ?>
+                                        <?= form_hidden('categoria', $v['categoria_id'],
+                                                       'id="categoria" class=""') ?>
+                                        <?= form_hidden('nombre', '',
+                                                       'id="nombre" class=""') ?>
+                                        <?= form_submit('buscar', $v['nombre_categoria'], 'class="front_button"') ?>
+                                    <?= form_close() ?>
                                     <p>
                                         <a href=""
                                            class="small secondary radius button split">
                                            Opciones
-                                           <span data-dropdown="drop<?= $v['articulo_id'] ?>"></span>
+                                           <span data-dropdown="drop_articulo_comprados_<?= $v['articulo_id'] ?>"></span>
                                         </a>
                                         <br>
                                    </p>
-                                   <ul id="drop<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
+                                   <ul id="drop_articulo_comprados_<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
                                        <?php if($v['valoracion'] === NULL): ?>
                                            <li>
                                                <a href="/usuarios/valorar_vendedor/<?= $v['venta_id'] ?>">
@@ -250,16 +268,22 @@
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
-                                    <?= anchor('/frontend/portada/buscar_por_categoria/' . $v['nombre_categoria'], $v['nombre_categoria']) ?>
+                                    <?= form_open('/frontend/portada/') ?>
+                                        <?= form_hidden('categoria', $v['categoria_id'],
+                                                       'id="categoria" class=""') ?>
+                                        <?= form_hidden('nombre', '',
+                                                       'id="nombre" class=""') ?>
+                                        <?= form_submit('buscar', $v['nombre_categoria'], 'class="front_button"') ?>
+                                    <?= form_close() ?>
                                     <p>
                                         <a href=""
                                            class="small secondary radius button split">
                                            Opciones
-                                           <span data-dropdown="drop<?= $v['articulo_id'].$v['articulo_id'] ?>"></span>
+                                           <span data-dropdown="drop_articulo_favorito_<?= $v['articulo_id'] ?>"></span>
                                         </a>
                                         <br>
                                    </p>
-                                   <ul id="drop<?= $v['articulo_id'].$v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
+                                   <ul id="drop_articulo_favorito_<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
                                       <li><a href="/articulos/eliminar_favorito/<?= $v['articulo_id'] ?>">Eliminar de Favoritos</a></li>
                                    </ul>
                                 </div>

@@ -143,15 +143,15 @@
     </div>
     <div class="large-9 columns">
         <?php foreach ($articulos as $v): ?>
-            <div class="large-4 columns left articulos" id="<?= $v['id'] ?>">
+            <div class="large-4 columns left articulos" id="<?= $v['articulo_id'] ?>">
                 <div class="">
-                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['id'] . '_1' . '.jpg')): ?>
-                        <?php $url = '/imagenes_articulos/' . $v['id'] . '_1' . '.jpg' ?>
+                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
+                        <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
                     <?php else: ?>
                         <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
                     <?php endif; ?>
 
-                    <?= anchor('/articulos/buscar/' . $v['id'],
+                    <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                 img(array(
                                     'src' => $url,
                                     'title' => $v['nombre'],
@@ -163,7 +163,7 @@
                     <?= $v['precio'] ?>
                 </div>
                 <div class="">
-                    <?= anchor('/articulos/buscar/' . $v['id'], $v['nombre']) ?>
+                    <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                 </div>
                 <div class="">
                     <?= form_open('/frontend/portada/') ?>
@@ -171,7 +171,7 @@
                                        'id="categoria" class=""') ?>
                         <?= form_hidden('nombre', '',
                                        'id="nombre" class=""') ?>
-                        <?= form_submit('buscar', $v['nombre_categoria'], 'class=""') ?>
+                        <?= form_submit('buscar', $v['nombre_categoria'], 'class="front_button"') ?>
                     <?= form_close() ?>
                 </div>
                 <div class="clearing-thumbs" data-clearing>

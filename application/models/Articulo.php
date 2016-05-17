@@ -47,7 +47,7 @@ class Articulo extends CI_Model{
   public function todos_sin_favorito($usuario_id) {
     //   $res = $this->db->get_where('v_favoritos',
     //                                array('usuario_favorito' => $usuario_id));
-      $res = $this->db->query('select *
+      $res = $this->db->query('select *, id as articulo_id
                                 from v_articulos
                                 group by id, nombre, descripcion, usuario_id, categoria_id, precio,
                                          nick, nombre_categoria, favorito
@@ -70,10 +70,12 @@ class Articulo extends CI_Model{
       } else {
           $res = $this->db->like('lower(nombre)', strtolower($nombre), 'match');
           $res1 = $this->db->get_where('v_favoritos',
-                                    array('usuario_favorito' => $usuario_id,
-                                          'categoria_id' => $categoria_id)
-                                   );
-          $res2 = $this->db->query('select *
+                                        array(
+                                            'usuario_favorito' => $usuario_id,
+                                            'categoria_id' => $categoria_id,
+                                            )
+                                        );
+          $res2 = $this->db->query('select *, id as articulo_id
                                     from v_articulos
                                     where categoria_id = ?
                                     group by id, nombre, descripcion, usuario_id, categoria_id, precio,

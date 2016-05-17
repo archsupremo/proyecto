@@ -74,6 +74,13 @@
             margin: 0;
             padding: 0;
         }
+        .front_button {
+            background-color: transparent !important;
+            border: 0px;
+            color: #000;
+            padding: 0px;
+            padding-top: 0.9375em;
+        }
     </style>
   </head>
   <body>
