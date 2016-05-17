@@ -203,7 +203,7 @@ create view v_articulos as
     from v_articulos_raw
     group by id, nombre, descripcion, usuario_id, categoria_id, precio,
              nick, nombre_categoria
-    having id not in (select id from ventas);
+    having id not in (select articulo_id from ventas);
 
 drop view if exists v_usuarios_validados cascade;
 create view v_usuarios_validados as
