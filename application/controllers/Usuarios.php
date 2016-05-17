@@ -779,4 +779,63 @@ class Usuarios extends CI_Controller{
 
         $this->template->load('/usuarios/valorar_vendedor', $data);
     }
+
+    public function valorar_comprador($venta_id = NULL) {
+        if (!$this->Usuario->logueado()) {
+            $mensajes[] = array('error' =>
+                    "No puedes valorar nada si no estas logueado.");
+            $this->flashdata->load($mensajes);
+            redirect('/frontend/portada/');
+        }
+        $usuario_id = $this->session->userdata('usuario')['id'];
+        if(!$this->Venta->es_vendedor($usuario_id, $venta_id)) {
+            redirect('/frontend/portada/');
+        }
+
+        $venta = $this->Venta->por_id($venta_id);
+        if ($this->input->post('valorar') !== NULL) {
+            $venta_form = $this->input->post();
+            $reglas = array(
+                array(
+                    'field' => 'valoracion',
+                    'label' => 'Valoracion',
+                    'rules' => array(
+                        'trim', 'required',
+                        array('valoracion_correcta', function ($valoracion) {
+                                return ((int) $valoracion >= 0 && (int) $valoracion <= 5);
+                            }),
+                    ),
+                    'errors' => array(
+                        'valoracion_correcta' => 'La valoracion debe ser un numero comprendido entre 0 y 5.',
+                    ),
+                ),
+                array(
+                    'field' => 'valoracion_text',
+                    'label' => 'Valoracion Texto',
+                    'rules' => array(
+                        'trim',
+                        array('valoracion_texto_size', function ($valoracion_texto) {
+                                return !(strlen($valoracion_texto) > 200);
+                            }),
+                    ),
+                    'errors' => array(
+                        'valoracion_texto_size' => "La valoracion en texto no debe superar los 200 caracteres."
+                    ),
+                ),
+            );
+
+            $valoracion = array(
+                'venta_id' => $venta['venta_id'],
+                'valoracion' => $venta_form['valoracion'],
+                'valoracion_text' => $venta_form['valoracion_text'],
+            );
+
+            $this->Valoracion->insertar_valoracion_vendedor($valoracion);
+            redirect('/frontend/portada/');
+        }
+
+        $data['venta'] = $venta;
+
+        $this->template->load('/usuarios/valorar_comprador', $data);
+    }
 }
