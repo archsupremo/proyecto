@@ -210,8 +210,6 @@ class Articulos extends CI_Controller {
                   if(isset($venta['valoracion']) && $venta['valoracion'] !== NULL &&
                      isset($venta['valoracion_text']) && $venta['valoracion_text'] !== NULL) {
                       $valoracion = array(
-                          'vendedor_id_va' => $usuario_id,
-                          'comprador_id_va' => $comprador['id'],
                           'venta_id' => $venta_realizada['id'],
                           'valoracion' => $venta['valoracion'],
                           'valoracion_text' => $venta['valoracion_text'],
@@ -227,8 +225,7 @@ class Articulos extends CI_Controller {
       }
 
 
-      $data['venta'] = $this->Articulo->por_id($articulo_id);
-      $usuario_id = $data['articulo']['usuario_id'];
+      $data['articulo'] = $this->Articulo->por_id($articulo_id);
       $data['usuario'] = $this->Usuario->por_id($usuario_id);
 
       $data['opciones_venta'] = array(

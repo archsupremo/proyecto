@@ -71,32 +71,24 @@ create table ventas(
 drop table if exists valoraciones_vendedor cascade;
 create table valoraciones_vendedor (
     id bigserial constraint pk_valoraciones_vendedor primary key,
-    vendedor_id_va bigint    constraint fk_usuarios_valorado references usuarios (id)
-                          on update cascade on delete cascade,
-    comprador_id_va bigint  constraint fk_usuarios_valorador references usuarios (id)
-                          on update cascade on delete cascade,
     venta_id bigint       constraint fk_valoraciones_vendedor_ventas references ventas (id)
                           on update cascade on delete cascade,
     valoracion numeric(1) constraint ck_valoraciones_max
                                         check (valoracion >= 0 AND valoracion <= 5),
     valoracion_text varchar(200),
-    constraint uq_valoraciones_vendedor unique (vendedor_id_va, comprador_id_va, venta_id)
+    constraint uq_valoraciones_vendedor unique (venta_id)
 );
 
 -- Valoracion del comprador al vendedor
 drop table if exists valoraciones_comprador cascade;
 create table valoraciones_comprador (
     id bigserial constraint pk_valoraciones_comprador primary key,
-    vendedor_id_va bigint    constraint fk_usuarios_valorado references usuarios (id)
-                          on update cascade on delete cascade,
-    comprador_id_va bigint  constraint fk_usuarios_valorador references usuarios (id)
-                          on update cascade on delete cascade,
     venta_id bigint       constraint fk_valoraciones_comprador_ventas references ventas (id)
                           on update cascade on delete cascade,
     valoracion numeric(1) constraint ck_valoraciones_max
                                         check (valoracion >= 0 AND valoracion <= 5),
     valoracion_text varchar(200),
-    constraint uq_valoraciones_comprador unique (vendedor_id_va, comprador_id_va, venta_id)
+    constraint uq_valoraciones_comprador unique (venta_id)
 );
 
 drop table if exists favoritos cascade;
@@ -147,8 +139,8 @@ insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta)
     values(2, 1, 1, current_date),
           (2, 1, 2, current_date);
 
-insert into valoraciones_vendedor(vendedor_id_va, comprador_id_va, venta_id, valoracion, valoracion_text)
-    values(2, 1, 1, 3, 'Gran comprador. Responsable y puntual. Lo recomiendo.');
+insert into valoraciones_vendedor(venta_id, valoracion, valoracion_text)
+    values(1, 3, 'Gran comprador. Responsable y puntual. Lo recomiendo.');
 /*
 insert into valoraciones_comprador(vendedor_id_va, comprador_id_va, venta_id, valoracion, valoracion_text)
     values(2, 1, 1, 3, ''),

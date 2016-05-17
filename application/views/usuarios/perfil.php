@@ -118,7 +118,11 @@
                                 <?php if($v['valoracion'] === NULL) continue; ?>
                                 <div class="large-6 columns left">
                                     <div class="">
-                                        <h5>Comprador => <?= $v['comprador_nick'] ?></h5>
+                                        <h5>Comprador =>
+                                            <?= anchor('/usuarios/perfil/' .
+                                                $v['comprador_id'],
+                                                $v['comprador_nick']) ?>
+                                        </h5>
                                     </div>
                                     <div class="">
                                         <p>Le vendió a <?= $v['comprador_nick'] ?>
@@ -142,7 +146,11 @@
                                 <?php if($v['valoracion'] === NULL) continue; ?>
                                 <div class="large-6 columns left">
                                     <div class="">
-                                        <h5>Vendedor => <?= $v['vendedor_nick'] ?></h5>
+                                        <h5>Vendedor =>
+                                            <?= anchor('/usuarios/perfil/' .
+                                                $v['vendedor_id'],
+                                                $v['vendedor_nick']) ?>
+                                        </h5>
                                     </div>
                                     <div class="">
                                         <p><?= $v['vendedor_nick'] ?> le

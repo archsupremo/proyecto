@@ -766,8 +766,6 @@ class Usuarios extends CI_Controller{
             );
 
             $valoracion = array(
-                'vendedor_id_va' => $venta['vendedor_id'],
-                'comprador_id_va' => $venta['comprador_id'],
                 'venta_id' => $venta['venta_id'],
                 'valoracion' => $venta_form['valoracion'],
                 'valoracion_text' => $venta_form['valoracion_text'],
