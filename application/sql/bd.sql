@@ -157,7 +157,7 @@ insert into pm(emisor_id, receptor_id, mensaje, fecha, visto)
           (3, 1, 'Tercer Mensaje', current_timestamp, true),
           (3, 1, 'Cuarto Mensaje', current_timestamp, false);
 
-drop view if exists v_articulos cascade;
+drop view if exists v_articulos_raw cascade;
 create view v_articulos_raw as
     select a.*, u.nick, c.nombre as nombre_categoria
     from articulos a join usuarios u on a.usuario_id = u.id
@@ -199,7 +199,7 @@ create view v_ventas_comprador as
 
 drop view if exists v_articulos;
 create view v_articulos as
-    select *, FALSE as favorito
+    select *, id as articulo_id, FALSE as favorito
     from v_articulos_raw
     group by id, nombre, descripcion, usuario_id, categoria_id, precio,
              nick, nombre_categoria
