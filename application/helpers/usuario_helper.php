@@ -11,7 +11,7 @@ function login() {
             $out .= '<div class="form-group">';
                 $out .= form_submit('logout', 'Logout',
                                     'id="logout" class="button small round right" role="button"');
-                $out .= anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil',
+                $out .= anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil<br>('. nick().')',
                             'id="perfil" class="button small round right" role="button"');
                 $out .= anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar perfil',
                             'id="editar_perfil" class="button small round right" role="button"');

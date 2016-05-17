@@ -838,4 +838,23 @@ class Usuarios extends CI_Controller{
 
         $this->template->load('/usuarios/valorar_comprador', $data);
     }
+
+    public function borrar_compra($venta_id = NULL) {
+        if (!$this->Usuario->logueado()) {
+            $mensajes[] = array('error' =>
+                    "No puedes borrar nada si no estas logueado.");
+            $this->flashdata->load($mensajes);
+            redirect('/frontend/portada/');
+        }
+        $usuario_id = $this->session->userdata('usuario')['id'];
+        if(!$this->Venta->es_comprador($usuario_id, $venta_id)) {
+            redirect('/frontend/portada/');
+        }
+
+        $valores = array(
+            'comprador_id' => NULL
+        );
+        $this->Venta->borrar_compra($venta_id, $valores);
+        redirect('/frontend/portada/');
+    }
 }

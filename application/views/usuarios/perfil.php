@@ -224,7 +224,7 @@
                                            </li>
                                        <?php endif; ?>
                                        <li>
-                                           <a href="/articulos/borrar_compra/<?= $v['articulo_id'] ?>">
+                                           <a href="/usuarios/borrar_compra/<?= $v['venta_id'] ?>">
                                                Yo no he comprado esto!!!
                                            </a>
                                        </li>

@@ -26,4 +26,8 @@ class Venta extends CI_Model{
                               array($vendedor_id, $venta_id));
       return $res->num_rows() > 0 ? TRUE : FALSE;
   }
+
+  public function borrar_compra($venta_id, $valores) {
+      $res = $this->db->where('id', $venta_id)->update('ventas', $valores);
+  }
 }
