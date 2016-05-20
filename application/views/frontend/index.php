@@ -59,36 +59,43 @@
                 // var latitud = 36.8725774;
                 // var longitud = -6.3529689;
 
-                pos = new google.maps.LatLng(latitud, longitud);
-                map.setCenter(pos);
+                dibujarMarker(latitud, longitud);
+          }
 
-                var marker = new google.maps.Marker({
-                    position: pos,
-                    map: map,
-                    title: "Tu estas aquí >.<"
-                });
-                draw_circle = new google.maps.Circle({
-                    center: pos,
-                    radius: 2000,
-                    strokeColor: "#FF0000",
-                    strokeOpacity: 0.6,
-                    strokeWeight: 1,
-                    fillColor: "#FF0000",
-                    fillOpacity: 0.35,
-                    map: map
-                });
-                $.ajax({
-                    url: "<?= base_url() ?>usuarios/usuarios_cercanos/" +
-                          latitud + "/" + longitud + "/" + draw_circle.getRadius(),
-                    type: 'GET',
-                    async: true,
-                    success: respuesta,
-                    error: error,
-                    dataType: "json"
-                });
+          function dibujarMarker(latitud, longitud) {
+              pos = new google.maps.LatLng(latitud, longitud);
+              map.setCenter(pos);
+
+              var marker = new google.maps.Marker({
+                  position: pos,
+                  map: map,
+                  title: "Tu estas aquí >.<"
+              });
+              draw_circle = new google.maps.Circle({
+                  center: pos,
+                  radius: 2000,
+                  strokeColor: "#FF0000",
+                  strokeOpacity: 0.6,
+                  strokeWeight: 1,
+                  fillColor: "#FF0000",
+                  fillOpacity: 0.35,
+                  map: map
+              });
+              $.ajax({
+                  url: "<?= base_url() ?>usuarios/usuarios_cercanos/" +
+                        latitud + "/" + longitud + "/" + draw_circle.getRadius(),
+                  type: 'GET',
+                  async: true,
+                  success: respuesta,
+                  error: error,
+                  dataType: "json"
+              });
           }
 
           function manejadorDeError(error) {
+            latitud = 40.4168;
+            longitud = -3.7038;
+            dibujarMarker(latitud, longitud);
 			switch(error.code) {
                 case error.PERMISSION_DENIED: alert("El usuario no permite compartir datos de geolocalizacion");
                 break;

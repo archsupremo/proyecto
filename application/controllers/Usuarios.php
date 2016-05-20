@@ -462,11 +462,13 @@ class Usuarios extends CI_Controller{
             $latitud = (double) $latitud;
             $longitud = (double) $longitud;
             $distancia = (((double) $distancia) * 1.60934) / 2;
+
             $usuarios_cercanos = $this->Usuario->usuarios_cercanos($latitud, $longitud, $distancia);
         }
         echo json_encode(
                 array(
-                    'usuarios' => $usuarios_cercanos
+                    'usuarios' => $usuarios_cercanos,
+                    'distancia' => $distancia,
                 )
             );
     }
