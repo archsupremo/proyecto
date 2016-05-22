@@ -1,29 +1,43 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-function login() {
+function usuario_logueado() {
     $CI =& get_instance();
 
     $out = "";
 
     if ($CI->Usuario->logueado()):
         $usuario = $CI->session->userdata('usuario');
-        $out .= form_open('usuarios/logout', 'class="form-inline"');
-            $out .= '<div class="form-group">';
-                $out .= form_submit('logout', 'Logout',
-                                    'id="logout" class="button small round right" role="button"');
-                $out .= anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil<br>('. nick().')',
-                            'id="perfil" class="button small round right" role="button"');
-                $out .= anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar perfil',
-                            'id="editar_perfil" class="button small round right" role="button"');
-                $out .= anchor('/articulos/subir/', 'Subir articulo',
-                            'id="subir_articulo" class="button small round right" role="button"');
-            $out .= '</div>';
-        $out .= form_close();
-    else:
-        $out .= '<div class="large-3 columns">';
-            $out .= anchor('/usuarios/login/', 'Iniciar sesión',
-                            'class="button small round right" role="button"');
-        $out .= '</div>';
+        $out .= '<li>'.
+                    anchor('/articulos/subir/', 'Subir articulo',
+                           'id="subir_articulo" class=""');
+                 '</li>';
+        $out .= '<li>'.
+                 anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar perfil',
+                        'id="editar_perfil" class=""');
+                '</li>';
+        $out .= '<li>'.
+                    anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil',
+                           'id="perfil" class=""');
+                 '</li>';
+        $out .= '<li>'.
+                 anchor('/usuarios/logout/', 'Logout',
+                        'id="logout" class=""');
+                '</li>';
+    endif;
+
+    return $out;
+}
+
+function login() {
+    $CI =& get_instance();
+
+    $out = "";
+
+    if (!$CI->Usuario->logueado()):
+        $out .= '<li>'.
+                 anchor('/usuarios/login/', 'Iniciar sesión',
+                        'id="logout" class=""');
+                '</li>';
     endif;
 
     return $out;
@@ -35,10 +49,10 @@ function registro() {
     $out = "";
 
     if (!$CI->Usuario->logueado()):
-        $out .= '<div class="large-1 columns">';
-            $out .= anchor('/usuarios/registrar/', 'Registro',
-                            'class="button small round right" role="button"');
-        $out .= '</div>';
+        $out .= '<li>'.
+                 anchor('/usuarios/registrar/', 'Registro',
+                        'id="logout" class=""');
+                '</li>';
     endif;
 
     return $out;

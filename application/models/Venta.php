@@ -15,14 +15,14 @@ class Venta extends CI_Model{
 
   public function es_comprador($comprador_id, $venta_id) {
       $res = $this->db->query("select * from v_ventas_comprador where comprador_id = ? ".
-                              "and venta_id = ? and valoracion is null",
+                              "and venta_id = ?",
                               array($comprador_id, $venta_id));
       return $res->num_rows() > 0 ? TRUE : FALSE;
   }
 
   public function es_vendedor($vendedor_id, $venta_id) {
       $res = $this->db->query("select * from v_ventas_vendedor where vendedor_id = ? ".
-                              "and venta_id = ? and valoracion is null",
+                              "and venta_id = ?",
                               array($vendedor_id, $venta_id));
       return $res->num_rows() > 0 ? TRUE : FALSE;
   }

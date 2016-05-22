@@ -1,10 +1,10 @@
 <?php template_set('title', 'Portada') ?>
 <div class="row">
 </div>
-<div class="row medium-uncollapse large-collapse">
-    <div class="large-3 columns mapa">
+<div class="container medium-uncollapse large-collapse">
+    <div class="large-3 columns">
         <h4>¿Quien esta vendiendo a tu alrededor?</h4>
-        <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+        <input id="pac-input" class="controls" type="text" placeholder="Buscar...">
         <div class="mapa_index" id="map"></div>
         <script>
           var usuario_id = <?= logueado() ? dar_usuario()['id'] : 'undefined' ?>;
@@ -215,9 +215,10 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&libraries=places&callback=initMap"
         async defer></script>
     </div>
-    <div class="large-9 columns">
+    <div class="large-6 columns">
         <?php foreach ($articulos as $v): ?>
-            <div class="large-4 columns left articulos" id="<?= $v['articulo_id'] ?>">
+            <div class="large-4 columns left articulos"
+                 id="<?= $v['articulo_id'] ?>">
                 <div class="">
                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                         <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
@@ -267,6 +268,11 @@
                 </div>
             </div>
         <?php endforeach; ?>
+    </div>
+    <div class="large-3 columns">
+        <h3>Ordenar por distancia</h3>
+        <h3>Ordenar por precio</h3>
+        <h3>Busqueda personalizada</h3>
     </div>
 </div>
 

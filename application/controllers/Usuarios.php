@@ -280,6 +280,9 @@ class Usuarios extends CI_Controller{
                 $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
                 $valores['registro_verificado'] = FALSE;
                 $valores['activado'] = TRUE;
+                $valores['latitud'] = (double) $valores['latitud'];
+                $valores['longitud'] = (double) $valores['longitud'];
+                $valores['nick'] = strtolower($valores['nick']);
 
                 $this->Usuario->insertar($valores);
 
@@ -626,6 +629,7 @@ class Usuarios extends CI_Controller{
         if ($this->input->post('enviar') !== NULL) {
             $mensaje = $this->input->post();
             $mensaje['receptor_id'] = $id_usuario;
+            $mensaje['emisor_id'] = $this->session->userdata('usuario')['id'];
             unset($mensaje['enviar']);
 
             $reglas = array(
@@ -858,10 +862,10 @@ class Usuarios extends CI_Controller{
         if(!$this->Venta->es_comprador($usuario_id, $venta_id)) {
             redirect('/frontend/portada/');
         }
-
         $valores = array(
             'comprador_id' => NULL
         );
+
         $this->Venta->borrar_compra($venta_id, $valores);
         redirect('/frontend/portada/');
     }

@@ -5,7 +5,6 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BuyAndSell</title>
-    <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/foundation.css" />
     <link rel="stylesheet" href="/rateyoJquery/jquery.rateyo.css"/>
     <link rel="stylesheet" href="/slick/slick.css">
@@ -24,10 +23,7 @@
     <script src="/js/foundation/foundation.alert.js"></script>
     <script src="/rateyoJquery/jquery.rateyo.js"></script>
     <script src="/slick/slick.min.js"></script>
-
-    <!-- TabTab -->
     <script src="/js/velocity.min.js"></script>
-    <script src="/js/tabtab.min.js"></script>
 
     <!-- DropZone -->
     <script src="/js/dropzone.js"></script>
@@ -55,7 +51,7 @@
         }
         .mapa_index {
             height: 450px;
-            width: 140%;
+            width: 100%;
         }
         .mapa {
             margin-left: -8em;
@@ -81,7 +77,7 @@
             padding: 0px;
             padding-top: 0.9375em;
         }
-        
+
         /* Formulario de busqueda mapa */
         .controls {
           margin-top: 10px;
@@ -129,10 +125,7 @@
   </head>
   <body>
     <header class="">
-        <div class="large-2 columns">
-            <a href="/frontend/portada" class="button small" role="button">BuyAndSell</a>
-        </div>
-        <form action="/frontend/portada/index" class="large-6 columns" method="post">
+        <!-- <form action="/frontend/portada/index" class="large-6 columns" method="post">
             <div class="row">
                 <?= form_dropdown('categoria', busqueda_select(),
                     set_value('categoria', '', FALSE), 'class="large-4 columns"') ?>
@@ -144,9 +137,36 @@
                 </div>
                 </div>
             </div>
-        </form>
-        <?= login() ?>
-        <?= registro() ?>
+        </form> -->
+        <nav class="top-bar" data-topbar role="navigation" data-options="is_hover: false">
+          <ul class="title-area">
+            <li class="name">
+              <h1><a href="/frontend/portada">BuyAndSell</a></h1>
+            </li>
+             <!-- Remove the class "menu-icon" to get rid of menu icon.
+                  Take out "Menu" to just have icon alone -->
+            <li class="toggle-topbar menu-icon">
+                <a href="#">
+                    <span>Menu</span>
+                </a>
+            </li>
+          </ul>
+          <section class="top-bar-section">
+            <!-- Right Nav Section -->
+            <ul class="right">
+                <?= login() ?>
+                <li class="divider"></li>
+                <?= registro() ?>
+                <li class="divider"></li>
+              <li class="has-dropdown">
+                <a href="#"><?= nick() ?></a>
+                <ul class="dropdown">
+                  <?= usuario_logueado() ?>
+                </ul>
+              </li>
+            </ul>
+          </section>
+        </nav>
     </header>
     <?= mensajes() ?>
     <?= $contents ?>

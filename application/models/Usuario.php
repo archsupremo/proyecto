@@ -36,7 +36,7 @@ class Usuario extends CI_Model {
     }
 
     public function por_nick($nick) {
-        $res = $this->db->get_where('usuarios', array('nick' => $nick));
+        $res = $this->db->get_where('usuarios', array('nick' => strtolower($nick)));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
@@ -48,7 +48,7 @@ class Usuario extends CI_Model {
 
     public function existe_nick_id($nick, $usuario_id) {
         $res = $this->db->query("select * from usuarios where nick = ? and id != ?",
-                                array($nick, $usuario_id));
+                                array(strtolower($nick), $usuario_id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
@@ -58,11 +58,11 @@ class Usuario extends CI_Model {
     }
 
     public function existe_nick($nick) {
-        return $this->por_nick($nick) !== FALSE;
+        return $this->por_nick(strtolower($nick)) !== FALSE;
     }
 
     public function existe_nick_registrado($nick) {
-        return $this->por_nick_registrado($nick) !== FALSE;
+        return $this->por_nick_registrado(strtolower($nick)) !== FALSE;
     }
 
     public function por_email($email) {
@@ -130,7 +130,7 @@ class Usuario extends CI_Model {
 
     public function usuarios_nick($nick, $usuario_id) {
         $res = $this->db->query("select * from usuarios where nick = ? and id != ?",
-                                array($nick, $usuario_id));
+                                array(strtolower($nick), $usuario_id));
         return $res->num_rows() > 0 ? TRUE : FALSE;
     }
 
