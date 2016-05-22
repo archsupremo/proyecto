@@ -4,12 +4,15 @@
 <div class="row medium-uncollapse large-collapse">
     <div class="large-3 columns mapa">
         <h4>¿Quien esta vendiendo a tu alrededor?</h4>
+        <input id="pac-input" class="controls" type="text" placeholder="Search Box">
         <div class="mapa_index" id="map"></div>
         <script>
           var usuario_id = <?= logueado() ? dar_usuario()['id'] : 'undefined' ?>;
           var map;
           var zoom;
-          var markers = [];
+          var markers_propios = [];
+          var position_changed;
+          var position_name;
 
           function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
@@ -21,7 +24,40 @@
       		  streetViewControl: false,
       		  fullscreenControl: false
             });
+            var input = document.getElementById('pac-input');
+            var searchBox = new google.maps.places.SearchBox(input);
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
+            map.addListener('bounds_changed', function() {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            var markers = [];
+            searchBox.addListener('places_changed', function() {
+                var places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                  return;
+                }
+
+                // Clear out the old markers.
+                markers.forEach(function(marker) {
+                  marker.setMap(null);
+                });
+                markers = [];
+
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function(place) {
+                    position_changed = place.geometry.location;
+                    position_name = place.name;
+                    if (place.geometry.viewport) {
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
             zoom = map.getZoom();
 
             if (navigator.geolocation){
@@ -31,15 +67,45 @@
 				alert("Su navegador no soporta Geolocalizacion");
 			}
 
-            map.addListener('zoom_changed', function() {
-                if(zoom > map.getZoom()) {
-                    draw_circle.setRadius(draw_circle.getRadius() * 2);
-                } else {
-                    draw_circle.setRadius(draw_circle.getRadius() / 2);
+            map.addListener('bounds_changed', function () {
+                if(position_changed != undefined) {
+                    var latitud = position_changed.lat();
+                    var longitud = position_changed.lng();
+
+                    pos = new google.maps.LatLng(latitud, longitud);
+                    map.setCenter(pos);
+                    marker_yo.setMap(null);
+                    draw_circle.setCenter(pos);
+
+                    zoom = map.getZoom();
+                    for (var marker in markers_propios) {
+                        markers_propios[marker].setMap(null);
+                    }
+                    $.ajax({
+                        url: "<?= base_url() ?>usuarios/usuarios_cercanos/" +
+                              latitud + "/" + longitud + "/" + draw_circle.getRadius(),
+                        type: 'GET',
+                        async: true,
+                        success: respuesta,
+                        error: error,
+                        dataType: "json"
+                    });
                 }
+            });
+
+            map.addListener('zoom_changed', function() {
+                var radius = draw_circle.getRadius();
+                for(i = 0; i < Math.abs(zoom - map.getZoom()); i++) {
+                    if(zoom > map.getZoom()) {
+                        radius *= 2;
+                    } else {
+                        radius /= 2;
+                    }
+                }
+                draw_circle.setRadius(radius);
                 zoom = map.getZoom();
-                for (var marker in markers) {
-                    markers[marker].setMap(null);
+                for (var marker in markers_propios) {
+                    markers_propios[marker].setMap(null);
                 }
                 $.ajax({
                     url: "<?= base_url() ?>usuarios/usuarios_cercanos/" +
@@ -56,9 +122,6 @@
      	  function mostrarLocalizacion(posicion){
                 latitud = posicion.coords.latitude;
                 longitud = posicion.coords.longitude;
-                // var latitud = 36.8725774;
-                // var longitud = -6.3529689;
-
                 dibujarMarker(latitud, longitud);
           }
 
@@ -66,7 +129,7 @@
               pos = new google.maps.LatLng(latitud, longitud);
               map.setCenter(pos);
 
-              var marker = new google.maps.Marker({
+              marker_yo = new google.maps.Marker({
                   position: pos,
                   map: map,
                   title: "Tu estas aquí >.<"
@@ -97,16 +160,20 @@
             longitud = -3.7038;
             dibujarMarker(latitud, longitud);
 			switch(error.code) {
-                case error.PERMISSION_DENIED: alert("El usuario no permite compartir datos de geolocalizacion");
+                case error.PERMISSION_DENIED:
+                    // alert("El usuario no permite compartir datos de geolocalizacion");
                 break;
 
-                case error.POSITION_UNAVAILABLE: alert("Imposible detectar la posicio actual");
+                case error.POSITION_UNAVAILABLE:
+                    alert("Imposible detectar la posicio actual");
                 break;
 
-                case error.TIMEOUT: alert("La posicion debe recuperar el tiempo de espera");
+                case error.TIMEOUT:
+                    // alert("La posicion debe recuperar el tiempo de espera");
                 break;
 
-                default: alert("Error desconocido");
+                default:
+                    alert("Error desconocido");
                 break;
             }
     	  }
@@ -137,7 +204,7 @@
       			      position: pos,
                       title: usuario.nick + " está aquí >.<, a " + distancia + " de distancia.",
       			  });
-                  markers.push(marker);
+                  markers_propios.push(marker);
                   marker.setMap(map);
               }
           }
@@ -145,7 +212,7 @@
               alert("Ha ocurrido el error => " + error.statusText);
           }
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&callback=initMap"
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&libraries=places&callback=initMap"
         async defer></script>
     </div>
     <div class="large-9 columns">

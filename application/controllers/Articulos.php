@@ -91,34 +91,45 @@ class Articulos extends CI_Controller {
           redirect('/frontend/portada/');
       }
 
-      $data['error'] = array();
-
-      $config['upload_path'] = 'imagenes_articulos/';
-      $config['allowed_types'] = 'jpeg|jpg|jpe';
-      $config['overwrite'] = TRUE;
-      $config['max_width'] = '5000';
-      $config['max_height'] = '5000';
-      $config['max_size'] = '500';
-      $articulo_id = $this->session->userdata('usuario')['ultimo_articulo'];
-      for ($i = 1; $i <= 4; $i++) {
-          if(!is_file($_SERVER["DOCUMENT_ROOT"] .
-                      '/imagenes_articulos/' .
-                      $articulo_id . '_' . $i .
-                      '.jpg')):
-            $config['file_name'] = $articulo_id . '_' . $i . '.jpg';
-            $this->load->library('upload', $config);
-
-            if ( ! $this->upload->do_upload('foto')) {
-              $data['error'] = $this->upload->display_errors();
-            }
-            else {
-              $data = array('upload_data' => $this->upload->data());
-            }
-            break;
-          endif;
+      if($this->input->post('subir') !== NULL) {
+          $sesion = $this->session->userdata('usuario');
+          unset($sesion['ultimo_articulo']);
+          $this->session->set_userdata('usuario', $sesion);
       }
+      if(isset($this->session->userdata('usuario')['ultimo_articulo'])) {
+          $articulo_id = $this->session->userdata('usuario')['ultimo_articulo'];
 
-      $this->template->load('/articulos/subir_imagenes');
+          $data['error'] = array();
+
+          $config['upload_path'] = 'imagenes_articulos/';
+          $config['allowed_types'] = 'jpeg|jpg|jpe';
+          $config['overwrite'] = TRUE;
+          $config['max_width'] = '5000';
+          $config['max_height'] = '5000';
+          $config['max_size'] = '500';
+
+          for ($i = 1; $i <= 4; $i++) {
+              if(!is_file($_SERVER["DOCUMENT_ROOT"] .
+                          '/imagenes_articulos/' .
+                          $articulo_id . '_' . $i .
+                          '.jpg')):
+
+                $config['file_name'] = $articulo_id . '_' . $i . '.jpg';
+                $this->load->library('upload', $config);
+
+                if ( ! $this->upload->do_upload('foto')) {
+                  $data['error'] = $this->upload->display_errors();
+                }
+                else {
+                  $data = array('upload_data' => $this->upload->data());
+                }
+                break;
+              endif;
+          }
+          $this->template->load('/articulos/subir_imagenes');
+      } else {
+          redirect('/frontend/portada');
+      }
   }
 
   public function borrar_imagen($numero = NULL) {

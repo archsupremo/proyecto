@@ -458,14 +458,14 @@
         });
 
         if (navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(mostrarLocalizacion, manejadorDeError);
+            mostrarLocalizacion();
         }
         else {
             alert("Su navegador no soporta Geolocalizacion");
         }
       }
 
-      function mostrarLocalizacion(posicion){
+      function mostrarLocalizacion(){
             <?php if($usuario['latitud'] !== NULL): ?>
                 var latitud = <?= $usuario['latitud'] ?>;
             <?php else: ?>
@@ -486,57 +486,6 @@
                 map: map,
                 title: "<?= $usuario['nick'] ?> está aquí >.<",
             });
-            // $.ajax({
-            //     url: "usuarios/usuarios_cercanos/",
-            //     type: 'POST',
-            //     async: true,
-            //     success: respuesta,
-            //     error: error,
-            //     dataType: "json"
-            // });
-      }
-
-      function manejadorDeError(error) {
-        switch(error.code) {
-            case error.PERMISSION_DENIED: alert("El usuario no permite compartir datos de geolocalizacion");
-            break;
-
-            case error.POSITION_UNAVAILABLE: alert("Imposible detectar la posicio actual");
-            break;
-
-            case error.TIMEOUT: alert("La posicion debe recuperar el tiempo de espera");
-            break;
-
-            default: alert("Error desconocido");
-            break;
-        }
-      }
-
-      function obtener_antipodas(latitud, longitud) {
-          return {anti_latitud: -latitud, anti_longitud: (180 - Math.abs(longitud))};
-      }
-
-      function respuesta(respuesta) {
-          for (var ciudad in respuesta.ciudades) {
-              var latitud = respuesta.ciudades[ciudad].latlon[0];
-              var longitud = respuesta.ciudades[ciudad].latlon[1];
-              var prediccion = respuesta.ciudades[ciudad].prediccion;
-
-              // alert("Lat: " + latitud + " y Lon: " + longitud + ". Prediccion: " + prediccion);
-              var imagen = new google.maps.MarkerImage(
-                  "http://localhost/maps/tiempo/images/" + prediccion + ".png"
-              );
-              var pos = new google.maps.LatLng(latitud, longitud);
-              var marker = new google.maps.Marker({
-                  position: pos,
-                  map: map,
-                  title: prediccion,
-                  icon: imagen
-              });
-          }
-      }
-      function error(error) {
-          alert("Ha ocurrido el error => " + error.statusText);
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&callback=initMap"

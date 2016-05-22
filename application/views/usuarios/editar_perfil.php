@@ -215,16 +215,17 @@
         });
     }, function(error) {
         switch(error.code) {
-            case error.PERMISSION_DENIED: alert("El usuario no permite compartir datos de geolocalizacion");
+            case error.PERMISSION_DENIED:
+            case error.POSITION_UNAVAILABLE:
+                alert("Imposible detectar la posicio actual");
             break;
 
-            case error.POSITION_UNAVAILABLE: alert("Imposible detectar la posicio actual");
+            case error.TIMEOUT:
+                // alert("La posicion debe recuperar el tiempo de espera");
             break;
 
-            case error.TIMEOUT: alert("La posicion debe recuperar el tiempo de espera");
-            break;
-
-            default: alert("Error desconocido");
+            default:
+                alert("Error desconocido");
             break;
         }
     });
