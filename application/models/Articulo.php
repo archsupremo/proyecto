@@ -94,7 +94,7 @@ class Articulo extends CI_Model{
   }
 
   public function por_id($id_articulo) {
-      $res = $this->db->query("select * from v_articulos where id::text = ?", array($id_articulo));
+      $res = $this->db->query("select * from v_articulos_raw where id::text = ?", array($id_articulo));
       return ($res->num_rows() > 0) ? $res->row_array() : FALSE;
   }
 

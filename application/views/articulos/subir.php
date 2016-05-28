@@ -20,6 +20,10 @@
           </div>
           <div class="">
               <?= form_dropdown('categoria_id', $categorias) ?>
+
+              <?= form_label('Etiquetas:', 'tags') ?>
+              <?= form_input('tags', set_value('tags', '', FALSE),
+                             'id="tags" class="" placeholder="Escriba las etiquetas del producto..."') ?>
           </div>
           <div class="row">
               <div class="large-12 columns">
@@ -40,6 +44,16 @@
         <?= form_close() ?>
     </div>
 </div>
+<script>
+    $('#tags').tagEditor({
+        placeholder: "Escriba las etiquetas del producto...",
+        autocomplete: {
+            position: { collision: 'flip' },
+            source: "<?= base_url() ?>etiquetas/buscar/"
+        },
+        forceLowercase: false
+    });
+</script>
 <script type="text/javascript">
     $(document).ready(function() {
          $('#errores_formulario').hide();

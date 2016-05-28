@@ -9,12 +9,6 @@ create table "ci_sessions" (
 
 create index "ci_sessions_timestamp" on "ci_sessions" ("timestamp");
 
-drop table if exists categorias cascade;
-create table categorias(
-    id bigserial constraint pk_categorias primary key,
-    nombre varchar(100) not null unique
-);
-
 drop table if exists usuarios cascade;
 create table usuarios(
     id                  bigserial             constraint pk_usuarios primary key,
@@ -49,9 +43,15 @@ create table articulos(
     descripcion varchar(500),
     usuario_id bigint constraint fk_articulos_usuarios references usuarios (id)
                       on update cascade on delete cascade,
-    categoria_id bigint constraint fk_articulos_categorias references categorias (id)
-                        on update cascade on delete cascade,
     precio money not null
+);
+
+drop table if exists etiquetas cascade;
+create table etiquetas(
+    nombre varchar(100) not null,
+    articulo_id bigint constraint fk_etiquetas_articulos references articulos (id)
+                on update cascade on delete cascade,
+    constraint pk_etiquetas primary key (nombre, articulo_id)
 );
 
 drop table if exists ventas cascade;
@@ -120,20 +120,22 @@ insert into usuarios(nick, password, email, registro_verificado, activado, latit
           ('archsupremo', crypt('archsupremo', gen_salt('bf')), 'jdkdejava@gmail.com',
             true, true, 36.7795776, -6.3529689);
 
-insert into categorias(nombre)
-    values('Cocina'),
-          ('Deporte'),
-          ('Tecnologia'),
-          ('Libros');
+insert into articulos(nombre, descripcion, usuario_id, precio)
+    values('Movil Xperia M4 Aqua', 'Semi nuevo', 2, 50.3),
+          ('Cuchillo para cortar verdura de Guillermo 1', 'Semi nuevo', 2, 12.5),
+          ('Cancion de Hielo Y Fuego: Juego de Tronos', 'Semi nuevo', 2, 150.3),
+          ('Cuchillo para cortar verdura de archsupremo 1', 'Semi nuevo', 3, 12.5),
+          ('Cuchillo para cortar verdura de admin 1', 'Semi nuevo', 1, 12.5),
+          ('Cuchillo para cortar verdura de archsupremo 2', 'Semi nuevo', 3, 12.5),
+          ('Cuchillo para cortar verdura de admin 2', 'Semi nuevo', 1, 12.5);
 
-insert into articulos(nombre, descripcion, usuario_id, categoria_id, precio)
-    values('Movil Xperia M4 Aqua', 'Semi nuevo', 2, 3, 50.3),
-          ('Cuchillo para cortar verdura de Guillermo 1', 'Semi nuevo', 2, 1, 12.5),
-          ('Cancion de Hielo Y Fuego: Juego de Tronos', 'Semi nuevo', 2, 4, 150.3),
-          ('Cuchillo para cortar verdura de archsupremo 1', 'Semi nuevo', 3, 1, 12.5),
-          ('Cuchillo para cortar verdura de admin 1', 'Semi nuevo', 1, 1, 12.5),
-          ('Cuchillo para cortar verdura de archsupremo 2', 'Semi nuevo', 3, 1, 12.5),
-          ('Cuchillo para cortar verdura de admin 2', 'Semi nuevo', 1, 1, 12.5);
+insert into etiquetas(nombre, articulo_id)
+    values('Cocina', 1),
+          ('Tecnologia', 1),
+          ('Cocina', 2),
+          ('Cocina', 3),
+          ('Libros', 3),
+          ('Cocina', 4);
 
 insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta)
     values(2, 1, 1, current_date),
@@ -157,29 +159,50 @@ insert into pm(emisor_id, receptor_id, mensaje, fecha, visto)
           (3, 1, 'Tercer Mensaje', current_timestamp, true),
           (3, 1, 'Cuarto Mensaje', current_timestamp, false);
 
+create or replace function concat(text, text) returns text
+    called on null input language plpgsql immutable
+    as $$
+        begin
+            if $1 is null then
+              return $2;
+        end if;
+            if $2 is null then
+              return $1;
+        end if;
+    return $1 || $2;
+end $$;
+-- Linea fundamental la de a continuación, no quitar por nada del mundo
+-- create aggregate text_concat (text) (sfunc = concat, stype = text);
+
 drop view if exists v_articulos_raw cascade;
 create view v_articulos_raw as
-    select a.*, u.nick, c.nombre as nombre_categoria
+    select a.*, u.nick, text_concat(e.nombre || ',') as etiquetas
     from articulos a join usuarios u on a.usuario_id = u.id
-         join categorias c on a.categoria_id = c.id;
+    left join etiquetas e on e.articulo_id = a.id
+    group by a.id, a.nombre, a.descripcion, a.usuario_id, a.precio, u.nick;
 
 drop view if exists v_ventas;
 create view v_ventas as
- select v.id as venta_id, nombre, descripcion, nombre_categoria,
-        precio, u.nick as comprador_nick, uu.nick as vendedor_nick,
-        fecha_venta, articulo_id, vendedor_id, comprador_id,
-        categoria_id
+ select v.id as venta_id, nombre, descripcion, precio,
+        u.nick as comprador_nick, uu.nick as vendedor_nick,
+        fecha_venta, articulo_id, vendedor_id, comprador_id
  from v_articulos_raw a join ventas v on a.id = v.articulo_id
       join usuarios u on u.id = v.comprador_id
       join usuarios uu on uu.id = v.vendedor_id;
 
+drop view if exists v_articulos;
+create view v_articulos as
+    select *, id as articulo_id, FALSE as favorito
+    from v_articulos_raw
+    group by id, nombre, descripcion, usuario_id, precio, nick, etiquetas
+    having id not in (select articulo_id from ventas);
+
 drop view if exists v_ventas_vendedor;
 create view v_ventas_vendedor as
-    select v.id as venta_id, nombre, descripcion, nombre_categoria, precio,
+    select v.id as venta_id, nombre, descripcion, precio,
            u.nick as comprador_nick, uu.nick as vendedor_nick,
-           fecha_venta, articulo_id,
-           vendedor_id, comprador_id, categoria_id, valoracion,
-           valoracion_text
+           fecha_venta, articulo_id, vendedor_id, comprador_id,
+           valoracion, valoracion_text
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
          join usuarios uu on uu.id = v.vendedor_id
          left join usuarios u on u.id = v.comprador_id
@@ -187,23 +210,14 @@ create view v_ventas_vendedor as
 
 drop view if exists v_ventas_comprador;
 create view v_ventas_comprador as
-    select v.id as venta_id, nombre, descripcion, nombre_categoria, precio,
+    select v.id as venta_id, nombre, descripcion, precio,
            u.nick as comprador_nick, uu.nick as vendedor_nick,
-           fecha_venta, articulo_id,
-           vendedor_id, comprador_id, categoria_id, valoracion,
-           valoracion_text
+           fecha_venta, articulo_id, vendedor_id, comprador_id,
+           valoracion, valoracion_text
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
          join usuarios u on u.id = v.comprador_id
          left join usuarios uu on uu.id = v.vendedor_id
          left join valoraciones_comprador vv on vv.venta_id = v.id;
-
-drop view if exists v_articulos;
-create view v_articulos as
-    select *, id as articulo_id, FALSE as favorito
-    from v_articulos_raw
-    group by id, nombre, descripcion, usuario_id, categoria_id, precio,
-             nick, nombre_categoria
-    having id not in (select articulo_id from ventas);
 
 drop view if exists v_usuarios_validados cascade;
 create view v_usuarios_validados as
@@ -214,8 +228,8 @@ create view v_usuarios_validados as
 
 drop view if exists v_favoritos cascade;
 create view v_favoritos as
-    select id as articulo_id, nombre, descripcion, a.usuario_id, categoria_id, precio,
-             nick, nombre_categoria, f.usuario_id as usuario_favorito, TRUE as favorito
+    select id as articulo_id, nombre, descripcion, a.usuario_id, precio,
+             nick, f.usuario_id as usuario_favorito, TRUE as favorito
     from v_articulos a join favoritos f
     on a.id = f.articulo_id;
 

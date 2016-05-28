@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="/toogle/css/toggles-full.css">
     <link rel="stylesheet" href="/toogle/css/themes/toggles-all.css">
     <link rel="stylesheet" href="/rubytabs/rubytabs.css">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link href="/tag/jquery.tag-editor.css" rel="stylesheet">
 
     <!-- Foundation y rateYo -->
     <script src="/js/vendor/modernizr.js"></script>
@@ -33,6 +35,11 @@
 
     <!-- RubyTabs -->
     <script src="/rubytabs/rubytabs.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+    <script src="/tag/jquery.tag-editor.min.js"></script>
+    <script src="/tag/jquery.caret.min.js"></script>
+
     <style media="screen">
         .busqueda {
             padding: 0;
@@ -125,19 +132,6 @@
   </head>
   <body>
     <header class="">
-        <!-- <form action="/frontend/portada/index" class="large-6 columns" method="post">
-            <div class="row">
-                <?= form_dropdown('categoria', busqueda_select(),
-                    set_value('categoria', '', FALSE), 'class="large-4 columns"') ?>
-                <div class="large-4 columns busqueda">
-                    <input class="" name="nombre" type="text" value="<?= busqueda() ?>">
-                </div>
-                <div class="large-4 columns">
-                  <input type="submit" name="buscar" class="button radius tiny" value="Buscar...">
-                </div>
-                </div>
-            </div>
-        </form> -->
         <nav class="top-bar" data-topbar role="navigation" data-options="is_hover: false">
           <ul class="title-area">
             <li class="name">

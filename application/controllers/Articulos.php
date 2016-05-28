@@ -57,6 +57,7 @@ class Articulos extends CI_Controller {
 
       if ($this->input->post('subir') !== NULL) {
           $articulo = $this->input->post();
+          
           $articulo['precio'] = (double) $articulo['precio'];
           unset($articulo['subir']);
 

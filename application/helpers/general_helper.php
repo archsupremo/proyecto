@@ -22,30 +22,3 @@ function mensajes() {
 
     return $out;
 }
-
-
-//// Funciones de categorias y busqueda del template.php
-function busqueda() {
-    $CI =& get_instance();
-
-    return $CI->input->post('nombre');
-}
-
-function busqueda_select() {
-    $CI =& get_instance();
-
-    $categorias_raw = $CI->Articulo->categorias();
-    $categorias = array(0 => 'Todo');
-    foreach ($categorias_raw as $categoria) {
-        $categorias[$categoria['id']] = $categoria['nombre'];
-    }
-    return $categorias;
-}
-
-function selected($categoria_id) {
-    $CI =& get_instance();
-
-    if ($CI->input->post('categoria') === $categoria_id) {
-        return 'selected="on"';
-    }
-}
