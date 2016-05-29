@@ -432,8 +432,8 @@
                             <div id="panel1a" class="content active">
                                 <?php foreach ($pm_no_vistos as $v): ?>
                                         <div class="">
-                                            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
-                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
+                                            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg')): ?>
+                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg' ?>
                                             <?php else: ?>
                                                 <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
                                             <?php endif; ?>
@@ -442,14 +442,14 @@
                                                             'src' => $url,
                                                             'title' => $v['nick_emisor'],
                                                             'alt' => $v['nick_emisor'],
-                                                            'class' => 'imagen_nick',
+                                                            'class' => 'th',
                                                         ))) ?>
                                             <?= anchor('/usuarios/perfil/' . $v['emisor_id'], $v['nick_emisor']) ?>
                                         </div>
                                         <div class="toggle toggle-light"
                                              data-toggle-on="false"
-                                             data-toggle-height="50"
-                                             data-toggle-width="90"
+                                             data-toggle-height="25"
+                                             data-toggle-width="100"
                                              id="<?= $v['id'] ?>"></div>
                                         <div class="">
                                             <?= $v['mensaje'] ?>
@@ -465,8 +465,8 @@
                             <div id="panel2a" class="content">
                                 <?php foreach ($pm_vistos as $v): ?>
                                         <div class="">
-                                            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
-                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
+                                            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg')): ?>
+                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg' ?>
                                             <?php else: ?>
                                                 <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
                                             <?php endif; ?>
@@ -475,14 +475,14 @@
                                                             'src' => $url,
                                                             'title' => $v['nick_emisor'],
                                                             'alt' => $v['nick_emisor'],
-                                                            'class' => 'imagen_nick',
+                                                            'class' => 'th',
                                                         ))) ?>
                                             <?= anchor('/usuarios/perfil/' . $v['emisor_id'], $v['nick_emisor']) ?>
                                         </div>
                                         <div class="toggle toggle-light"
                                              data-toggle-on="true"
-                                             data-toggle-height="50"
-                                             data-toggle-width="90"
+                                             data-toggle-height="25"
+                                             data-toggle-width="100"
                                              id="<?= $v['id'] ?>"></div>
                                         <div class="">
                                             <?= $v['mensaje'] ?>
@@ -506,7 +506,7 @@
         click: true,
         text: {
             on: 'Visto',
-            off: 'No'
+            off: 'No Visto'
         },
         animate: 250, // animation time (ms)
         easing: 'swing', // animation transition easing function

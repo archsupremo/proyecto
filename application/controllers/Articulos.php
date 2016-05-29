@@ -56,7 +56,6 @@ class Articulos extends CI_Controller {
       }
 
       if ($this->input->post('subir') !== NULL) {
-          var_dump($this->input->post());
           $reglas = array(
               array(
                   'field' => 'nombre',

@@ -76,7 +76,7 @@
             <p>Precio => <?= $articulo['precio'] ?></p>
             <p>Nombre => <?= $articulo['nombre'] ?></p>
             <p>Descripcion => <?= $articulo['descripcion'] ?></p>
-            <p>Categoria => <?= $articulo['nombre_categoria'] ?></p>
+            <p>Etiquetas => <?= $articulo['etiquetas'] ?></p>
         </div>
         <div class="alert-box info radius">
             Geolocalizacion => >.<
@@ -94,7 +94,7 @@
                                        img(array(
                                            'alt' => $v['nombre'],
                                            'title' => $v['nombre'],
-                                           'data-lazy' => '/imagenes_articulos/' . $v['id'] . '.jpg'
+                                           'data-lazy' => '/imagenes_articulos/' . $v['id'] . '_1.jpg'
                                        )),
                                        'title="' . $v['nombre'] . '"') ?>
 
