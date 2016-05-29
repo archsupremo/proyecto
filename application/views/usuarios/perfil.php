@@ -38,9 +38,6 @@
                           <h2 id="modalTitle">Ubicación de <?= $usuario['nick'] ?></h2>
                       </div>
                       <div class="ruby-map">
-                          <!-- <div class="map-head">
-                              <h4>Ubicación de <?= $usuario['nick'] ?></h4>
-                          </div> -->
                           <a class="rt01iframe"
                              href="https://www.google.com/maps/embed/v1/place?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&amp;&amp;q=<?= $usuario['latitud'] ?>,<?= $usuario['longitud'] ?>&zoom=15&maptype=roadmap"
                              width="100%" height="600" frameborder="0" style="border:0" allowfullscreen></a>

@@ -43,6 +43,7 @@ create table articulos(
     descripcion varchar(500),
     usuario_id bigint constraint fk_articulos_usuarios references usuarios (id)
                       on update cascade on delete cascade,
+    fecha     timestamp not null,
     precio money not null
 );
 
@@ -129,14 +130,25 @@ insert into usuarios(nick, password, email, registro_verificado, activado, latit
           ('archsupremo', crypt('archsupremo', gen_salt('bf')), 'jdkdejava@gmail.com',
             true, true, 36.7795776, -6.3529689);
 
-insert into articulos(nombre, descripcion, usuario_id, precio)
-    values('Movil Xperia M4 Aqua', 'Semi nuevo', 2, 50.3),
-          ('Cuchillo para cortar verdura de Guillermo 1', 'Semi nuevo', 2, 12.5),
-          ('Cancion de Hielo Y Fuego: Juego de Tronos', 'Semi nuevo', 2, 150.3),
-          ('Cuchillo para cortar verdura de archsupremo 1', 'Semi nuevo', 3, 12.5),
-          ('Cuchillo para cortar verdura de admin 1', 'Semi nuevo', 1, 12.5),
-          ('Cuchillo para cortar verdura de archsupremo 2', 'Semi nuevo', 3, 12.5),
-          ('Cuchillo para cortar verdura de admin 2', 'Semi nuevo', 1, 12.5);
+insert into articulos(nombre, descripcion, usuario_id, fecha, precio)
+    values('Movil Xperia M4 Aqua', 'Semi nuevo', 1, current_timestamp, 50.3),
+          ('Bicicleta', 'Semi nueva', 2, current_timestamp, 50.3),
+          ('Dragon Ball', 'Serie Completa', 3, current_timestamp, 50.3),
+          ('Dragon Ball Z', 'Serie Completa', 1, current_timestamp, 50.3),
+          ('Dragon Ball GT', 'Serie Completa', 2, current_timestamp, 50.3),
+          ('Dragon Ball Super', 'Serie Completa', 3, current_timestamp, 50.3),
+          ('Reloj', 'Semi nuevo', 1, current_timestamp, 50.3),
+          ('Mesa', 'Semi nueva', 2, current_timestamp, 50.3),
+          ('Portatil', 'Semi nuevo', 3, current_timestamp, 50.3),
+          ('Reloj', 'Semi nuevo', 1, current_timestamp, 50.3),
+          ('Mesa', 'Semi nueva', 2, current_timestamp, 50.3),
+          ('Portatil', 'Semi nuevo', 3, current_timestamp, 50.3),
+          ('Reloj', 'Semi nuevo', 1, current_timestamp, 50.3),
+          ('Mesa', 'Semi nueva', 2, current_timestamp, 50.3),
+          ('Portatil', 'Semi nuevo', 3, current_timestamp, 50.3),
+          ('Reloj', 'Semi nuevo', 1, current_timestamp, 50.3),
+          ('Mesa', 'Semi nueva', 2, current_timestamp, 50.3),
+          ('Portatil', 'Semi nuevo', 3, current_timestamp, 50.3);
 
 insert into etiquetas(nombre)
     values('Cocina'),
@@ -152,7 +164,7 @@ insert into etiquetas_articulos(etiqueta_id, articulo_id)
           (1, 4);
 
 insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta)
-    values(2, 1, 1, current_date),
+    values(1, 2, 1, current_date),
           (2, 1, 2, current_date);
 
 insert into valoraciones_vendedor(venta_id, valoracion, valoracion_text)
@@ -199,7 +211,9 @@ create view v_articulos_raw as
     select a.*, u.nick, text_concat(e.nombre || ',') as etiquetas
     from articulos a join usuarios u on a.usuario_id = u.id
     left join v_etiquetas e on e.articulo_id = a.id
-    group by a.id, a.nombre, a.descripcion, a.usuario_id, a.precio, u.nick;
+    group by a.id, a.nombre, a.descripcion,
+             a.usuario_id, a.precio, a.fecha,
+             u.nick;
 
 drop view if exists v_ventas;
 create view v_ventas as
@@ -215,7 +229,7 @@ drop view if exists v_articulos;
 create view v_articulos as
     select *, id as articulo_id, FALSE as favorito
     from v_articulos_raw
-    group by id, nombre, descripcion, usuario_id, precio, nick, etiquetas
+    group by id, nombre, descripcion, usuario_id, fecha, precio, nick, etiquetas
     having id not in (select articulo_id from ventas);
 
 drop view if exists v_ventas_vendedor;

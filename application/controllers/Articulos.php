@@ -12,6 +12,21 @@ class Articulos extends CI_Controller {
 
   }
 
+  public function masArticulos($min = NULL, $max = NULL) {
+      $res = array();
+      if($min !== NULL && $max !== NULL) {
+          $min = (int) $min;
+          $max = (int) $max;
+          if($this->Usuario->logueado()):
+              //$res = $this->Articulo->todos_sin_favorito($usuario['id'], $min, $max);
+          else:
+              $res = $this->Articulo->todos($min, $max);
+          endif;
+      }
+
+      echo json_encode($res);
+  }
+
   public function buscar($id_articulo = NULL) {
       if($id_articulo === NULL || $this->Articulo->por_id($id_articulo) === FALSE) {
           $mensajes[] = array('error' =>

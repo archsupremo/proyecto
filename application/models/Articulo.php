@@ -38,24 +38,21 @@ class Articulo extends CI_Model{
   }
 
   // Operaciones de lectura
-  public function todos() {
-      $res = $this->db->query("select * from v_articulos");
+  public function todos($min, $max) {
+      $res = $this->db->query("select * from v_articulos offset ? limit ?", array($min, $max));
       return ($res->num_rows() > 0) ? $res->result_array() : array();
   }
 
-  public function todos_sin_favorito($usuario_id) {
-    //   $res = $this->db->get_where('v_favoritos',
-    //                                array('usuario_favorito' => $usuario_id));
+  public function todos_sin_favorito($usuario_id, $min, $max) {
       $res = $this->db->query('select *
                                 from v_articulos
                                 group by id, articulo_id, nombre, descripcion,
                                          usuario_id, precio, nick, favorito,
-                                         etiquetas
-                                having id not in (select articulo_id from favoritos where usuario_id = ?)',
-                                array($usuario_id));
+                                         etiquetas, fecha
+                                having id not in (select articulo_id from favoritos where usuario_id = ?)
+                                offset ? limit ?',
+                                array($usuario_id, $min, $max));
 
-    //   $res3 = array_merge($res->result_array(), $res2->result_array());
-    //   return (count($res3) > 0) ? $res3 : array();
     return $res->result_array();
   }
   public function articulos_favoritos($usuario_id) {

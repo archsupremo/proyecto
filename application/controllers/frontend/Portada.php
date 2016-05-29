@@ -16,9 +16,9 @@ class Portada extends CI_Controller {
         //   var_dump($data['articulos']); die();
       }else {
           if($this->Usuario->logueado()):
-              $data['articulos'] = $this->Articulo->todos_sin_favorito($usuario['id']);
+              $data['articulos'] = $this->Articulo->todos_sin_favorito($usuario['id'], 0, 10);
           else:
-              $data['articulos'] = $this->Articulo->todos();
+              $data['articulos'] = $this->Articulo->todos(0, 10);
           endif;
       }
       $this->template->load('/frontend/index', $data);

@@ -7,7 +7,7 @@
         <input id="pac-input" class="controls" type="text" placeholder="Buscar por ciudad, región, país...">
         <div class="mapa_index" id="map"></div>
     </div>
-    <div class="large-6 columns">
+    <div class="large-6 columns" id="centro">
         <?php foreach ($articulos as $v): ?>
             <div class="large-4 columns left articulos"
                  id="<?= $v['articulo_id'] ?>">
@@ -23,7 +23,6 @@
                                     'src' => $url,
                                     'title' => $v['nombre'],
                                     'alt' => $v['nombre'],
-                                    // 'class' => 'imagen_nick',
                                 ))) ?>
                 </div>
                 <div class="">
@@ -34,8 +33,9 @@
                 </div>
                 <div class="">
                     <?= $v['etiquetas'] ?>
+                    asd
                 </div>
-                <div class="clearing-thumbs" data-clearing>
+                <div class="">
                     <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
                     </div>
                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['usuario_id'] . '.jpg')): ?>
@@ -75,6 +75,80 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="large-1 large-centered columns">
+        <img src="/img/mas.jpg" class="th" id="mas" alt="Mas productos" />
+    </div>
+</div>
+
+<script type="text/javascript">
+    var limite = 10;
+    var offset = 10;
+    $('#mas').click(function () {
+        masArticulos();
+    });
+
+    function masArticulos() {
+        $.ajax({
+            url: "<?= base_url() ?>articulos/masArticulos/" + offset + "/" + (offset+limite),
+            type: 'POST',
+            async: true,
+            success: function(response) {
+                offset += 10;
+                limite += 10;
+                for(var producto in response) {
+                    var div = '<div class="large-4 columns left articulos" id="'
+                              + response[producto].articulo_id + '">';
+                            div += '<div class="">';
+                                div += '<a href="/articulos/buscar/' + response[producto].articulo_id + '">';
+                                div += '<img src="/imagenes_articulos/'
+                                        +'sin-imagen.jpg'+/*response[producto].articulo_id+'_1.jpg'+*/
+                                        '" alt="'+response[producto].nombre+
+                                        '" title="'+response[producto].nombre+'" />';
+                                div += '</a>';
+                            div += '</div>';
+                            div += '<div class="">';
+                                div += response[producto].precio;
+                            div += '</div>';
+                            div += '<div class="">';
+                                div += '<a href="/articulos/buscar/'+response[producto].articulo_id+'">'+response[producto].nombre+'</a>';
+                            div += '</div>';
+                            div += '<div class="">';
+                                div += response[producto].etiquetas;
+                            div += '</div>';
+                            div += '<div class="">';
+                                div += '<a href="/usuarios/perfil/'+response[producto].usuario_id+'">';
+                                div += '<img class="imagen_nick" src="/imagenes_usuarios/'
+                                        +response[producto].usuario_id+'.jpg'+
+                                        '" alt="'+response[producto].nick+
+                                        '" title="'+response[producto].nick+'" />';
+                                div += '</a>';
+                                div += '<a href="/usuarios/perfil/'+response[producto].usuario_id+'">'+response[producto].nick+'</a>';
+                            div += '</div>';
+                        div += '</div>';
+                    $('#centro').append(div);
+                    alert(div);
+                }
+            },
+            error: function (error) {
+                alert(error.statusText);
+            },
+            dataType: "json"
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    $('#tags').tagEditor({
+        placeholder: "Buscar por etiquetas...",
+        autocomplete: {
+            position: { collision: 'flip' },
+            source: "<?= base_url() ?>etiquetas/buscar/"
+        },
+        forceLowercase: false
+    });
+</script>
+
 <script type="text/javascript">
     var valores_defecto = {
         numStars: 1,
@@ -93,7 +167,7 @@
                 url: "<?= base_url() ?>articulos/favoritos/" + articulo_id,
                 type: 'POST',
                 async: true,
-                success: function() {
+                success: function(response) {
                 },
                 error: function (error) {
                 },
@@ -117,19 +191,7 @@
     }
 </script>
 
-<script>
-    $('#tags').tagEditor({
-        //initialTags: ['Emma'],
-        placeholder: "Buscar por etiquetas...",
-        autocomplete: {
-            position: { collision: 'flip' },
-            source: "<?= base_url() ?>etiquetas/buscar/"
-        },
-        forceLowercase: false
-    });
-</script>
-
-<script>
+<script type="text/javascript">
   var usuario_id = <?= logueado() ? dar_usuario()['id'] : 'undefined' ?>;
   var map;
   var zoom;
