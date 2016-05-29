@@ -56,32 +56,60 @@ class Articulos extends CI_Controller {
       }
 
       if ($this->input->post('subir') !== NULL) {
-          $articulo = $this->input->post();
-          
-          $articulo['precio'] = (double) $articulo['precio'];
-          unset($articulo['subir']);
+          var_dump($this->input->post());
+          $reglas = array(
+              array(
+                  'field' => 'nombre',
+                  'label' => 'Nombre',
+                  'rules' => 'trim|required',
+              ),
+              array(
+                  'field' => 'descripcion',
+                  'label' => 'Descripción',
+                  'rules' => 'trim|required',
+              ),
+              array(
+                  'field' => 'tags',
+                  'label' => 'Etiquetas',
+                  'rules' => 'trim|required',
+              ),
+          );
+          $this->form_validation->set_rules($reglas);
+          if ($this->form_validation->run() === TRUE) {
+              $articulo = $this->input->post();
 
-          $articulo['usuario_id'] = $this->session->userdata('usuario')['id'];
-          $articulo_insertado = $this->Articulo->insertar($articulo);
-          $articulo_id = $articulo_insertado['id'];
+              $articulo['precio'] = (double) $articulo['precio'];
+              $etiquetas = $articulo['tags'];
+              $etiquetas = preg_split('/,/', $etiquetas);
 
-          $sesion = $this->session->userdata('usuario');
-          $sesion['ultimo_articulo'] = $articulo_id;
-          $this->session->set_userdata('usuario', $sesion);
+              unset($articulo['subir']);
+              unset($articulo['tags']);
 
-        //   $mensajes[] = array('info' =>
-        //           "Articulo insertado correctamente :)");
-        //   $this->flashdata->load($mensajes);
-          redirect('/articulos/subir_imagenes');
+              $articulo['usuario_id'] = $this->session->userdata('usuario')['id'];
+              $articulo_insertado = $this->Articulo->insertar($articulo);
+              $articulo_id = $articulo_insertado['id'];
+
+              foreach($etiquetas as $v) {
+                  $etiqueta = $this->Etiqueta->existe_etiqueta($v);
+                  if(!$etiqueta) {
+                      $etiqueta = $this->Etiqueta->insertar($v);
+                  }
+
+                  $this->Etiqueta->insertar_etiqueta_articulo(array(
+                      'etiqueta_id' => $etiqueta['id'],
+                      'articulo_id' => $articulo_id
+                  ));
+              }
+
+              $sesion = $this->session->userdata('usuario');
+              $sesion['ultimo_articulo'] = $articulo_id;
+              $this->session->set_userdata('usuario', $sesion);
+
+              redirect('/articulos/subir_imagenes');
+          }
       }
 
-      $categorias_raw = $this->Articulo->categorias();
-      $categorias = array();
-      foreach ($categorias_raw as $categoria) {
-          $categorias[$categoria['id']] = $categoria['nombre'];
-      }
-      $data['categorias'] = $categorias;
-      $this->template->load('/articulos/subir', $data);
+      $this->template->load('/articulos/subir');
   }
 
   public function subir_imagenes() {

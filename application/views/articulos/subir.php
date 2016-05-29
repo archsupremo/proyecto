@@ -1,12 +1,12 @@
 <?php template_set('title', 'Subir Articulo') ?>
 <div class="row">
     <div class="large-8 large-centered columns menu-login" id="formulario_articulo">
-          <div data-alert class="alert-box alert radius alerta" id="errores_formulario">
-              <?php if ( ! empty($error)): ?>
-                  <?= $error ?>
-              <?php endif ?>
-              <a href="#" class="close">&times;</a>
-          </div>
+          <?php if ( ! empty(error_array())): ?>
+              <div data-alert class="alert-box alert radius alerta">
+                <?= validation_errors() ?>
+                <a href="#" class="close">&times;</a>
+              </div>
+          <?php endif ?>
         <?= form_open_multipart('/articulos/subir', 'id="datos"') ?>
           <div class="">
             <?= form_label('Nombre:', 'nombre') ?>
@@ -19,8 +19,6 @@
                            'id="descripcion" class=""') ?>
           </div>
           <div class="">
-              <?= form_dropdown('categoria_id', $categorias) ?>
-
               <?= form_label('Etiquetas:', 'tags') ?>
               <?= form_input('tags', set_value('tags', '', FALSE),
                              'id="tags" class="" placeholder="Escriba las etiquetas del producto..."') ?>
@@ -33,7 +31,7 @@
                   </div>
                   <div class="small-11 columns">
                     <input type="number" min="0" step="0.01"
-                           placeholder="precio..."
+                           placeholder="precio..." value="0"
                            name="precio" id="precio">
                   </div>
                 </div>
@@ -55,23 +53,23 @@
     });
 </script>
 <script type="text/javascript">
-    $(document).ready(function() {
-         $('#errores_formulario').hide();
-         $('#subir').click(function (evento) {
-             var mensajes = [];
-             var nombre = $('#nombre');
-             if (nombre.val() == "") {
-                 mensajes.push("El nombre no puede estar vacio. Ponga uno.");
-                 evento.preventDefault();
-             }
-             if (mensajes.length > 0) {
-                 $('#errores_formulario').children("p").remove();
-                 $('#errores_formulario').show();
-                 for (var i = 0; i < mensajes.length; i++) {
-                     var p = "<p>" + mensajes[i] + "</p>";
-                     $('#errores_formulario').prepend(p);
-                 }
-             }
-         });
-    });
+    // $(document).ready(function() {
+    //      $('#subir').click(function (evento) {
+    //          var mensajes = [];
+    //          var nombre = $('#nombre');
+    //          if (nombre.val() == "") {
+    //              mensajes.push("El nombre no puede estar vacio. Ponga uno.");
+    //              evento.preventDefault();
+    //          }
+    //          if (mensajes.length > 0) {
+    //              var div = '<div data-alert class="alert-box alert radius alerta">';
+    //              for (var i = 0; i < mensajes.length; i++) {
+    //                  div += '<p>' + mensajes[i] + '</p>';
+    //              }
+    //              div += '<a href="#" class="close">&times;</a>';
+    //              div += '</div>';
+    //              $('#formulario_articulo').prepend(div);
+    //          }
+    //      });
+    // });
 </script>

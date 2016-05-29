@@ -48,10 +48,19 @@ create table articulos(
 
 drop table if exists etiquetas cascade;
 create table etiquetas(
-    nombre varchar(100) not null,
-    articulo_id bigint constraint fk_etiquetas_articulos references articulos (id)
+    id bigserial constraint pk_etiquetas primary key,
+    nombre varchar(100) not null unique
+);
+
+drop table if exists etiquetas_articulos cascade;
+create table etiquetas_articulos(
+    etiqueta_id bigint constraint fk_etiquetas_articulos_etiquetas
+                references etiquetas (id)
                 on update cascade on delete cascade,
-    constraint pk_etiquetas primary key (nombre, articulo_id)
+    articulo_id bigint constraint fk_etiquetas_articulos_articulos
+                references articulos (id)
+                on update cascade on delete cascade,
+    constraint pk_etiquetas_articulos primary key (etiqueta_id, articulo_id)
 );
 
 drop table if exists ventas cascade;
@@ -129,13 +138,18 @@ insert into articulos(nombre, descripcion, usuario_id, precio)
           ('Cuchillo para cortar verdura de archsupremo 2', 'Semi nuevo', 3, 12.5),
           ('Cuchillo para cortar verdura de admin 2', 'Semi nuevo', 1, 12.5);
 
-insert into etiquetas(nombre, articulo_id)
-    values('Cocina', 1),
-          ('Tecnologia', 1),
-          ('Cocina', 2),
-          ('Cocina', 3),
-          ('Libros', 3),
-          ('Cocina', 4);
+insert into etiquetas(nombre)
+    values('Cocina'),
+          ('Tecnologia'),
+          ('Libros');
+
+insert into etiquetas_articulos(etiqueta_id, articulo_id)
+    values(1, 1),
+          (2, 1),
+          (1, 2),
+          (1, 3),
+          (3, 3),
+          (1, 4);
 
 insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta)
     values(2, 1, 1, current_date),
@@ -174,18 +188,25 @@ end $$;
 -- Linea fundamental la de a continuación, no quitar por nada del mundo
 -- create aggregate text_concat (text) (sfunc = concat, stype = text);
 
+drop view if exists v_etiquetas cascade;
+create view v_etiquetas as
+    select e.nombre, ea.articulo_id
+    from etiquetas e join etiquetas_articulos ea
+    on e.id = ea.etiqueta_id;
+
 drop view if exists v_articulos_raw cascade;
 create view v_articulos_raw as
     select a.*, u.nick, text_concat(e.nombre || ',') as etiquetas
     from articulos a join usuarios u on a.usuario_id = u.id
-    left join etiquetas e on e.articulo_id = a.id
+    left join v_etiquetas e on e.articulo_id = a.id
     group by a.id, a.nombre, a.descripcion, a.usuario_id, a.precio, u.nick;
 
 drop view if exists v_ventas;
 create view v_ventas as
  select v.id as venta_id, nombre, descripcion, precio,
         u.nick as comprador_nick, uu.nick as vendedor_nick,
-        fecha_venta, articulo_id, vendedor_id, comprador_id
+        fecha_venta, articulo_id, vendedor_id, comprador_id,
+        etiquetas
  from v_articulos_raw a join ventas v on a.id = v.articulo_id
       join usuarios u on u.id = v.comprador_id
       join usuarios uu on uu.id = v.vendedor_id;
@@ -202,7 +223,7 @@ create view v_ventas_vendedor as
     select v.id as venta_id, nombre, descripcion, precio,
            u.nick as comprador_nick, uu.nick as vendedor_nick,
            fecha_venta, articulo_id, vendedor_id, comprador_id,
-           valoracion, valoracion_text
+           valoracion, valoracion_text, etiquetas
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
          join usuarios uu on uu.id = v.vendedor_id
          left join usuarios u on u.id = v.comprador_id
@@ -213,7 +234,7 @@ create view v_ventas_comprador as
     select v.id as venta_id, nombre, descripcion, precio,
            u.nick as comprador_nick, uu.nick as vendedor_nick,
            fecha_venta, articulo_id, vendedor_id, comprador_id,
-           valoracion, valoracion_text
+           valoracion, valoracion_text, etiquetas
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
          join usuarios u on u.id = v.comprador_id
          left join usuarios uu on uu.id = v.vendedor_id
@@ -229,7 +250,8 @@ create view v_usuarios_validados as
 drop view if exists v_favoritos cascade;
 create view v_favoritos as
     select id as articulo_id, nombre, descripcion, a.usuario_id, precio,
-             nick, f.usuario_id as usuario_favorito, TRUE as favorito
+             nick, f.usuario_id as usuario_favorito, TRUE as favorito,
+             etiquetas
     from v_articulos a join favoritos f
     on a.id = f.articulo_id;
 

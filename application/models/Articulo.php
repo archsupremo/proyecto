@@ -8,15 +8,14 @@ class Articulo extends CI_Model{
   }
   // Operaciones chungas
   public function insertar($articulo) {
-      $res = $this->db->query("insert into articulos(nombre, descripcion, usuario_id,".
-                              "categoria_id, precio) ".
-                              "values(?, ?, ?, ?, ?) ".
+      $res = $this->db->query("insert into articulos(nombre, ".
+                              "descripcion, usuario_id, precio) ".
+                              "values(?, ?, ?, ?) ".
                               "returning id",
                               array(
                                   $articulo['nombre'],
                                   $articulo['descripcion'],
                                   $articulo['usuario_id'],
-                                  $articulo['categoria_id'],
                                   $articulo['precio'],
                               ));
       return $res->row_array();
@@ -49,8 +48,9 @@ class Articulo extends CI_Model{
     //                                array('usuario_favorito' => $usuario_id));
       $res = $this->db->query('select *
                                 from v_articulos
-                                group by id, articulo_id, nombre, descripcion, usuario_id, categoria_id, precio,
-                                         nick, nombre_categoria, favorito
+                                group by id, articulo_id, nombre, descripcion,
+                                         usuario_id, precio, nick, favorito,
+                                         etiquetas
                                 having id not in (select articulo_id from favoritos where usuario_id = ?)',
                                 array($usuario_id));
 

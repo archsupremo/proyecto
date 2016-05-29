@@ -8,13 +8,13 @@ function usuario_logueado() {
     if ($CI->Usuario->logueado()):
         $usuario = $CI->session->userdata('usuario');
         $out .= '<li>'.
+                 anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar información personal',
+                        'id="editar_perfil" class=""');
+                '</li>';
+        $out .= '<li>'.
                     anchor('/articulos/subir/', 'Subir articulo',
                            'id="subir_articulo" class=""');
                  '</li>';
-        $out .= '<li>'.
-                 anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar perfil',
-                        'id="editar_perfil" class=""');
-                '</li>';
         $out .= '<li>'.
                     anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil',
                            'id="perfil" class=""');

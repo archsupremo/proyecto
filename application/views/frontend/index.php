@@ -33,13 +33,7 @@
                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                 </div>
                 <div class="">
-                    <?= form_open('/frontend/portada/') ?>
-                        <?= form_hidden('categoria', $v['categoria_id'],
-                                       'id="categoria" class=""') ?>
-                        <?= form_hidden('nombre', '',
-                                       'id="nombre" class=""') ?>
-                        <?= form_submit('buscar', $v['nombre_categoria'], 'class="front_button"') ?>
-                    <?= form_close() ?>
+                    <?= $v['etiquetas'] ?>
                 </div>
                 <div class="clearing-thumbs" data-clearing>
                     <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
