@@ -61,10 +61,10 @@
                         "mobile"      : { "speed": 400 }
                     }'>
 
-                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
-                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
-                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
-                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
+                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>"></a>
+                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>"></a>
+                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>"></a>
+                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>"></a>
                 </div>
             </div>
             <!-- SLIDER PREVIEW - end -->

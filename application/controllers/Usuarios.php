@@ -558,6 +558,14 @@ class Usuarios extends CI_Controller{
             unset($valores['password_old']);
             unset($valores['geolocalizacion']);
 
+            $valores['latitud'] = (double) $valores['latitud'];
+            $valores['longitud'] = (double) $valores['longitud'];
+            if($valores['latitud'] === (double) 0) {
+                $valores['latitud'] = NULL;
+            }
+            if($valores['longitud'] === (double) 0) {
+                $valores['longitud'] = NULL;
+            }
             $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
             $this->Usuario->editar($valores, $usuario_id);
 

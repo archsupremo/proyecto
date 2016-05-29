@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="/rubytabs/rubytabs.css">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <link href="/tag/jquery.tag-editor.css" rel="stylesheet">
+    <link href="/css/estilos_mapa.css" rel="stylesheet">
+    <link href="/css/footer.css" rel="stylesheet">
 
     <!-- Foundation y rateYo -->
     <script src="/js/vendor/modernizr.js"></script>
@@ -41,28 +43,11 @@
     <script src="/tag/jquery.caret.min.js"></script>
 
     <style media="screen">
-        .busqueda {
-            padding: 0;
-        }
         .menu-login {
             margin-top: 3.5em;
         }
         .flashdata {
             margin-top: 5em;
-        }
-        .articulos {
-            margin: 0.5em;
-        }
-        .mapa_perfil {
-            height: 600px;
-        }
-        .mapa_index {
-            height: 450px;
-            width: 100%;
-        }
-        .mapa {
-            margin-left: -8em;
-            margin-right: 8em;
         }
         .imagen_nick {
             height: 40%;
@@ -84,50 +69,6 @@
             padding: 0px;
             padding-top: 0.9375em;
         }
-
-        /* Formulario de busqueda mapa */
-        .controls {
-          margin-top: 10px;
-          border: 1px solid transparent;
-          border-radius: 2px 0 0 2px;
-          box-sizing: border-box;
-          -moz-box-sizing: border-box;
-          height: 32px;
-          outline: none;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        #pac-input {
-          background-color: #fff;
-          font-family: Roboto;
-          font-size: 15px;
-          font-weight: 300;
-          margin-left: 12px;
-          padding: 0 11px 0 13px;
-          text-overflow: ellipsis;
-          width: 300px;
-        }
-
-        #pac-input:focus {
-          border-color: #4d90fe;
-        }
-
-        .pac-container {
-          font-family: Roboto;
-        }
-
-        #type-selector {
-          color: #fff;
-          background-color: #4d90fe;
-          padding: 5px 11px 0px 11px;
-        }
-
-        #type-selector label {
-          font-family: Roboto;
-          font-size: 13px;
-          font-weight: 300;
-        }
-
     </style>
   </head>
   <body>
@@ -164,8 +105,56 @@
     </header>
     <?= mensajes() ?>
     <?= $contents ?>
-
-    <footer>
+    <hr>
+    <footer role="contentinfo">
+        <section role="main">
+            <h3>Desarrolladores <br> y <br> Analistas</h3>
+            <article>
+                <img src="imagenes/llave.png" class="llave" alt="llave">
+                <p title="Webmaster">Guillermo López García</p>
+            </article>
+        </section>
+        <section role="main">
+            <h3>Terminos y <br> Condiciones <br> de uso</h3>
+            <article>
+                <img src="imagenes/llave.png" class="llave" alt="llave">
+                <div class="condiciones">
+                    <ul>
+                        <li>
+                            <a href=""
+                               title="Terminos Y Condiciones de Uso del Sitio Web">
+                               Sitio Web
+                            </a>
+                        </li>
+                        <li>
+                            <a href=""
+                               title="Licencia de Uso de NCSOFT para nosotros">
+                               Licencia de NCSoft
+                            </a>
+                        </li>
+                        <li>
+                            <a href=""
+                               title="Autorizacion de Servidores para el Indexado">
+                               Autorizacion de Servidores
+                            </a>
+                        </li>
+                        <li>
+                            <a href=""
+                               title="Documento que especifica nuestras reglas para indexar Servidores">
+                               Reglas de Indexado
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+        <section role="main">
+            <h3>Tecnologias<br>Empleadas</h3>
+            <article>
+                <img src="imagenes/llave.png" class="llave" alt="llave">
+                <img src="imagenes/html5ycss3.png" class="tecnologias" alt="html5 y css3" title="HTML 5 y CSS 3">
+            </article>
+        </section>
     </footer>
     <script>
       $(document).foundation();

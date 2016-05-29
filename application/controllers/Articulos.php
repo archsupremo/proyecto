@@ -18,7 +18,8 @@ class Articulos extends CI_Controller {
           $min = (int) $min;
           $max = (int) $max;
           if($this->Usuario->logueado()):
-              //$res = $this->Articulo->todos_sin_favorito($usuario['id'], $min, $max);
+              $usuario = $this->session->userdata('usuario');
+              $res = $this->Articulo->todos_sin_favorito($usuario['id'], $min, $max);
           else:
               $res = $this->Articulo->todos($min, $max);
           endif;

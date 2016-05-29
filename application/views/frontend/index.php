@@ -33,7 +33,6 @@
                 </div>
                 <div class="">
                     <?= $v['etiquetas'] ?>
-                    asd
                 </div>
                 <div class="">
                     <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
@@ -84,9 +83,27 @@
 <script type="text/javascript">
     var limite = 10;
     var offset = 10;
+    var scrollInfinito = false;
+
+    $(window).scroll(function() {
+        if(($(window).scrollTop() >= ($(document).height() - $("footer").first().height()) - $(window).height())
+            && scrollInfinito) {
+            masArticulos();
+        }
+    });
+
     $('#mas').click(function () {
         masArticulos();
+        scrollInfinito = true;
+        $(this).prop("src", "/img/loading.gif");
     });
+
+    function existeUrl(url) {
+       var http = new XMLHttpRequest();
+       http.open('HEAD', url, false);
+       http.send();
+       return http.status!=404;
+    }
 
     function masArticulos() {
         $.ajax({
@@ -94,6 +111,10 @@
             type: 'POST',
             async: true,
             success: function(response) {
+                if(response.length == 0) {
+                    $("#mas").remove();
+                    return;
+                }
                 offset += 10;
                 limite += 10;
                 for(var producto in response) {
@@ -101,8 +122,13 @@
                               + response[producto].articulo_id + '">';
                             div += '<div class="">';
                                 div += '<a href="/articulos/buscar/' + response[producto].articulo_id + '">';
+
+                                var nombre_imagen =
+                                (existeUrl('/imagenes_articulos/'+response[producto].articulo_id+'_1.jpg')) ?
+                                (response[producto].articulo_id+'_1.jpg') : 'sin-imagen.jpg';
+
                                 div += '<img src="/imagenes_articulos/'
-                                        +'sin-imagen.jpg'+/*response[producto].articulo_id+'_1.jpg'+*/
+                                        +nombre_imagen+
                                         '" alt="'+response[producto].nombre+
                                         '" title="'+response[producto].nombre+'" />';
                                 div += '</a>';
@@ -118,8 +144,13 @@
                             div += '</div>';
                             div += '<div class="">';
                                 div += '<a href="/usuarios/perfil/'+response[producto].usuario_id+'">';
+
+                                var nombre_imagen =
+                                (existeUrl('/imagenes_usuarios/'+response[producto].usuario_id+'.jpg')) ?
+                                (response[producto].usuario_id+'.jpg') : 'sin-imagen.jpg';
+
                                 div += '<img class="imagen_nick" src="/imagenes_usuarios/'
-                                        +response[producto].usuario_id+'.jpg'+
+                                        +nombre_imagen+
                                         '" alt="'+response[producto].nick+
                                         '" title="'+response[producto].nick+'" />';
                                 div += '</a>';
@@ -127,7 +158,6 @@
                             div += '</div>';
                         div += '</div>';
                     $('#centro').append(div);
-                    alert(div);
                 }
             },
             error: function (error) {

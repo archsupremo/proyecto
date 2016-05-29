@@ -340,7 +340,7 @@
                                    <div id="compra_<?= $v['articulo_id'] ?>" class="reveal-modal"
                                        data-reveal aria-labelledby="modalTitle"
                                        aria-hidden="true" role="dialog">
-                                     <h2 id="modalTitle">¿Está totalmente de que no ha comprado <?= $v['nombre'] ?>?</h2>
+                                     <h2 id="modalTitle">¿Está totalmente seguro de que no ha comprado <?= $v['nombre'] ?>?</h2>
                                      <p class="lead">
                                          El borrado de su lista de compras sera
                                          definitivo y no se podrá recuperar el
@@ -399,7 +399,7 @@
                                        data-reveal aria-labelledby="modalTitle"
                                        aria-hidden="true" role="dialog">
                                      <h2 id="modalTitle">
-                                         ¿Está totalmente de borrar
+                                         ¿Está totalmente seguro de borrar
                                          <?= $v['nombre'] ?> de su
                                          lista de favoritos?
                                      </h2>

@@ -42,8 +42,8 @@
                               'id="password_confirm" class=""') ?>
           </div>
           <div class="">
-              <?= form_hidden('latitud', '') ?>
-              <?= form_hidden('longitud', '') ?>
+              <?= form_hidden('latitud', set_value('latitud', $usuario['latitud'], FALSE)) ?>
+              <?= form_hidden('longitud', set_value('longitud', $usuario['longitud'], FALSE)) ?>
               <?= form_checkbox('geolocalizacion', "", TRUE); ?>
               <?= form_label('Desea usted dar su ubicación', 'geolocalizacion') ?>
           </div>
@@ -197,6 +197,7 @@
     }
 </script>
 <script type="text/javascript">
+    /*
     navigator.geolocation.getCurrentPosition(function (posicion) {
         var latitud = posicion.coords.latitude;
         var longitud = posicion.coords.longitude;
@@ -217,7 +218,7 @@
         switch(error.code) {
             case error.PERMISSION_DENIED:
             case error.POSITION_UNAVAILABLE:
-                alert("Imposible detectar la posicio actual");
+                alert("Imposible detectar la posición actual");
             break;
 
             case error.TIMEOUT:
@@ -229,4 +230,5 @@
             break;
         }
     });
+    */
 </script>
