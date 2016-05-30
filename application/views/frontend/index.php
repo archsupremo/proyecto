@@ -1,7 +1,5 @@
 <?php template_set('title', 'Portada') ?>
-<div class="row">
-</div>
-<div class="container medium-uncollapse large-collapse">
+<div class="container">
     <div class="large-3 columns">
         <h4>¿Quien esta vendiendo a tu alrededor?</h4>
         <input id="pac-input" class="controls" type="text" placeholder="Buscar por ciudad, región, país...">
@@ -74,11 +72,32 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row masArticulos">
     <div class="large-1 large-centered columns">
         <img src="/img/mas.jpg" class="th" id="mas" alt="Mas productos" />
     </div>
 </div>
+
+<style media="screen">
+    #centro {
+        position: relative;
+    }
+    #centro > div {
+        width: 30%;
+        height: auto;
+        position: absolute;
+        border: 1px solid black;
+    }
+    .masArticulos {
+        margin-bottom: 2em;
+    }
+</style>
+<script type="text/javascript" >
+    $('#centro').shapeshift({
+        gutterY: 40,
+        enableDrag: false
+    });
+</script>
 
 <script type="text/javascript">
     var limite = 10;
@@ -158,6 +177,14 @@
                             div += '</div>';
                         div += '</div>';
                     $('#centro').append(div);
+                    $("#centro").find("img").last().load(function () {
+                        $(function() {
+                            $("#centro").trigger("ss-destroy");
+                            $('#centro').shapeshift({
+                                enableDrag: false
+                            });
+                        });
+                    });
                 }
             },
             error: function (error) {

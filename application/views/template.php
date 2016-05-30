@@ -41,6 +41,7 @@
 
     <script src="/tag/jquery.tag-editor.min.js"></script>
     <script src="/tag/jquery.caret.min.js"></script>
+    <script src="/nested/core/jquery.shapeshift.js"></script>
 
     <style media="screen">
         .menu-login {
@@ -69,6 +70,25 @@
             padding: 0px;
             padding-top: 0.9375em;
         }
+        .box {
+			-moz-border-radius:3px;
+  		    -khtml-border-radius: 3px;
+			-webkit-border-radius:3px;
+			border-radius:3px;
+
+            -webkit-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
+               -moz-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
+                -ms-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
+                 -o-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
+                    transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000); /* easeInOutExpo */
+
+              -webkit-transition-property: left, right, top;
+                 -moz-transition-property: left, right, top;
+                  -ms-transition-property: left, right, top;
+                   -o-transition-property: left, right, top;
+                      transition-property: left, right, top;
+        	}
+
     </style>
   </head>
   <body>
