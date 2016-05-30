@@ -15,9 +15,10 @@ class Portada extends CI_Controller {
       } else {
           if($this->Usuario->logueado()):
               $usuario = $this->session->userdata("usuario");
-              $data['articulos'] = $this->Articulo->todos_sin_favorito($usuario['id'], 0, 10);
+              $data['articulos'] =
+                  $this->Articulo->todos_sin_favorito($usuario['id'], 0, 10, "now()");
           else:
-              $data['articulos'] = $this->Articulo->todos(0, 10);
+              $data['articulos'] = $this->Articulo->todos(0, 10, "now()");
           endif;
       }
       $this->template->load('/frontend/index', $data);

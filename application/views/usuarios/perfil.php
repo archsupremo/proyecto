@@ -73,7 +73,7 @@
                 <div class="row font-blokk">
                     <?php if( ! empty($articulos_usuarios)): ?>
                         <?php foreach ($articulos_usuarios as $v): ?>
-                            <div class="large-6 columns left">
+                            <div class="large-3 columns left">
                                 <div class="">
                                     <?= anchor('/articulos/buscar/' . $v['id'],
                                         img('/imagenes_articulos/' . $v['id'] . '_1' . '.jpg')) ?>
@@ -149,7 +149,7 @@
                 <div class="container">
                 <div class="row font-blokk">
                     <?php foreach ($articulos_vendidos as $v): ?>
-                        <div class="large-6 columns left">
+                        <div class="large-3 columns left">
                             <div class="">
                                 <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                             img('/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')) ?>
@@ -299,7 +299,7 @@
                     <div class="container">
                     <div class="row font-blokk">
                         <?php foreach ($articulos_comprados as $v): ?>
-                            <div class="large-6 columns left">
+                            <div class="large-3 columns left">
                                 <div class="">
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                                 img('/imagenes_articulos/' .
@@ -362,7 +362,7 @@
                     <div class="container">
                     <div class="row font-blokk">
                         <?php foreach ($articulos_favoritos as $v): ?>
-                            <div class="large-6 columns left">
+                            <div class="large-3 columns left">
                                 <div class="">
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                                 img('/imagenes_articulos/' .

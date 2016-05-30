@@ -27,7 +27,7 @@
                     <?= $v['precio'] ?>
                 </div>
                 <div class="">
-                    <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
+                    <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre'].$v['articulo_id']) ?>
                 </div>
                 <div class="">
                     <?= $v['etiquetas'] ?>
@@ -102,13 +102,21 @@
 <script type="text/javascript" >
     $('#centro').shapeshift({
         gutterY: 40,
-        enableDrag: false
+        enableDrag: false,
+        enableResize: false
+    });
+    $( window ).resize(function() {
+        $("#centro").trigger("ss-destroy");
+        $('#centro').shapeshift({
+            enableDrag: false,
+            enableResize: false
+        });
     });
 </script>
 
 <script type="text/javascript">
     var limite = 10;
-    var offset = 10;
+    var offset = 0;
     var scrollInfinito = false;
 
     $(window).scroll(function() {
@@ -132,11 +140,12 @@
     }
 
     function masArticulos() {
+        var ultimo_articulo = $('#centro').children("div").last().prop("id");
         $.ajax({
-            url: "<?= base_url() ?>articulos/masArticulos/" + offset + "/" + (offset+limite),
+            url: "<?= base_url() ?>articulos/masArticulos/" + ultimo_articulo + "/" + offset + "/" + (offset+limite),
             type: 'POST',
             async: true,
-            success: function(response) {
+            success: function(response) {2
                 if(response.length == 0) {
                     $("#mas").remove();
                     return;
@@ -163,7 +172,8 @@
                                 div += response[producto].precio;
                             div += '</div>';
                             div += '<div class="">';
-                                div += '<a href="/articulos/buscar/'+response[producto].articulo_id+'">'+response[producto].nombre+'</a>';
+                                div += '<a href="/articulos/buscar/'+response[producto].articulo_id+'">'
+                                        +response[producto].nombre+response[producto].articulo_id+'</a>';
                             div += '</div>';
                             div += '<div class="">';
                                 div += response[producto].etiquetas;
@@ -188,7 +198,8 @@
                         $(function() {
                             $("#centro").trigger("ss-destroy");
                             $('#centro').shapeshift({
-                                enableDrag: false
+                                enableDrag: false,
+                                enableResize: false
                             });
                         });
                     });
@@ -384,7 +395,17 @@
       marker_yo = new google.maps.Marker({
           position: pos,
           map: map,
+          draggable: true,
           title: "Tu estas aquí >.<"
+      });
+      var geocoder = new google.maps.Geocoder();
+      marker_yo.addListener('dragend', function (e) {
+          geocoder.geocode({'latLng': this.getPosition()}, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                  var address=results[0]['formatted_address'];
+                //   alert(address);
+              }
+          });
       });
       draw_circle = new google.maps.Circle({
           center: pos,

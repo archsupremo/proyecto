@@ -9,8 +9,8 @@ class Articulo extends CI_Model{
   // Operaciones chungas
   public function insertar($articulo) {
       $res = $this->db->query("insert into articulos(nombre, ".
-                              "descripcion, usuario_id, precio) ".
-                              "values(?, ?, ?, ?) ".
+                              "descripcion, usuario_id, fecha, precio) ".
+                              "values(?, ?, ?, current_timestamp, ?) ".
                               "returning id",
                               array(
                                   $articulo['nombre'],
@@ -38,20 +38,23 @@ class Articulo extends CI_Model{
   }
 
   // Operaciones de lectura
-  public function todos($min, $max) {
-      $res = $this->db->query("select * from v_articulos offset ? limit ?", array($min, $max));
+  public function todos($min, $max, $fecha) {
+      $res = $this->db->query("select * from v_articulos where fecha < ? offset ? limit ?",
+                              array($fecha, $min, $max));
       return ($res->num_rows() > 0) ? $res->result_array() : array();
   }
 
-  public function todos_sin_favorito($usuario_id, $min, $max) {
+  public function todos_sin_favorito($usuario_id, $min, $max, $fecha) {
       $res = $this->db->query('select *
                                 from v_articulos
+                                where fecha < ?
                                 group by id, articulo_id, nombre, descripcion,
                                          usuario_id, precio, nick, favorito,
-                                         etiquetas, fecha
+                                         etiquetas, fecha, latitud, longitud
                                 having id not in (select articulo_id from favoritos where usuario_id = ?)
+                                order by fecha desc
                                 offset ? limit ?',
-                                array($usuario_id, $min, $max));
+                                array($fecha, $usuario_id, $min, $max));
 
     return $res->result_array();
   }
@@ -86,19 +89,14 @@ class Articulo extends CI_Model{
       if($nombre === "" && $etiquetas[0] === "") {
           if($this->Usuario->logueado()):
               $usuario = $this->session->userdata("usuario");
-              $res = $this->Articulo->todos_sin_favorito($usuario['id'], 0, 10);
+              $res = $this->Articulo->todos_sin_favorito($usuario['id'], 0, 10, 'now()');
           else:
-              $res = $this->Articulo->todos(0, 10);
+              $res = $this->Articulo->todos(0, 10, 'now()');
           endif;
       }
 
 
       return $res;
-  }
-
-  public function categorias() {
-      $res = $this->db->get('categorias');
-      return $res->result_array();
   }
 
   public function por_id($id_articulo) {

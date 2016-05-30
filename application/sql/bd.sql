@@ -132,23 +132,23 @@ insert into usuarios(nick, password, email, registro_verificado, activado, latit
 
 insert into articulos(nombre, descripcion, usuario_id, fecha, precio)
     values('Movil Xperia M4 Aqua', 'Semi nuevo', 1, current_timestamp, 50.3),
-          ('Bicicleta', 'Semi nueva', 2, current_timestamp, 50.3),
-          ('Dragon Ball', 'Serie Completa', 3, current_timestamp, 50.3),
-          ('Dragon Ball Z', 'Serie Completa', 1, current_timestamp, 50.3),
-          ('Dragon Ball GT', 'Serie Completa', 2, current_timestamp, 50.3),
-          ('Dragon Ball Super', 'Serie Completa', 3, current_timestamp, 50.3),
-          ('Reloj', 'Semi nuevo', 1, current_timestamp, 50.3),
-          ('Mesa', 'Semi nueva', 2, current_timestamp, 50.3),
-          ('Portatil', 'Semi nuevo', 3, current_timestamp, 50.3),
-          ('Reloj', 'Semi nuevo', 1, current_timestamp, 50.3),
-          ('Mesa', 'Semi nueva', 2, current_timestamp, 50.3),
-          ('Portatil', 'Semi nuevo', 3, current_timestamp, 50.3),
-          ('Reloj', 'Semi nuevo', 1, current_timestamp, 50.3),
-          ('Mesa', 'Semi nueva', 2, current_timestamp, 50.3),
-          ('Portatil', 'Semi nuevo', 3, current_timestamp, 50.3),
-          ('Reloj', 'Semi nuevo', 1, current_timestamp, 50.3),
-          ('Mesa', 'Semi nueva', 2, current_timestamp, 50.3),
-          ('Portatil', 'Semi nuevo', 3, current_timestamp, 50.3);
+          ('Bicicleta', 'Semi nueva', 2, current_timestamp+'1 seconds', 50.3),
+          ('Dragon Ball', 'Serie Completa', 3, current_timestamp+'2 seconds', 50.3),
+          ('Dragon Ball Z', 'Serie Completa', 1, current_timestamp+'3 seconds', 50.3),
+          ('Dragon Ball GT', 'Serie Completa', 2, current_timestamp+'4 seconds', 50.3),
+          ('Dragon Ball Super', 'Serie Completa', 3, current_timestamp+'5 seconds', 50.3),
+          ('Reloj', 'Semi nuevo', 1, current_timestamp+'6 seconds', 50.3),
+          ('Mesa', 'Semi nueva', 2, current_timestamp+'7 seconds', 50.3),
+          ('Portatil', 'Semi nuevo', 3, current_timestamp+'8 seconds', 50.3),
+          ('Reloj', 'Semi nuevo', 1, current_timestamp+'9 seconds', 50.3),
+          ('Mesa', 'Semi nueva', 2, current_timestamp+'10 seconds', 50.3),
+          ('Portatil', 'Semi nuevo', 3, current_timestamp+'11 seconds', 50.3),
+          ('Reloj', 'Semi nuevo', 1, current_timestamp+'12 seconds', 50.3),
+          ('Mesa', 'Semi nueva', 2, current_timestamp+'13 seconds', 50.3),
+          ('Portatil', 'Semi nuevo', 3, current_timestamp+'14 seconds', 50.3),
+          ('Reloj', 'Semi nuevo', 1, current_timestamp+'15 seconds', 50.3),
+          ('Mesa', 'Semi nueva', 2, current_timestamp+'16 seconds', 50.3),
+          ('Portatil', 'Semi nuevo', 3, current_timestamp+'17 seconds', 50.3);
 
 insert into etiquetas(nombre)
     values('Cocina'),
@@ -206,12 +206,12 @@ create view v_etiquetas as
 
 drop view if exists v_articulos_raw cascade;
 create view v_articulos_raw as
-    select a.*, u.nick, text_concat(e.nombre || ',') as etiquetas
+    select a.*, u.nick, u.latitud, u.longitud, text_concat(e.nombre || ',') as etiquetas
     from articulos a join usuarios u on a.usuario_id = u.id
     left join v_etiquetas e on e.articulo_id = a.id
     group by a.id, a.nombre, a.descripcion,
              a.usuario_id, a.precio, a.fecha,
-             u.nick;
+             u.nick, u.latitud, u.longitud;
 
 drop view if exists v_ventas;
 create view v_ventas as
@@ -227,8 +227,11 @@ drop view if exists v_articulos;
 create view v_articulos as
     select *, id as articulo_id, FALSE as favorito
     from v_articulos_raw
-    group by id, nombre, descripcion, usuario_id, fecha, precio, nick, etiquetas
-    having id not in (select articulo_id from ventas);
+    group by id, nombre, descripcion, usuario_id,
+             fecha, precio, nick, etiquetas, latitud,
+             longitud
+    having id not in (select articulo_id from ventas)
+    order by fecha desc;
 
 drop view if exists v_etiquetas_articulos cascade;
 create view v_etiquetas_articulos as
