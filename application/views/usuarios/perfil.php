@@ -432,7 +432,7 @@
                                             <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg')): ?>
                                                 <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg' ?>
                                             <?php else: ?>
-                                                <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+                                                <?php $url = '/imagenes_usuarios/sin-imagen_thumbnail.jpeg' ?>
                                             <?php endif; ?>
                                             <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
                                                         img(array(

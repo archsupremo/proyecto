@@ -61,28 +61,39 @@ class Articulo extends CI_Model{
       return $res->result_array();
   }
 
-  public function busqueda_articulo($categoria_id, $nombre, $usuario_id) {
-      if($categoria_id <= 0) {
-          $res = $this->todos_sin_favorito($usuario_id);
-      } else {
-          $res = $this->db->like('lower(nombre)', strtolower($nombre), 'match');
-          $res1 = $this->db->get_where('v_favoritos',
-                                        array(
-                                            'usuario_favorito' => $usuario_id,
-                                            'categoria_id' => $categoria_id,
-                                            )
-                                        );
-          $res2 = $this->db->query('select *
-                                    from v_articulos
-                                    where categoria_id = ?
-                                    group by id, articulo_id, nombre, descripcion, usuario_id, categoria_id, precio,
-                                             nick, nombre_categoria, favorito
-                                    having id not in (select articulo_id from favoritos where usuario_id = ?)',
-                                    array($categoria_id, $usuario_id));
+  public function busqueda_articulo($etiquetas, $nombre) {
+      $res = array();
+      if( ! empty($etiquetas) && $etiquetas[0] !== "") {
+          foreach ($etiquetas as $v) {
+              $this->db->like('lower(etiquetas)', strtolower($v), 'match');
+              $this->db->select('distinct on (articulo_id) *');
+              $res1 = $this->db->get('v_etiquetas_articulos')->result_array();
 
-          $res = array_merge($res1->result_array(), $res2->result_array());
+              foreach ($res1 as $value) {
+                  $res[$value['articulo_id']] = $value;
+              }
+          }
       }
-      return (count($res) > 0) ? $res : array();
+
+      if($nombre !== "") {
+          $this->db->like('lower(nombre)', strtolower($nombre), 'match');
+          $res2 = $this->db->get('v_articulos')->result_array();
+
+          foreach ($res2 as $value) {
+              $res[$value['articulo_id']] = $value;
+          }
+      }
+      if($nombre === "" && $etiquetas[0] === "") {
+          if($this->Usuario->logueado()):
+              $usuario = $this->session->userdata("usuario");
+              $res = $this->Articulo->todos_sin_favorito($usuario['id'], 0, 10);
+          else:
+              $res = $this->Articulo->todos(0, 10);
+          endif;
+      }
+
+
+      return $res;
   }
 
   public function categorias() {

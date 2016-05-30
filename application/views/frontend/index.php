@@ -57,17 +57,24 @@
         <h3>Ordenar por precio</h3>
         <h3>Búsqueda personalizada</h3>
         <div class="row">
-         <form class="custom">
+         <?= form_open('/frontend/portada/index') ?>
              <fieldset>
                  <legend>Búsqueda Personalizada</legend>
                  <div class="row">
                   <div class="large-12 columns ui-widget">
-                    <label for="tags">Etiquetas:</label>
-                    <input id="tags" type="text" placeholder="Buscar por etiquetas...">
+                      <?= form_label('Nombre articulo:', 'nombre') ?>
+                      <?= form_input('nombre', set_value('nombre', '', FALSE),
+                                     'id="nombre" class="" placeholder="Buscar por nombre..."') ?>
+
+                      <?= form_label('Etiquetas:', 'tags') ?>
+                      <?= form_input('tags', set_value('tags', '', FALSE),
+                                    'id="tags" class="" placeholder="Buscar por etiquetas..."') ?>
+
+                      <?= form_submit('buscar', 'Buscar', 'class="success button tiny radius"') ?>
                   </div>
                  </div>
              </fieldset>
-         </form>
+         <?= form_close() ?>
         </div>
     </div>
 </div>

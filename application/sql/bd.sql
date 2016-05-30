@@ -156,12 +156,10 @@ insert into etiquetas(nombre)
           ('Libros');
 
 insert into etiquetas_articulos(etiqueta_id, articulo_id)
-    values(1, 1),
-          (2, 1),
-          (1, 2),
-          (1, 3),
+    values(2, 3),
           (3, 3),
-          (1, 4);
+          (2, 4),
+          (3, 5);
 
 insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta)
     values(1, 2, 1, current_date),
@@ -231,6 +229,14 @@ create view v_articulos as
     from v_articulos_raw
     group by id, nombre, descripcion, usuario_id, fecha, precio, nick, etiquetas
     having id not in (select articulo_id from ventas);
+
+drop view if exists v_etiquetas_articulos cascade;
+create view v_etiquetas_articulos as
+    select distinct on (a.articulo_id) a.articulo_id,
+           a.nombre, a.etiquetas, usuario_id, fecha,
+           precio, nick, a.favorito
+    from v_etiquetas e join v_articulos a
+    on a.articulo_id = e.articulo_id;
 
 drop view if exists v_ventas_vendedor;
 create view v_ventas_vendedor as

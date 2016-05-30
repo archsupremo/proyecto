@@ -12,8 +12,8 @@ class Etiquetas extends CI_Controller{
         if($palabras === NULL) {
             $palabras = "";
         }
-        if(isset($_GET['term']) && $_GET['term'] !== NULL) {
-            $palabras = trim($_GET['term']);
+        if($this->input->get("term") !== NULL) {
+            $palabras = trim($this->input->get("term"));
         }
         $raw = $this->Etiqueta->buscar(strtolower($palabras));
         $etiquetas = array();
