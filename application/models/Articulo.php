@@ -38,25 +38,73 @@ class Articulo extends CI_Model{
   }
 
   // Operaciones de lectura
-  public function todos($min, $max, $fecha) {
-      $res = $this->db->query("select * from v_articulos where fecha < ? offset ? limit ?",
-                              array($fecha, $min, $max));
+  public function todos($limit, $fecha, $precio, $distancia,
+                        $latitud, $longitud, $articulos_viejos) {
+      $query = "select * from v_articulos where fecha < ? ";
+      $datos = array($fecha);
+
+      if($distancia > 0) {
+          $query .= ' and latitud is not null and longitud is not null'.
+                    ' and earth_distance(ll_to_earth(?, ?),'.
+                    ' ll_to_earth(latitud, longitud)) < ? ';
+          array_push($datos, $latitud);
+          array_push($datos, $longitud);
+          array_push($datos, $distancia);
+      }
+      if( ! empty($articulos_viejos)) {
+          $cadena = "(";
+          foreach ($articulos_viejos as $v) {
+              $cadena .= $v . ', ';
+          }
+          $cadena = substr($cadena, 0, -2) . ")";
+          $query .= ' and articulo_id not in ' . $cadena;
+      }
+      if($precio !== '') {
+          $query .= " order by precio " . $precio;
+      }
+      $query .= " limit ?";
+      array_push($datos, $limit);
+
+      $res = $this->db->query($query, $datos);
       return ($res->num_rows() > 0) ? $res->result_array() : array();
   }
 
-  public function todos_sin_favorito($usuario_id, $min, $max, $fecha) {
-      $res = $this->db->query('select *
-                                from v_articulos
-                                where fecha < ?
-                                group by id, articulo_id, nombre, descripcion,
-                                         usuario_id, precio, nick, favorito,
-                                         etiquetas, fecha, latitud, longitud
-                                having id not in (select articulo_id from favoritos where usuario_id = ?)
-                                order by fecha desc
-                                offset ? limit ?',
-                                array($fecha, $usuario_id, $min, $max));
+  public function todos_sin_favorito($usuario_id, $limit, $fecha,
+                                     $precio, $distancia, $latitud, $longitud,
+                                     $articulos_viejos) {
+      $datos = array($fecha);
+      $query = 'select *
+                from v_articulos
+                where fecha < ?';
+      if( ! empty($articulos_viejos)) {
+          $cadena = "(";
+          foreach ($articulos_viejos as $v) {
+              $cadena .= $v . ', ';
+          }
+          $cadena = substr($cadena, 0, -2) . ")";
+          $query .= ' and articulo_id not in ' . $cadena;
+      }
+      if($distancia > 0) {
+          $query .= ' and latitud is not null and longitud is not null'.
+                    ' and earth_distance(ll_to_earth(?, ?),'.
+                    ' ll_to_earth(latitud, longitud)) < ?';
+          array_push($datos, $latitud);
+          array_push($datos, $longitud);
+          array_push($datos, $distancia);
+      }
+      $query .= ' group by id, articulo_id, nombre, descripcion,
+                  usuario_id, precio, nick, favorito,
+                  etiquetas, fecha, latitud, longitud ';
+      $query .= ' having id not in (select articulo_id from favoritos where usuario_id = ?) ';
+      array_push($datos, $usuario_id);
 
-    return $res->result_array();
+      ($precio !== '') ? ($query .= ' order by precio ' . $precio) : ($query .= ' order by fecha desc ');
+      $query .= ' limit ? ';
+      array_push($datos, $limit);
+
+      $res = $this->db->query($query, $datos);
+
+      return $res->result_array();
   }
   public function articulos_favoritos($usuario_id) {
       $res = $this->db->get_where('v_favoritos',
@@ -64,19 +112,55 @@ class Articulo extends CI_Model{
       return $res->result_array();
   }
 
-  public function busqueda_articulo($etiquetas, $nombre) {
+  public function busqueda_articulo($limit, $etiquetas, $nombre, $precio, $distancia,
+                                    $latitud, $longitud, $articulos_viejos) {
       $res = array();
-
       if( ! empty($etiquetas)) {
           foreach ($etiquetas as $v) {
               $this->db->like('lower(etiquetas)', strtolower($v), 'match');
-              $this->db->select('distinct on (articulo_id) *');
-              $res = $this->db->get('v_etiquetas_articulos')->result_array();
+              if( ! empty($articulos_viejos)) {
+                  $this->db->where_not_in('articulo_id', $articulos_viejos);
+              }
+
+              if($precio !== '') {
+                  $this->db->order_by('precio', $precio);
+                  $this->db->select('distinct on (articulo_id, precio) *');
+              } else {
+                  $this->db->select('distinct on (articulo_id) *');
+              }
+              if($distancia > 0) {
+                  $this->db->where('latitud is not null and longitud is not null');
+                  $this->db->where('earth_distance(ll_to_earth('.
+                                    $latitud.', '.$longitud.
+                                    '), ll_to_earth(latitud, longitud)) < ',
+                                    $distancia);
+              }
+              $this->db->limit($limit);
+              $res = $this->db->get('v_articulos')->result_array();
           }
       }
 
       if($nombre !== "") {
           $this->db->like('lower(nombre)', strtolower($nombre), 'match');
+
+          if( ! empty($articulos_viejos)) {
+              $this->db->where_not_in('articulo_id', $articulos_viejos);
+          }
+          if($precio !== '') {
+              $this->db->order_by('precio', $precio);
+              $this->db->select('distinct on (articulo_id, precio) *');
+          } else {
+              $this->db->select('distinct on (articulo_id) *');
+          }
+
+          if($distancia > 0) {
+              $this->db->where('latitud is not null and longitud is not null');
+              $this->db->where('earth_distance(ll_to_earth('.
+                                $latitud.', '.$longitud.
+                                '), ll_to_earth(latitud, longitud)) < ',
+                                $distancia);
+          }
+          $this->db->limit($limit);
           $res = $this->db->get('v_articulos')->result_array();
       }
 
@@ -84,17 +168,39 @@ class Articulo extends CI_Model{
           foreach ($etiquetas as $v) {
               $this->db->like('lower(etiquetas)', strtolower($v), 'match');
               $this->db->like('lower(nombre)', strtolower($nombre), 'match');
-              $this->db->select('distinct on (articulo_id) *');
-              $res = $this->db->get('v_etiquetas_articulos')->result_array();
+              if( ! empty($articulos_viejos)) {
+                  $this->db->where_not_in('articulo_id', $articulos_viejos);
+              }
+              if($precio !== '') {
+                  $this->db->order_by('precio', $precio);
+                  $this->db->select('distinct on (articulo_id, precio) *');
+              } else {
+                  $this->db->select('distinct on (articulo_id) *');
+              }
+              if($distancia > 0) {
+                  $this->db->where('latitud is not null and longitud is not null');
+                  $this->db->where('earth_distance(ll_to_earth('.
+                                    $latitud.', '.$longitud.
+                                    '), ll_to_earth(latitud, longitud)) < ',
+                                    $distancia);
+              }
+              $this->db->limit($limit);
+              $res = $this->db->get('v_articulos')->result_array();
           }
       }
-
-      if($nombre === "" && $etiquetas[0] === "") {
+      if($nombre === "" && empty($etiquetas)) {
           if($this->Usuario->logueado()):
               $usuario = $this->session->userdata("usuario");
-              $res = $this->Articulo->todos_sin_favorito($usuario['id'], 0, 10, 'now()');
+              $res =
+                $this->Articulo->todos_sin_favorito($usuario['id'], $limit, 'now()',
+                                                    $precio, $distancia,
+                                                    $latitud, $longitud,
+                                                    $articulos_viejos);
           else:
-              $res = $this->Articulo->todos(0, 10, 'now()');
+              $res = $this->Articulo->todos($limit, 'now()',
+                                            $precio, $distancia,
+                                            $latitud, $longitud,
+                                            $articulos_viejos);
           endif;
       }
 

@@ -566,7 +566,7 @@ class Usuarios extends CI_Controller{
             if($valores['longitud'] === (double) 0) {
                 $valores['longitud'] = NULL;
             }
-            
+
             $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
             $this->Usuario->editar($valores, $usuario_id);
 

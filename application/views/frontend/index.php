@@ -53,11 +53,31 @@
         <?php endforeach; ?>
     </div>
     <div class="large-3 columns">
+        <?= form_open('/frontend/portada/index', 'method="GET"') ?>
         <h3>Ordenar por distancia</h3>
+            <div class="row">
+                <?= form_radio('order_distancia', '1000', set_value('order_distancia')) ?>
+                    A 1km de ti
+                <br>
+                <?= form_radio('order_distancia', '5000', set_value('order_distancia')) ?>
+                    A 5km de ti
+                <br>
+                <?= form_radio('order_distancia', '10000', set_value('order_distancia')) ?>
+                    A 10km de ti
+                <br>
+                <?= form_radio('order_distancia', '0', set_value('order_distancia')) ?>
+                    Sin limite de distancia
+            </div>
         <h3>Ordenar por precio</h3>
+            <div class="row">
+                <?= form_radio('order_precio', 'asc', FALSE) ?>
+                    De menor a mayor precio
+                <br>
+                <?= form_radio('order_precio', 'desc', FALSE) ?>
+                    De mayor a menor precio
+            </div>
         <h3>Búsqueda personalizada</h3>
         <div class="row">
-         <?= form_open('/frontend/portada/index') ?>
              <fieldset>
                  <legend>Búsqueda Personalizada</legend>
                  <div class="row">
@@ -70,13 +90,16 @@
                       <?= form_input('tags', set_value('tags', '', FALSE),
                                     'id="tags" class="" placeholder="Buscar por etiquetas..."') ?>
 
-                      <?= form_submit('buscar', 'Buscar', 'class="success button tiny radius"') ?>
+                      <?= form_hidden('latitud', '40.4168') ?>
+                      <?= form_hidden('longitud', '-3.7038') ?>
+
+                      <?= form_submit('', 'Buscar', 'class="success button tiny radius"') ?>
                   </div>
                  </div>
              </fieldset>
-         <?= form_close() ?>
         </div>
     </div>
+    <?= form_close() ?>
 </div>
 
 <div class="row masArticulos">
@@ -116,18 +139,19 @@
 
 <script type="text/javascript">
     var limite = 10;
-    var offset = 0;
     var scrollInfinito = false;
+    var articulos_viejos = [];
+    // alert(window.location.search);
 
     $(window).scroll(function() {
         if(($(window).scrollTop() >= ($(document).height() - $("footer").first().height()) - $(window).height())
             && scrollInfinito) {
-            masArticulos();
+            masArticulos(limite);
         }
     });
 
     $('#mas').click(function () {
-        masArticulos();
+        masArticulos(limite);
         scrollInfinito = true;
         $(this).prop("src", "/img/loading.gif");
     });
@@ -139,19 +163,26 @@
        return http.status!=404;
     }
 
-    function masArticulos() {
-        var ultimo_articulo = $('#centro').children("div").last().prop("id");
+    function masArticulos(limite) {
+        var url_search = window.location.search;
+        $.each($('#centro').children("div"), function(index, val) {
+            if(articulos_viejos.indexOf($(this).prop("id")) == -1) {
+                articulos_viejos.push($(this).prop("id"));
+            }
+        });
+        scrollInfinito = false;
         $.ajax({
-            url: "<?= base_url() ?>articulos/masArticulos/" + ultimo_articulo + "/" + offset + "/" + (offset+limite),
+            url: "<?= base_url() ?>articulos/masArticulos/" + limite + url_search,
             type: 'POST',
+            data: {
+                articulos_viejos: articulos_viejos
+            },
             async: true,
-            success: function(response) {2
+            success: function(response) {
                 if(response.length == 0) {
                     $("#mas").remove();
                     return;
                 }
-                offset += 10;
-                limite += 10;
                 for(var producto in response) {
                     var div = '<div class="large-4 columns left articulos" id="'
                               + response[producto].articulo_id + '">';
@@ -204,6 +235,7 @@
                         });
                     });
                 }
+                scrollInfinito = true;
             },
             error: function (error) {
                 alert(error.statusText);
@@ -403,7 +435,13 @@
           geocoder.geocode({'latLng': this.getPosition()}, function(results, status) {
               if (status == google.maps.GeocoderStatus.OK) {
                   var address=results[0]['formatted_address'];
-                //   alert(address);
+                  // alert(address);
+
+                  var latitud = results[0]['geometry']['location'].lat();
+                  var longitud = results[0]['geometry']['location'].lng();
+
+                  $('input[name="latitud"]').first().val(latitud);
+                  $('input[name="longitud"]').first().val(longitud);
               }
           });
       });

@@ -12,17 +12,83 @@ class Articulos extends CI_Controller {
 
   }
 
-  public function masArticulos($ultimo_articulo = NULL, $min = NULL, $max = NULL) {
+  public function masArticulos($limit = NULL) {
+      if($limit === NULL) $limit = 10; 
+      $articulos_viejos = array();
+
+      if($this->input->post('articulos_viejos') !== NULL) {
+          $articulos_viejos = $this->input->post('articulos_viejos');
+      }
+
       $res = array();
-      if($ultimo_articulo !== NULL && $min !== NULL && $max !== NULL) {
-          $min = (double) $min;
-          $max = (double) $max;
-          $articulo = $this->Articulo->por_id($ultimo_articulo);
+
+      $distancia = 0;
+      $latitud = 40.4168;
+      $longitud = -3.7038;
+      $precio = '';
+
+      if($this->input->get('nombre') !== NULL && $this->input->get('tags') !== NULL) {
+          if($this->input->get('order_distancia') !== NULL) {
+              $distancia = $this->input->get('order_distancia');
+
+              if( ! is_numeric($distancia) || $distancia < 0) {
+                  $distancia = 0;
+              } else if ($this->input->get('latitud') !== NULL &&
+                         $this->input->get('longitud') !== NULL) {
+
+                  $latitud = $this->input->get('latitud');
+                  $longitud = $this->input->get('longitud');
+
+                  if( ! is_numeric($latitud)) {
+                     $latitud = 40.4168;
+                  }
+
+                  if( ! is_numeric($longitud)) {
+                     $longitud = -3.7038;
+                  }
+              }
+          }
+
+          if($this->input->get('order_precio') !== NULL) {
+              $precio = $this->input->get('order_precio');
+
+              switch ($precio) {
+                  case 'asc':
+                      break;
+                  case 'desc':
+                      break;
+                  default:
+                        $precio = '';
+                      break;
+              }
+          }
+
+          $etiquetas = preg_split('/,/', $this->input->get('tags'));
+          if($etiquetas[0] === '') {
+              $etiquetas = array();
+          }
+          $nombre = $this->input->get("nombre");
+          $res =
+               $this->Articulo->busqueda_articulo($limit, $etiquetas,
+                                                  $nombre,
+                                                  $precio,
+                                                  $distancia,
+                                                  $latitud,
+                                                  $longitud,
+                                                  $articulos_viejos);
+      } else {
           if($this->Usuario->logueado()):
-              $usuario = $this->session->userdata('usuario');
-              $res = $this->Articulo->todos_sin_favorito($usuario['id'], $min, $max, $articulo['fecha']);
+              $usuario = $this->session->userdata("usuario");
+              $res =
+                  $this->Articulo->todos_sin_favorito($usuario['id'], $limit,
+                                                      "now()", $precio,
+                                                      $distancia, $latitud,
+                                                      $longitud, $articulos_viejos);
           else:
-              $res = $this->Articulo->todos($min, $max, $articulo['fecha']);
+              $res = $this->Articulo->todos($limit, "now()",
+                                            $precio, $distancia,
+                                            $latitud, $longitud,
+                                            $articulos_viejos);
           endif;
       }
 
