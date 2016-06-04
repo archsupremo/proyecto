@@ -66,26 +66,29 @@ class Articulo extends CI_Model{
 
   public function busqueda_articulo($etiquetas, $nombre) {
       $res = array();
-      if( ! empty($etiquetas) && $etiquetas[0] !== "") {
+
+      if( ! empty($etiquetas)) {
           foreach ($etiquetas as $v) {
               $this->db->like('lower(etiquetas)', strtolower($v), 'match');
               $this->db->select('distinct on (articulo_id) *');
-              $res1 = $this->db->get('v_etiquetas_articulos')->result_array();
-
-              foreach ($res1 as $value) {
-                  $res[$value['articulo_id']] = $value;
-              }
+              $res = $this->db->get('v_etiquetas_articulos')->result_array();
           }
       }
 
       if($nombre !== "") {
           $this->db->like('lower(nombre)', strtolower($nombre), 'match');
-          $res2 = $this->db->get('v_articulos')->result_array();
+          $res = $this->db->get('v_articulos')->result_array();
+      }
 
-          foreach ($res2 as $value) {
-              $res[$value['articulo_id']] = $value;
+      if( ! empty($etiquetas) && $nombre !== "" ) {
+          foreach ($etiquetas as $v) {
+              $this->db->like('lower(etiquetas)', strtolower($v), 'match');
+              $this->db->like('lower(nombre)', strtolower($nombre), 'match');
+              $this->db->select('distinct on (articulo_id) *');
+              $res = $this->db->get('v_etiquetas_articulos')->result_array();
           }
       }
+
       if($nombre === "" && $etiquetas[0] === "") {
           if($this->Usuario->logueado()):
               $usuario = $this->session->userdata("usuario");
@@ -94,7 +97,6 @@ class Articulo extends CI_Model{
               $res = $this->Articulo->todos(0, 10, 'now()');
           endif;
       }
-
 
       return $res;
   }

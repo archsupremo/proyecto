@@ -10,8 +10,10 @@ class Portada extends CI_Controller {
   public function index($kyw = NULL, $e = NULL) {
       if($this->input->post('buscar') !== NULL) {
           $etiquetas = preg_split('/,/', $this->input->post('tags'));
+          //$etiquetas = $this->input->post('tags');
           $nombre = $this->input->post("nombre");
           $data['articulos'] = $this->Articulo->busqueda_articulo($etiquetas, $nombre);
+
       } else {
           if($this->Usuario->logueado()):
               $usuario = $this->session->userdata("usuario");
