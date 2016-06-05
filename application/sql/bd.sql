@@ -276,7 +276,8 @@ create view v_ventas_vendedor as
     select v.id as venta_id, nombre, descripcion, precio,
            u.nick as comprador_nick, uu.nick as vendedor_nick,
            fecha_venta, articulo_id, vendedor_id, comprador_id,
-           valoracion, valoracion_text, etiquetas
+           valoracion, valoracion_text, etiquetas,
+           vv.id as valoracion_id
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
          join usuarios uu on uu.id = v.vendedor_id
          left join usuarios u on u.id = v.comprador_id
@@ -287,7 +288,8 @@ create view v_ventas_comprador as
     select v.id as venta_id, nombre, descripcion, precio,
            u.nick as comprador_nick, uu.nick as vendedor_nick,
            fecha_venta, articulo_id, vendedor_id, comprador_id,
-           valoracion, valoracion_text, etiquetas
+           valoracion, valoracion_text, etiquetas,
+           vv.id as valoracion_id
     from v_articulos_raw a join ventas v on a.id = v.articulo_id
          join usuarios u on u.id = v.comprador_id
          left join usuarios uu on uu.id = v.vendedor_id
@@ -310,9 +312,16 @@ create view v_favoritos as
 
 drop view if exists v_usuarios_localizacion cascade;
 create view v_usuarios_localizacion as
-    select *
-    from usuarios
-    where latitud is not NULL and longitud is not NULL;
+    select u.id, u.nick, u.latitud, u.longitud,
+           count(distinct a.articulo_id) as articulos_disponibles,
+           count(distinct v.venta_id) as ventas,
+           count(distinct vv.valoracion_id) + count(distinct vvv.valoracion_id) as valoraciones
+    from usuarios u left join v_articulos a on u.id = a.usuario_id
+         left join v_ventas v on u.id = v.vendedor_id
+         left join v_ventas_comprador vv on u.id = vv.vendedor_id
+         left join v_ventas_vendedor vvv on u.id = vvv.comprador_id
+    where u.latitud is not NULL and u.longitud is not NULL
+    group by u.id, u.nick, u.latitud, u.longitud;
 
 drop view if exists v_usuarios_pm cascade;
 create view v_usuarios_pm as

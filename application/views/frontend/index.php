@@ -4,6 +4,15 @@
         <h4>¿Quien esta vendiendo a tu alrededor?</h4>
         <input id="pac-input" class="controls" type="text" placeholder="Buscar por ciudad, región, país...">
         <div class="mapa_index" id="map"></div>
+        <br>
+        <div class="row">
+            <?= form_radio('distancia_usuario', '1000', TRUE) ?>
+                A 1km de ti
+            <?= form_radio('distancia_usuario', '5000', FALSE) ?>
+                A 5km de ti
+            <?= form_radio('distancia_usuario', '10000', FALSE) ?>
+                A 10km de ti
+        </div>
     </div>
     <div class="large-6 columns" id="centro">
         <?php foreach ($articulos as $v): ?>
@@ -56,16 +65,16 @@
         <?= form_open('/frontend/portada/index', 'method="GET"') ?>
         <h3>Ordenar por distancia</h3>
             <div class="row">
-                <?= form_radio('order_distancia', '1000', set_value('order_distancia')) ?>
+                <?= form_radio('order_distancia', '1000', FALSE) ?>
                     A 1km de ti
                 <br>
-                <?= form_radio('order_distancia', '5000', set_value('order_distancia')) ?>
+                <?= form_radio('order_distancia', '5000', FALSE) ?>
                     A 5km de ti
                 <br>
-                <?= form_radio('order_distancia', '10000', set_value('order_distancia')) ?>
+                <?= form_radio('order_distancia', '10000', FALSE) ?>
                     A 10km de ti
                 <br>
-                <?= form_radio('order_distancia', '0', set_value('order_distancia')) ?>
+                <?= form_radio('order_distancia', '0', TRUE) ?>
                     Sin limite de distancia
             </div>
         <h3>Ordenar por precio</h3>
@@ -308,7 +317,7 @@
 
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 13,
+      zoom: 14,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       mapTypeControl: false,
       zoomControl: true,
@@ -368,49 +377,27 @@
 
             pos = new google.maps.LatLng(latitud, longitud);
             map.setCenter(pos);
-            marker_yo.setMap(null);
+            marker_yo.setPosition(pos);
             draw_circle.setCenter(pos);
 
-            zoom = map.getZoom();
-            for (var marker in markers_propios) {
-                markers_propios[marker].setMap(null);
-            }
-            $.ajax({
-                url: "<?= base_url() ?>usuarios/usuarios_cercanos/" +
-                      latitud + "/" + longitud + "/" + draw_circle.getRadius(),
-                type: 'GET',
-                async: true,
-                success: respuesta,
-                error: error,
-                dataType: "json"
-            });
+              switch (draw_circle.getRadius()) {
+                  case 1000:
+                      map.setZoom(14);
+                    break;
+                  case 5000:
+                      map.setZoom(12);
+                    break;
+                  case 10000:
+                      map.setZoom(11);
+                    break;
+                  default:
+                      map.setZoom(15);
+                    break;
+              }
+
+            obtener_usuarios(latitud, longitud, draw_circle.getRadius());
             position_changed = undefined;
         }
-    });
-
-    map.addListener('zoom_changed', function() {
-        var radius = draw_circle.getRadius();
-        for(i = 0; i < Math.abs(zoom - map.getZoom()); i++) {
-            if(zoom > map.getZoom()) {
-                radius *= 2;
-            } else {
-                radius /= 2;
-            }
-        }
-        draw_circle.setRadius(radius);
-        zoom = map.getZoom();
-        for (var marker in markers_propios) {
-            markers_propios[marker].setMap(null);
-        }
-        $.ajax({
-            url: "<?= base_url() ?>usuarios/usuarios_cercanos/" +
-                  latitud + "/" + longitud + "/" + draw_circle.getRadius(),
-            type: 'GET',
-            async: true,
-            success: respuesta,
-            error: error,
-            dataType: "json"
-        });
     });
   }
 
@@ -428,7 +415,15 @@
           position: pos,
           map: map,
           draggable: true,
-          title: "Tu estas aquí >.<"
+          title: "Tu estas aquí >.<",
+          icon: {
+              url: '<?= base_url() ?>img/marker.png',
+              size: new google.maps.Size(100, 100),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(30, 60),
+              scaledSize: new google.maps.Size(60, 60)
+          }
+          //   animation: google.maps.Animation.BOUNCE,
       });
       var geocoder = new google.maps.Geocoder();
       marker_yo.addListener('dragend', function (e) {
@@ -440,6 +435,13 @@
                   var latitud = results[0]['geometry']['location'].lat();
                   var longitud = results[0]['geometry']['location'].lng();
 
+                  pos = new google.maps.LatLng(latitud, longitud);
+                  map.setCenter(pos);
+                  draw_circle.setCenter(pos);
+
+                  $.cookie('latitud', latitud);
+                  $.cookie('longitud', longitud);
+
                   $('input[name="latitud"]').first().val(latitud);
                   $('input[name="longitud"]').first().val(longitud);
               }
@@ -447,17 +449,35 @@
       });
       draw_circle = new google.maps.Circle({
           center: pos,
-          radius: 2000,
+          radius: 1000,
           strokeColor: "#FF0000",
           strokeOpacity: 0.6,
-          strokeWeight: 1,
-          fillColor: "#FF0000",
-          fillOpacity: 0.35,
-          map: map
+          strokeWeight: 2,
+          //fillColor: "#FF0000",
+          fillOpacity: 0.1,
+          map: map,
+          //editable: true
       });
+      draw_circle.addListener('center_changed', function (e) {
+          var latitud = this.center.lat();
+          var longitud = this.center.lng();
+          obtener_usuarios(latitud, longitud, this.getRadius());
+      });
+      draw_circle.addListener('radius_changed', function (e) {
+          var latitud = this.center.lat();
+          var longitud = this.center.lng();
+          obtener_usuarios(latitud, longitud, this.getRadius());
+      });
+      obtener_usuarios(latitud, longitud, draw_circle.getRadius());
+  }
+
+  function obtener_usuarios(latitud, longitud, radius) {
+      for (var marker in markers_propios) {
+          markers_propios[marker].setMap(null);
+      }
       $.ajax({
           url: "<?= base_url() ?>usuarios/usuarios_cercanos/" +
-                latitud + "/" + longitud + "/" + draw_circle.getRadius(),
+                latitud + "/" + longitud + "/" + radius,
           type: 'GET',
           async: true,
           success: respuesta,
@@ -469,20 +489,22 @@
   function manejadorDeError(error) {
     latitud = 40.4168;
     longitud = -3.7038;
+    if($.cookie('latitud') != undefined && $.cookie('longitud') != undefined) {
+        latitud = $.cookie('latitud');
+        longitud = $.cookie('longitud');
+
+        $('input[name="latitud"]').first().val(latitud);
+        $('input[name="longitud"]').first().val(longitud);
+    }
     dibujarMarker(latitud, longitud);
+
     switch(error.code) {
         case error.PERMISSION_DENIED:
-            // alert("El usuario no permite compartir datos de geolocalizacion");
+        case error.TIMEOUT:
         break;
-
         case error.POSITION_UNAVAILABLE:
             alert("Imposible detectar la posicio actual");
         break;
-
-        case error.TIMEOUT:
-            // alert("La posicion debe recuperar el tiempo de espera");
-        break;
-
         default:
             alert("Error desconocido");
         break;
@@ -517,11 +539,35 @@
           });
           markers_propios.push(marker);
           marker.setMap(map);
+
+          var contentString = '<div id="content">'+
+          '<div id="siteNotice">'+
+          '</div>'+
+          //'<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+          '<div id="bodyContent">'+
+          '<p>Articulos disponibles => '+usuario.articulos_disponibles+'</p>'+
+          '<p>Ventas => '+usuario.ventas+'</p>'+
+          '<p>Valoraciones => '+usuario.valoraciones+'</p>'+
+          '<p><a href="<?= base_url() ?>usuarios/perfil/'+usuario.id+'">'+
+            'Ver perfil de '+usuario.nick+'</a></p>'+
+          '</div>'+
+          '</div>';
+
+          var infowindow = new google.maps.InfoWindow({
+            content: contentString
+          });
+
+          marker.addListener('click', function() {
+            infowindow.open(map, marker);
+          });
       }
   }
   function error(error) {
       alert("Ha ocurrido el error => " + error.statusText);
   }
+  $('input[name="distancia_usuario"]').change(function () {
+      draw_circle.setRadius(parseFloat($(this).val()));
+  });
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&libraries=places&callback=initMap"
 async defer></script>

@@ -43,6 +43,8 @@
     <script src="/tag/jquery.caret.min.js"></script>
     <script src="/nested/core/jquery.shapeshift.js"></script>
 
+    <script src="/cookie/jquery.cookie.js"></script>
+
     <style media="screen">
         .menu-login {
             margin-top: 3.5em;
