@@ -79,18 +79,21 @@
 			border-radius:3px;
 
             -webkit-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
-               -moz-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
-                -ms-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
-                 -o-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
-                    transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000); /* easeInOutExpo */
+            -moz-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
+            -ms-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
+            -o-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
+            transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000); /* easeInOutExpo */
 
-              -webkit-transition-property: left, right, top;
-                 -moz-transition-property: left, right, top;
-                  -ms-transition-property: left, right, top;
-                   -o-transition-property: left, right, top;
-                      transition-property: left, right, top;
-        	}
-
+            -webkit-transition-property: left, right, top;
+            -moz-transition-property: left, right, top;
+            -ms-transition-property: left, right, top;
+            -o-transition-property: left, right, top;
+            transition-property: left, right, top;
+        }
+        .imagen_lazy {
+            width: 5em;
+            height: 5em;
+        }
     </style>
   </head>
   <body>

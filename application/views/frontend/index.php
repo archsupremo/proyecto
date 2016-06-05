@@ -439,8 +439,8 @@
                   map.setCenter(pos);
                   draw_circle.setCenter(pos);
 
-                  $.cookie('latitud', latitud);
-                  $.cookie('longitud', longitud);
+                  $.cookie('latitud', latitud, { expires: 999 });
+                  $.cookie('longitud', longitud, { expires: 999 });
 
                   $('input[name="latitud"]').first().val(latitud);
                   $('input[name="longitud"]').first().val(longitud);
