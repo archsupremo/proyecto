@@ -418,12 +418,12 @@
           title: "Tu estas aquí >.<",
           icon: {
               url: '<?= base_url() ?>img/marker.png',
-              size: new google.maps.Size(100, 100),
+              size: new google.maps.Size(50, 60),
               origin: new google.maps.Point(0, 0),
               anchor: new google.maps.Point(30, 60),
               scaledSize: new google.maps.Size(60, 60)
           }
-          //   animation: google.maps.Animation.BOUNCE,
+          //   animation: google.maps.Animation.BOUN1CE,
       });
       var geocoder = new google.maps.Geocoder();
       marker_yo.addListener('dragend', function (e) {
@@ -516,6 +516,8 @@
   }
 
   function respuesta(respuesta) {
+      var infowindow = new google.maps.InfoWindow();
+
       for (var usuario in respuesta.usuarios) {
           var usuario = respuesta.usuarios[usuario];
           if (usuario_id == usuario.id) {
@@ -536,6 +538,7 @@
           var marker = new google.maps.Marker({
               position: pos,
               title: usuario.nick + " está aquí >.<, a " + distancia + " de distancia.",
+              clickable: true
           });
           markers_propios.push(marker);
           marker.setMap(map);
@@ -553,13 +556,12 @@
           '</div>'+
           '</div>';
 
-          var infowindow = new google.maps.InfoWindow({
-            content: contentString
-          });
-
-          marker.addListener('click', function() {
-            infowindow.open(map, marker);
-          });
+          (function(marker, contenido) {
+            google.maps.event.addListener(marker, 'click', function() {
+              infowindow.setContent(contenido);
+              infowindow.open(map, marker);
+            });
+          })(marker, contentString);
       }
   }
   function error(error) {

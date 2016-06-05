@@ -8,6 +8,10 @@ function usuario_logueado() {
     if ($CI->Usuario->logueado()):
         $usuario = $CI->session->userdata('usuario');
         $out .= '<li>'.
+                    anchor('/pdf/', 'Generar pdf con información del usuario',
+                           'id="pdf" class=""');
+                '</li>';
+        $out .= '<li>'.
                  anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar información personal',
                         'id="editar_perfil" class=""');
                 '</li>';

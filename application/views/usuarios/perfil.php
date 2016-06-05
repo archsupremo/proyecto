@@ -1,5 +1,11 @@
 <?php template_set('title', 'Perfil de Usuario') ?>
 
+<style media="screen">
+    div.font-blokk > h3 {
+        border: 1px solid black;
+        margin: 0.75em;
+    }
+</style>
 <div class="row large-6">
     <?php if ( ! empty(error_array())): ?>
         <div data-alert class="alert-box alert radius alerta">
@@ -75,8 +81,13 @@
                         <?php foreach ($articulos_usuarios as $v): ?>
                             <div class="large-3 columns left">
                                 <div class="">
+                                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
+                                        <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
+                                    <?php else: ?>
+                                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                                    <?php endif; ?>
                                     <?= anchor('/articulos/buscar/' . $v['id'],
-                                        img('/imagenes_articulos/' . $v['id'] . '_1' . '.jpg')) ?>
+                                        img($url)) ?>
                                 </div>
                                 <div class="">
                                     <?= $v['precio'] ?>
@@ -148,11 +159,17 @@
                 <div class="rt01pagitem">Ventas</div>
                 <div class="container">
                 <div class="row font-blokk">
+                <?php if( ! empty($articulos_vendidos)): ?>
                     <?php foreach ($articulos_vendidos as $v): ?>
                         <div class="large-3 columns left">
                             <div class="">
+                                <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
+                                    <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
+                                <?php else: ?>
+                                    <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                                <?php endif; ?>
                                 <?= anchor('/articulos/buscar/' . $v['articulo_id'],
-                                            img('/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')) ?>
+                                            img($url)) ?>
                             </div>
                             <div class="">
                                 <?= $v['precio'] ?>
@@ -201,7 +218,10 @@
                             </div>
                         </div>
                     <?php endforeach; ?>
-                </div>
+                    <?php else: ?>
+                        <h3>El usuario <?= $usuario['nick'] ?> no tiene ventas actualmente >.<</h3>
+                    <?php endif; ?>
+                    </div>
                 </div>
             </div>
             <div>
@@ -298,12 +318,17 @@
                     <div class="rt01pagitem">Mis Compras</div>
                     <div class="container">
                     <div class="row font-blokk">
+                    <?php if( ! empty($articulos_comprados)): ?>
                         <?php foreach ($articulos_comprados as $v): ?>
                             <div class="large-3 columns left">
                                 <div class="">
+                                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
+                                        <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
+                                    <?php else: ?>
+                                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                                    <?php endif; ?>
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
-                                                img('/imagenes_articulos/' .
-                                                    $v['articulo_id'] . '_1' . '.jpg')) ?>
+                                                img($url)) ?>
                                 </div>
                                 <div class="">
                                     <?= $v['precio'] ?>
@@ -354,6 +379,9 @@
                                 </div>
                             </div>
                         <?php endforeach; ?>
+                    <?php else: ?>
+                        <h3>No tienes compras actualmente >.<</h3>
+                    <?php endif; ?>
                     </div>
                     </div>
                 </div>
@@ -361,12 +389,17 @@
                     <div class="rt01pagitem">Mis Favoritos</div>
                     <div class="container">
                     <div class="row font-blokk">
+                    <?php if( ! empty($articulos_favoritos)): ?>
                         <?php foreach ($articulos_favoritos as $v): ?>
                             <div class="large-3 columns left">
                                 <div class="">
+                                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
+                                        <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
+                                    <?php else: ?>
+                                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                                    <?php endif; ?>
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
-                                                img('/imagenes_articulos/' .
-                                                    $v['articulo_id'] . '_1' . '.jpg')) ?>
+                                                img($url)) ?>
                                 </div>
                                 <div class="">
                                     <?= $v['precio'] ?>
@@ -416,6 +449,9 @@
                                 </div>
                             </div>
                         <?php endforeach; ?>
+                    <?php else: ?>
+                        <h3>No tienes articulos en la seccion de favoritos actualmente >.<</h3>
+                    <?php endif; ?>
                     </div>
                     </div>
                 </div>
@@ -445,8 +481,6 @@
                                         </div>
                                         <div class="toggle toggle-light"
                                              data-toggle-on="false"
-                                             data-toggle-height="25"
-                                             data-toggle-width="100"
                                              id="<?= $v['id'] ?>"></div>
                                         <div class="">
                                             <?= $v['mensaje'] ?>
@@ -478,8 +512,6 @@
                                         </div>
                                         <div class="toggle toggle-light"
                                              data-toggle-on="true"
-                                             data-toggle-height="25"
-                                             data-toggle-width="100"
                                              id="<?= $v['id'] ?>"></div>
                                         <div class="">
                                             <?= $v['mensaje'] ?>
@@ -509,8 +541,8 @@
         easing: 'swing', // animation transition easing function
         checkbox: null, // the checkbox to toggle (for use in forms)
         clicker: null,
-        // width: 50, // width used if not set in css
-        // height: 20, // height if not set in css
+        width: 100, // width used if not set in css
+        height: 25, // height if not set in css
         type: 'compact'
     });
     $('.toggle').on('toggle', function(e, active) {
