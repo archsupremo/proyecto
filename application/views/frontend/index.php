@@ -63,7 +63,15 @@
     </div>
     <div class="large-3 columns">
         <?= form_open('/frontend/portada/index', 'method="GET"') ?>
-        <h3>Ordenar por distancia</h3>
+        <h3>Ordenar por precio</h3>
+            <div class="row">
+                <?= form_radio('order_precio', 'asc', FALSE) ?>
+                    De menor a mayor precio
+                <br>
+                <?= form_radio('order_precio', 'desc', FALSE) ?>
+                    De mayor a menor precio
+            </div>
+        <h3>Buscar por distancia</h3>
             <div class="row">
                 <?= form_radio('order_distancia', '1000', FALSE) ?>
                     A 1km de ti
@@ -76,14 +84,6 @@
                 <br>
                 <?= form_radio('order_distancia', '0', TRUE) ?>
                     Sin limite de distancia
-            </div>
-        <h3>Ordenar por precio</h3>
-            <div class="row">
-                <?= form_radio('order_precio', 'asc', FALSE) ?>
-                    De menor a mayor precio
-                <br>
-                <?= form_radio('order_precio', 'desc', FALSE) ?>
-                    De mayor a menor precio
             </div>
         <h3>Búsqueda personalizada</h3>
         <div class="row">
