@@ -464,7 +464,7 @@ class Usuarios extends CI_Controller{
         if($latitud !== NULL && $longitud !== NULL && $distancia !== NULL) {
             $latitud = (double) $latitud;
             $longitud = (double) $longitud;
-            $distancia = (((double) $distancia) * 1.60934) / 2;
+            $distancia = (double) $distancia;
 
             $usuarios_cercanos = $this->Usuario->usuarios_cercanos($latitud, $longitud, $distancia);
         }

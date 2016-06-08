@@ -62,7 +62,11 @@ class Articulo extends CI_Model{
       if($precio !== '') {
           if(end($articulos_viejos) !== FALSE) {
               $ultimo_articulo = $this->por_id(end($articulos_viejos));
-              $query .= ' and precio <= \'' . $ultimo_articulo['precio'] . '\'::money';
+              if($precio === 'desc') {
+                  $query .= ' and precio <= \'' . $ultimo_articulo['precio'] . '\'::money';
+              } else {
+                  $query .= ' and precio >= \'' . $ultimo_articulo['precio'] . '\'::money';
+              }
           }
           $query .= " order by precio " . $precio;
       }
@@ -98,7 +102,11 @@ class Articulo extends CI_Model{
       }
       if($precio !== '' && end($articulos_viejos) !== FALSE) {
           $ultimo_articulo = $this->por_id(end($articulos_viejos));
-          $query .= ' and precio <= \'' . $ultimo_articulo['precio'] . '\'::money';
+          if($precio === 'desc') {
+              $query .= ' and precio <= \'' . $ultimo_articulo['precio'] . '\'::money';
+          } else {
+              $query .= ' and precio >= \'' . $ultimo_articulo['precio'] . '\'::money';
+          }
       }
       $query .= ' group by id, articulo_id, nombre, descripcion,
                   usuario_id, precio, nick, favorito,
