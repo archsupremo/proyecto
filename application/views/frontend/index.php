@@ -65,10 +65,16 @@
         <?= form_open('/frontend/portada/index', 'method="GET"') ?>
         <h3>Ordenar por precio</h3>
             <div class="row">
-                <?= form_radio('order_precio', 'asc', FALSE) ?>
+                <?= form_radio('order', '', TRUE) ?>
+                    Por novedad
+                <br>
+                <?= form_radio('order', 'prox', FALSE) ?>
+                    Por Proximidad
+                <br>
+                <?= form_radio('order', 'precio_asc', FALSE) ?>
                     De menor a mayor precio
                 <br>
-                <?= form_radio('order_precio', 'desc', FALSE) ?>
+                <?= form_radio('order', 'precio_desc', FALSE) ?>
                     De mayor a menor precio
             </div>
         <h3>Buscar por distancia</h3>

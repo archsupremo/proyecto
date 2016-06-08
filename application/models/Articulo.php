@@ -38,7 +38,7 @@ class Articulo extends CI_Model{
   }
 
   // Operaciones de lectura
-  public function todos($limit, $fecha, $precio, $distancia,
+  public function todos($limit, $fecha, $order, $distancia,
                         $latitud, $longitud, $articulos_viejos) {
       $query = "select * from v_articulos where fecha < ? ";
       $datos = array($fecha);
@@ -59,16 +59,20 @@ class Articulo extends CI_Model{
           $cadena = substr($cadena, 0, -2) . ")";
           $query .= ' and articulo_id not in ' . $cadena;
       }
-      if($precio !== '') {
+      if($order !== '') {
           if(end($articulos_viejos) !== FALSE) {
               $ultimo_articulo = $this->por_id(end($articulos_viejos));
-              if($precio === 'desc') {
+              if($order === 'precio_desc') {
                   $query .= ' and precio <= \'' . $ultimo_articulo['precio'] . '\'::money';
-              } else {
+              } else if($order === 'precio_asc') {
                   $query .= ' and precio >= \'' . $ultimo_articulo['precio'] . '\'::money';
               }
           }
-          $query .= " order by precio " . $precio;
+          if($order === 'precio_desc') {
+              $query .= " order by precio desc";
+          } else if($order === 'precio_asc') {
+              $query .= " order by precio asc";
+          }
       }
       $query .= " limit ?";
       array_push($datos, $limit);
@@ -78,7 +82,7 @@ class Articulo extends CI_Model{
   }
 
   public function todos_sin_favorito($usuario_id, $limit, $fecha,
-                                     $precio, $distancia, $latitud, $longitud,
+                                     $order, $distancia, $latitud, $longitud,
                                      $articulos_viejos) {
       $datos = array($fecha);
       $query = 'select *
@@ -100,11 +104,11 @@ class Articulo extends CI_Model{
           array_push($datos, $longitud);
           array_push($datos, $distancia);
       }
-      if($precio !== '' && end($articulos_viejos) !== FALSE) {
+      if($order !== '' && end($articulos_viejos) !== FALSE) {
           $ultimo_articulo = $this->por_id(end($articulos_viejos));
-          if($precio === 'desc') {
+          if($order === 'precio_desc') {
               $query .= ' and precio <= \'' . $ultimo_articulo['precio'] . '\'::money';
-          } else {
+          } else if($order === 'precio_asc') {
               $query .= ' and precio >= \'' . $ultimo_articulo['precio'] . '\'::money';
           }
       }
@@ -114,8 +118,12 @@ class Articulo extends CI_Model{
       $query .= ' having id not in (select articulo_id from favoritos where usuario_id = ?) ';
       array_push($datos, $usuario_id);
 
-      if($precio !== '') {
-          $query .= " order by precio " . $precio;
+      if($order !== '') {
+          if($order === 'precio_desc') {
+              $query .= " order by precio desc";
+          } else if($order === 'precio_asc') {
+              $query .= " order by precio asc";
+          }
       } else {
           $query .= ' order by fecha desc ';
       }

@@ -12,7 +12,7 @@ class Portada extends CI_Controller {
       $distancia = 0;
       $latitud = 40.4168;
       $longitud = -3.7038;
-      $precio = '';
+      $order = '';
 
       if($this->input->get('nombre') !== NULL && $this->input->get('tags') !== NULL) {
           if($this->input->get('order_distancia') !== NULL) {
@@ -36,16 +36,18 @@ class Portada extends CI_Controller {
               }
           }
 
-          if($this->input->get('order_precio') !== NULL) {
-              $precio = $this->input->get('order_precio');
+          if($this->input->get('order') !== NULL) {
+              $order = $this->input->get('order');
 
-              switch ($precio) {
-                  case 'asc':
+              switch ($order) {
+                  case 'precio_asc':
                       break;
-                  case 'desc':
+                  case 'precio_desc':
+                      break;
+                  case 'prox':
                       break;
                   default:
-                        $precio = '';
+                        $order = '';
                       break;
               }
           }
@@ -58,7 +60,7 @@ class Portada extends CI_Controller {
           $data['articulos'] =
                $this->Articulo->busqueda_articulo($limit, $etiquetas,
                                                   $nombre,
-                                                  $precio,
+                                                  $order,
                                                   $distancia,
                                                   $latitud,
                                                   $longitud,
@@ -68,12 +70,12 @@ class Portada extends CI_Controller {
               $usuario = $this->session->userdata("usuario");
               $data['articulos'] =
                   $this->Articulo->todos_sin_favorito($usuario['id'], $limit,
-                                                      "now()", $precio,
+                                                      "now()", $order,
                                                       $distancia, $latitud,
                                                       $longitud, array());
           else:
               $data['articulos'] = $this->Articulo->todos($limit, "now()",
-                                                          $precio, $distancia,
+                                                          $order, $distancia,
                                                           $latitud, $longitud,
                                                           array());
           endif;

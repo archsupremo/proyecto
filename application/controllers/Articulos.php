@@ -13,7 +13,7 @@ class Articulos extends CI_Controller {
   }
 
   public function masArticulos($limit = NULL) {
-      if($limit === NULL) $limit = 10; 
+      if($limit === NULL) $limit = 10;
       $articulos_viejos = array();
 
       if($this->input->post('articulos_viejos') !== NULL) {
@@ -25,7 +25,7 @@ class Articulos extends CI_Controller {
       $distancia = 0;
       $latitud = 40.4168;
       $longitud = -3.7038;
-      $precio = '';
+      $order = '';
 
       if($this->input->get('nombre') !== NULL && $this->input->get('tags') !== NULL) {
           if($this->input->get('order_distancia') !== NULL) {
@@ -49,16 +49,18 @@ class Articulos extends CI_Controller {
               }
           }
 
-          if($this->input->get('order_precio') !== NULL) {
-              $precio = $this->input->get('order_precio');
+          if($this->input->get('order') !== NULL) {
+              $order = $this->input->get('order');
 
-              switch ($precio) {
-                  case 'asc':
+              switch ($order) {
+                  case 'precio_asc':
                       break;
-                  case 'desc':
+                  case 'precio_desc':
+                      break;
+                  case 'prox':
                       break;
                   default:
-                        $precio = '';
+                        $order = '';
                       break;
               }
           }
@@ -71,7 +73,7 @@ class Articulos extends CI_Controller {
           $res =
                $this->Articulo->busqueda_articulo($limit, $etiquetas,
                                                   $nombre,
-                                                  $precio,
+                                                  $order,
                                                   $distancia,
                                                   $latitud,
                                                   $longitud,
@@ -81,12 +83,12 @@ class Articulos extends CI_Controller {
               $usuario = $this->session->userdata("usuario");
               $res =
                   $this->Articulo->todos_sin_favorito($usuario['id'], $limit,
-                                                      "now()", $precio,
+                                                      "now()", $order,
                                                       $distancia, $latitud,
                                                       $longitud, $articulos_viejos);
           else:
               $res = $this->Articulo->todos($limit, "now()",
-                                            $precio, $distancia,
+                                            $order, $distancia,
                                             $latitud, $longitud,
                                             $articulos_viejos);
           endif;
