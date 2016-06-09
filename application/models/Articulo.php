@@ -140,7 +140,7 @@ class Articulo extends CI_Model{
       return $res->result_array();
   }
 
-  public function busqueda_articulo($limit, $etiquetas, $nombre, $precio, $distancia,
+  public function busqueda_articulo($limit, $etiquetas, $nombre, $order, $distancia,
                                     $latitud, $longitud, $articulos_viejos) {
       $res = array();
       if( ! empty($etiquetas)) {
@@ -150,8 +150,17 @@ class Articulo extends CI_Model{
                   $this->db->where_not_in('articulo_id', $articulos_viejos);
               }
 
-              if($precio !== '') {
-                  $this->db->order_by('precio', $precio);
+              if($order !== '') {
+                  switch ($order) {
+                      case 'precio_asc':
+                          $this->db->order_by('precio', 'asc');
+                          break;
+                      case 'precio_desc':
+                          $this->db->order_by('precio', 'desc');
+                          break;
+                      default:
+                          break;
+                  }
                   $this->db->select('distinct on (articulo_id, precio) *');
               } else {
                   $this->db->select('distinct on (articulo_id) *');
@@ -174,8 +183,17 @@ class Articulo extends CI_Model{
           if( ! empty($articulos_viejos)) {
               $this->db->where_not_in('articulo_id', $articulos_viejos);
           }
-          if($precio !== '') {
-              $this->db->order_by('precio', $precio);
+          if($order !== '') {
+              switch ($order) {
+                  case 'precio_asc':
+                      $this->db->order_by('precio', 'asc');
+                      break;
+                  case 'precio_desc':
+                      $this->db->order_by('precio', 'desc');
+                      break;
+                  default:
+                      break;
+              }
               $this->db->select('distinct on (articulo_id, precio) *');
           } else {
               $this->db->select('distinct on (articulo_id) *');
@@ -199,8 +217,17 @@ class Articulo extends CI_Model{
               if( ! empty($articulos_viejos)) {
                   $this->db->where_not_in('articulo_id', $articulos_viejos);
               }
-              if($precio !== '') {
-                  $this->db->order_by('precio', $precio);
+              if($order !== '') {
+                  switch ($order) {
+                      case 'precio_asc':
+                          $this->db->order_by('precio', 'asc');
+                          break;
+                      case 'precio_desc':
+                          $this->db->order_by('precio', 'desc');
+                          break;
+                      default:
+                          break;
+                  }
                   $this->db->select('distinct on (articulo_id, precio) *');
               } else {
                   $this->db->select('distinct on (articulo_id) *');
@@ -221,12 +248,12 @@ class Articulo extends CI_Model{
               $usuario = $this->session->userdata("usuario");
               $res =
                 $this->Articulo->todos_sin_favorito($usuario['id'], $limit, 'now()',
-                                                    $precio, $distancia,
+                                                    $order, $distancia,
                                                     $latitud, $longitud,
                                                     $articulos_viejos);
           else:
               $res = $this->Articulo->todos($limit, 'now()',
-                                            $precio, $distancia,
+                                            $order, $distancia,
                                             $latitud, $longitud,
                                             $articulos_viejos);
           endif;

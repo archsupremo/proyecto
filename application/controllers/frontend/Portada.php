@@ -16,15 +16,15 @@ class Portada extends CI_Controller {
 
       if($this->input->get('nombre') !== NULL && $this->input->get('tags') !== NULL) {
           if($this->input->get('order_distancia') !== NULL) {
-              $distancia = $this->input->get('order_distancia');
+              $distancia = trim($this->input->get('order_distancia'));
 
               if( ! is_numeric($distancia) || $distancia < 0) {
                   $distancia = 0;
               } else if ($this->input->get('latitud') !== NULL &&
                          $this->input->get('longitud') !== NULL) {
 
-                  $latitud = $this->input->get('latitud');
-                  $longitud = $this->input->get('longitud');
+                  $latitud = trim($this->input->get('latitud'));
+                  $longitud = trim($this->input->get('longitud'));
 
                   if( ! is_numeric($latitud)) {
                      $latitud = 40.4168;
@@ -37,7 +37,7 @@ class Portada extends CI_Controller {
           }
 
           if($this->input->get('order') !== NULL) {
-              $order = $this->input->get('order');
+              $order = trim($this->input->get('order'));
 
               switch ($order) {
                   case 'precio_asc':
@@ -52,11 +52,11 @@ class Portada extends CI_Controller {
               }
           }
 
-          $etiquetas = preg_split('/,/', $this->input->get('tags'));
+          $etiquetas = preg_split('/,/', trim($this->input->get('tags')));
           if($etiquetas[0] === '') {
               $etiquetas = array();
           }
-          $nombre = $this->input->get("nombre");
+          $nombre = trim($this->input->get("nombre"));
           $data['articulos'] =
                $this->Articulo->busqueda_articulo($limit, $etiquetas,
                                                   $nombre,
@@ -80,6 +80,10 @@ class Portada extends CI_Controller {
                                                           array());
           endif;
       }
+      $data['nombre_busqueda'] = (isset($nombre)) ? $nombre : '';
+      $data['tags_busqueda'] = ($this->input->get('tags') !== NULL) ? trim($this->input->get('tags')) : '';
+      $data['order_busqueda'] = $order;
+      $data['order_distancia'] = (isset($distancia)) ? $distancia: 0;
       $this->template->load('/frontend/index', $data);
   }
 }

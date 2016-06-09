@@ -98,7 +98,16 @@
                                 <div class="">
                                     <?= $v['etiquetas'] ?>
                                     <?php if($usuario_perfil === TRUE): ?>
-                                        <a href=""
+                                        <br>
+                                        <a href="/articulos/vender/<?= $v['id'] ?>"
+                                           class="success button tiny radius">
+                                           Vender Articulo
+                                        </a>
+                                        <a href="#" data-reveal-id="articulo_disponible_<?= $v['id'] ?>"
+                                           class="alert button tiny radius">
+                                           Borrar Articulo
+                                        </a>
+                                        <!-- <a href=""
                                            class="small secondary radius button split">
                                            Opciones
                                            <span data-options="align: right"
@@ -107,13 +116,13 @@
                                         </a>
                                         <ul id="drop_articulo_disponible_<?= $v['id'] ?>"
                                             class="f-dropdown" data-dropdown-content>
-                                           <li><a href="/articulos/vender/<?= $v['id'] ?>">Vender Articulo</a></li>
+                                           <li></li>
                                            <li>
                                                <a href="#" data-reveal-id="articulo_disponible_<?= $v['id'] ?>">
                                                    Borrar Articulo
                                                </a>
                                            </li>
-                                        </ul>
+                                        </ul> -->
                                         <div id="articulo_disponible_<?= $v['id'] ?>" class="reveal-modal"
                                             data-reveal aria-labelledby="modalTitle"
                                             aria-hidden="true" role="dialog">
@@ -180,7 +189,18 @@
                             <div class="">
                                 <?= $v['etiquetas'] ?>
                                 <?php if($usuario_perfil === TRUE): ?>
-                                    <p>
+                                    <br>
+                                    <?php if($v['valoracion'] === NULL && $v['comprador_id'] !== NULL): ?>
+                                        <a href="/usuarios/valorar_comprador/<?= $v['venta_id'] ?>"
+                                           class="info button tiny radius">
+                                            Valorar al comprador
+                                        </a>
+                                    <?php endif; ?>
+                                    <a href="#" data-reveal-id="articulo_vendido_<?= $v['articulo_id'] ?>"
+                                       class="alert button tiny radius">
+                                        Borrar Articulo
+                                    </a>
+                                    <!-- <p>
                                         <a href=""
                                            class="small secondary radius button split">
                                            Opciones
@@ -203,7 +223,7 @@
                                                 Borrar Articulo
                                             </a>
                                         </li>
-                                    </ul>
+                                    </ul> -->
                                     <div id="articulo_vendido_<?= $v['articulo_id'] ?>" class="reveal-modal"
                                         data-reveal aria-labelledby="modalTitle"
                                         aria-hidden="true" role="dialog">
@@ -338,7 +358,18 @@
                                 </div>
                                 <div class="">
                                     <?= $v['etiquetas'] ?>
-                                    <p>
+                                    <br>
+                                    <?php if($v['valoracion'] === NULL): ?>
+                                        <a href="/usuarios/valorar_vendedor/<?= $v['venta_id'] ?>"
+                                           class="info button tiny radius">
+                                            Valorar al vendedor
+                                        </a>
+                                    <?php endif; ?>
+                                    <a href="#" data-reveal-id="compra_<?= $v['articulo_id'] ?>"
+                                       class="alert button tiny radius">
+                                        Yo no he comprado esto!!!
+                                    </a>
+                                    <!-- <p>
                                         <a href=""
                                            class="small secondary radius button split">
                                            Opciones
@@ -361,7 +392,7 @@
                                                Yo no he comprado esto!!!
                                            </a>
                                        </li>
-                                   </ul>
+                                   </ul> -->
                                    <div id="compra_<?= $v['articulo_id'] ?>" class="reveal-modal"
                                        data-reveal aria-labelledby="modalTitle"
                                        aria-hidden="true" role="dialog">
@@ -409,7 +440,12 @@
                                 </div>
                                 <div class="">
                                     <?= $v['etiquetas'] ?>
-                                    <p>
+                                    <br>
+                                    <a href="#" data-reveal-id="favorito_<?= $v['articulo_id'] ?>"
+                                       class="alert button tiny radius">
+                                        Eliminar de Favoritos
+                                    </a>
+                                    <!-- <p>
                                         <a href=""
                                            class="small secondary radius button split">
                                            Opciones
@@ -421,13 +457,11 @@
                                    </p>
                                    <ul id="drop_articulo_favorito_<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
                                       <li>
-                                          <li>
-                                              <a href="#" data-reveal-id="favorito_<?= $v['articulo_id'] ?>">
-                                                  Eliminar de Favoritos
-                                              </a>
-                                          </li>
+                                          <a href="#" data-reveal-id="favorito_<?= $v['articulo_id'] ?>">
+                                              Eliminar de Favoritos
+                                          </a>
                                       </li>
-                                   </ul>
+                                   </ul> -->
                                    <div id="favorito_<?= $v['articulo_id'] ?>" class="reveal-modal"
                                        data-reveal aria-labelledby="modalTitle"
                                        aria-hidden="true" role="dialog">
@@ -499,7 +533,7 @@
                                             <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg')): ?>
                                                 <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg' ?>
                                             <?php else: ?>
-                                                <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+                                                <?php $url = '/imagenes_usuarios/sin-imagen_thumbnail.jpeg' ?>
                                             <?php endif; ?>
                                             <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
                                                         img(array(

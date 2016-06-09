@@ -65,31 +65,31 @@
         <?= form_open('/frontend/portada/index', 'method="GET"') ?>
         <h3>Ordenar por precio</h3>
             <div class="row">
-                <?= form_radio('order', '', TRUE) ?>
+                <?= form_radio('order', '', set_radio('order', $order_busqueda, $order_busqueda === '')) ?>
                     Por novedad
                 <br>
-                <?= form_radio('order', 'prox', FALSE) ?>
+                <?= form_radio('order', 'prox', set_radio('order', $order_busqueda, $order_busqueda === 'prox')) ?>
                     Por Proximidad
                 <br>
-                <?= form_radio('order', 'precio_asc', FALSE) ?>
+                <?= form_radio('order', 'precio_asc', set_radio('order', $order_busqueda, $order_busqueda === 'precio_asc')) ?>
                     De menor a mayor precio
                 <br>
-                <?= form_radio('order', 'precio_desc', FALSE) ?>
+                <?= form_radio('order', 'precio_desc', set_radio('order', $order_busqueda, $order_busqueda === 'precio_desc')) ?>
                     De mayor a menor precio
             </div>
         <h3>Buscar por distancia</h3>
             <div class="row">
-                <?= form_radio('order_distancia', '1000', FALSE) ?>
+                <?= form_radio('order_distancia', '0', set_radio('order_distancia', $order_distancia, TRUE)) ?>
+                    Sin limite de distancia
+                <br>
+                <?= form_radio('order_distancia', '1000', set_radio('order_distancia', $order_distancia, $order_distancia === '1000')) ?>
                     A 1km de ti
                 <br>
-                <?= form_radio('order_distancia', '5000', FALSE) ?>
+                <?= form_radio('order_distancia', '5000', set_radio('order_distancia', $order_distancia, $order_distancia === '5000')) ?>
                     A 5km de ti
                 <br>
-                <?= form_radio('order_distancia', '10000', FALSE) ?>
+                <?= form_radio('order_distancia', '10000', set_radio('order_distancia', $order_distancia, $order_distancia === '10000')) ?>
                     A 10km de ti
-                <br>
-                <?= form_radio('order_distancia', '0', TRUE) ?>
-                    Sin limite de distancia
             </div>
         <h3>Búsqueda personalizada</h3>
         <div class="row">
@@ -98,11 +98,11 @@
                  <div class="row">
                   <div class="large-12 columns ui-widget">
                       <?= form_label('Nombre articulo:', 'nombre') ?>
-                      <?= form_input('nombre', set_value('nombre', '', FALSE),
+                      <?= form_input('nombre', set_value('nombre', $nombre_busqueda, FALSE),
                                      'id="nombre" class="" placeholder="Buscar por nombre..."') ?>
 
                       <?= form_label('Etiquetas:', 'tags') ?>
-                      <?= form_input('tags', set_value('tags', '', FALSE),
+                      <?= form_input('tags', set_value('tags', $tags_busqueda, FALSE),
                                     'id="tags" class="" placeholder="Buscar por etiquetas..."') ?>
 
                       <?= form_hidden('latitud', '40.4168') ?>
