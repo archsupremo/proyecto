@@ -40,8 +40,9 @@ class Articulo extends CI_Model{
   // Operaciones de lectura
   public function todos($limit, $fecha, $order, $distancia,
                         $latitud, $longitud, $articulos_viejos) {
-      $query = "select * from v_articulos where fecha < ? ";
-      $datos = array($fecha);
+      $query = "select *, earth_distance(ll_to_earth(?, ?), ll_to_earth(latitud, longitud))
+                as distancia from v_articulos where fecha < ? ";
+      $datos = array($latitud, $longitud, $fecha);
 
       if($distancia > 0) {
           $query .= ' and latitud is not null and longitud is not null'.
@@ -72,6 +73,8 @@ class Articulo extends CI_Model{
               $query .= " order by precio desc";
           } else if($order === 'precio_asc') {
               $query .= " order by precio asc";
+          } else if($order === 'prox') {
+              $query .= " order by distancia asc";
           }
       }
       $query .= " limit ?";
@@ -84,10 +87,10 @@ class Articulo extends CI_Model{
   public function todos_sin_favorito($usuario_id, $limit, $fecha,
                                      $order, $distancia, $latitud, $longitud,
                                      $articulos_viejos) {
-      $datos = array($fecha);
-      $query = 'select *
-                from v_articulos
-                where fecha < ?';
+
+      $query = "select *, earth_distance(ll_to_earth(?, ?), ll_to_earth(latitud, longitud))
+                as distancia from v_articulos where fecha < ? ";
+      $datos = array($latitud, $longitud, $fecha);
       if( ! empty($articulos_viejos)) {
           $cadena = "(";
           foreach ($articulos_viejos as $v) {
@@ -123,6 +126,8 @@ class Articulo extends CI_Model{
               $query .= " order by precio desc";
           } else if($order === 'precio_asc') {
               $query .= " order by precio asc";
+          } else if($order === 'prox') {
+              $query .= " order by distancia asc";
           }
       } else {
           $query .= ' order by fecha desc ';
@@ -143,6 +148,7 @@ class Articulo extends CI_Model{
   public function busqueda_articulo($limit, $etiquetas, $nombre, $order, $distancia,
                                     $latitud, $longitud, $articulos_viejos) {
       $res = array();
+
       if( ! empty($etiquetas)) {
           foreach ($etiquetas as $v) {
               $this->db->like('lower(etiquetas)', strtolower($v), 'match');
@@ -154,14 +160,19 @@ class Articulo extends CI_Model{
                   switch ($order) {
                       case 'precio_asc':
                           $this->db->order_by('precio', 'asc');
+                          $this->db->select('distinct on (articulo_id, precio) *');
                           break;
                       case 'precio_desc':
                           $this->db->order_by('precio', 'desc');
+                          $this->db->select('distinct on (articulo_id, precio) *');
+                          break;
+                      case 'prox':
+                          $this->db->order_by('distancia', 'asc');
+                          $this->db->select('distinct on (articulo_id, distancia) *');
                           break;
                       default:
                           break;
                   }
-                  $this->db->select('distinct on (articulo_id, precio) *');
               } else {
                   $this->db->select('distinct on (articulo_id) *');
               }
@@ -173,6 +184,9 @@ class Articulo extends CI_Model{
                                     $distancia);
               }
               $this->db->limit($limit);
+              $this->db->select('earth_distance(ll_to_earth('.
+                                $latitud.', '.$longitud.
+                                '), ll_to_earth(latitud, longitud)) as distancia');
               $res = $this->db->get('v_articulos')->result_array();
           }
       }
@@ -187,14 +201,19 @@ class Articulo extends CI_Model{
               switch ($order) {
                   case 'precio_asc':
                       $this->db->order_by('precio', 'asc');
+                      $this->db->select('distinct on (articulo_id, precio) *');
                       break;
                   case 'precio_desc':
                       $this->db->order_by('precio', 'desc');
+                      $this->db->select('distinct on (articulo_id, precio) *');
+                      break;
+                  case 'prox':
+                      $this->db->order_by('distancia', 'asc');
+                      $this->db->select('distinct on (articulo_id, distancia) *');
                       break;
                   default:
                       break;
               }
-              $this->db->select('distinct on (articulo_id, precio) *');
           } else {
               $this->db->select('distinct on (articulo_id) *');
           }
@@ -207,6 +226,9 @@ class Articulo extends CI_Model{
                                 $distancia);
           }
           $this->db->limit($limit);
+          $this->db->select('earth_distance(ll_to_earth('.
+                            $latitud.', '.$longitud.
+                            '), ll_to_earth(latitud, longitud)) as distancia');
           $res = $this->db->get('v_articulos')->result_array();
       }
 
@@ -221,14 +243,19 @@ class Articulo extends CI_Model{
                   switch ($order) {
                       case 'precio_asc':
                           $this->db->order_by('precio', 'asc');
+                          $this->db->select('distinct on (articulo_id, precio) *');
                           break;
                       case 'precio_desc':
                           $this->db->order_by('precio', 'desc');
+                          $this->db->select('distinct on (articulo_id, precio) *');
+                          break;
+                      case 'prox':
+                          $this->db->order_by('distancia', 'asc');
+                          $this->db->select('distinct on (articulo_id, distancia) *');
                           break;
                       default:
                           break;
                   }
-                  $this->db->select('distinct on (articulo_id, precio) *');
               } else {
                   $this->db->select('distinct on (articulo_id) *');
               }
@@ -240,6 +267,9 @@ class Articulo extends CI_Model{
                                     $distancia);
               }
               $this->db->limit($limit);
+              $this->db->select('earth_distance(ll_to_earth('.
+                                $latitud.', '.$longitud.
+                                '), ll_to_earth(latitud, longitud)) as distancia');
               $res = $this->db->get('v_articulos')->result_array();
           }
       }
