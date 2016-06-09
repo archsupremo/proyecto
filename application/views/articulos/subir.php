@@ -31,7 +31,8 @@
                   </div>
                   <div class="small-11 columns">
                     <input type="number" min="0" step="0.01"
-                           placeholder="precio..." value="0"
+                           placeholder="precio..."
+                           value="<?= set_value('precio', '', FALSE) ?>"
                            name="precio" id="precio">
                   </div>
                 </div>
