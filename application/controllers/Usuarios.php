@@ -99,13 +99,15 @@ class Usuarios extends CI_Controller{
                 'rules' => array(
                     'trim', 'required',
                     array('existe_nick', array($this->Usuario, 'existe_nick')),
-                    array('existe_nick_registrado', array($this->Usuario, 'existe_nick_registrado'))
+                    array('existe_nick_registrado', array($this->Usuario, 'existe_nick_registrado')),
+                    array('usuario_baneado', array($this->Usuario, 'usuario_baneado_nick')),
                 ),
                 'errors' => array(
                     'existe_nick' => 'El nick debe existir.',
                     'existe_nick_registrado' => 'Esta cuenta todavia no ha sido validada por' .
                                                 ' los medios correspondientes. Por favor, ' .
-                                                'valide su cuenta.'
+                                                'valide su cuenta.',
+                    'usuario_baneado' => 'Tu usuario a sido baneado de este sitio web.'
                 ),
             ),
             array(
@@ -118,9 +120,11 @@ class Usuarios extends CI_Controller{
         $this->form_validation->set_rules($reglas);
         if ($this->form_validation->run() === TRUE) {
             $usuario = $this->Usuario->por_nick($nick);
+
             $this->session->set_userdata('usuario', array(
                 'id' => $usuario['id'],
                 'nick' => $nick,
+                'admin' => $this->Usuario->es_admin($nick),
             ));
 
             if($this->session->has_userdata('last_uri')) {
@@ -279,7 +283,7 @@ class Usuarios extends CI_Controller{
 
                 $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
                 $valores['registro_verificado'] = FALSE;
-                $valores['activado'] = TRUE;
+                $valores['ip'] = $this->blacklist->get_real_ip();
                 $valores['latitud'] = (double) $valores['latitud'];
                 $valores['longitud'] = (double) $valores['longitud'];
                 $valores['nick'] = strtolower($valores['nick']);
@@ -443,7 +447,7 @@ class Usuarios extends CI_Controller{
         $data['valoraciones_ventas'] = $this->Usuario->valoraciones_a_vendedor($usuario_id);
 
         if ($this->Usuario->logueado()) {
-            if ($data['usuario_propio']['id'] === $usuario_id) {
+            if ($data['usuario_propio']['id'] === $usuario_id && !$data['usuario_propio']['admin']) {
                 $data['articulos_favoritos'] = $this->Articulo->articulos_favoritos($usuario_id);
                 $data['pm_no_vistos'] = $this->Usuario->pm_no_vistos($usuario_id);
                 $data['pm_vistos'] = $this->Usuario->pm_vistos($usuario_id);
@@ -568,6 +572,7 @@ class Usuarios extends CI_Controller{
             }
 
             $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
+            $valores['ip'] = $this->blacklist->get_real_ip();
             $this->Usuario->editar($valores, $usuario_id);
 
             $mensajes[] = array('info' =>
@@ -653,6 +658,12 @@ class Usuarios extends CI_Controller{
 
             $this->form_validation->set_rules($reglas);
             if ($this->form_validation->run() === TRUE) {
+                if($this->Usuario->usuario_baneado($id_usuario) ||
+                   $this->session->userdata('usuario')['admin']) {
+                   $mensajes[] = array('error' =>
+                       "No se puede enviar un mensaje a un usuario baneado.");
+                   $this->flashdata->load($mensajes);
+                }
                 $this->Usuario->insertar_pm($mensaje);
             } else {
                 $mensajes[] = array('error' =>

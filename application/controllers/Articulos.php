@@ -361,6 +361,29 @@ class Articulos extends CI_Controller {
       $this->template->load('/articulos/vender', $data);
   }
 
+  public function retirar_articulo($articulo_id = NULL) {
+      $usuario = $this->session->userdata('usuario');
+      if (!$this->Usuario->logueado() || !$usuario['admin']) {
+          redirect('/frontend/portada/');
+      }
+      $articulo = $this->Articulo->por_id($articulo_id);
+      if($articulo === FALSE) {
+          redirect('/frontend/portada/');
+      }
+
+      $this->Articulo->retirar_articulo($articulo_id, $articulo['usuario_id']);
+
+      if (isset($_SERVER['HTTP_REFERER']) && !$this->session->has_userdata('last_uri')) {
+          $this->session->set_userdata('last_uri',
+                          parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
+      }
+      if($this->session->has_userdata('last_uri')) {
+          $uri = $this->session->userdata('last_uri');
+          $this->session->unset_userdata('last_uri');
+          redirect($uri);
+      }
+  }
+
   public function borrar($articulo_id = NULL) {
       if (!$this->Usuario->logueado()) {
           $mensajes[] = array('error' =>
@@ -368,9 +391,11 @@ class Articulos extends CI_Controller {
           $this->flashdata->load($mensajes);
           redirect('/frontend/portada/');
       }
-      $usuario_id = $this->session->userdata('usuario')['id'];
-      if(!$this->Articulo->es_propietario($usuario_id, $articulo_id)) {
-          redirect('/frontend/portada/');
+      $usuario = $this->session->userdata('usuario');
+      if(!$usuario['admin']) {
+          if(!$this->Articulo->es_propietario($usuario['id'], $articulo_id))  {
+              redirect('/frontend/portada/');
+          }
       }
 
       $this->Articulo->borrar($articulo_id);

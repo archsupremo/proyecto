@@ -17,16 +17,29 @@ create table usuarios(
                                               check (length(password) = 60),
     email               varchar(100) not null,
     registro_verificado bool         not null default false,
-    activado            bool         not null default true,
+    ip                  inet default null,
     latitud             double precision default null,
     longitud            double precision default null
+);
+
+drop table if exists usuarios_admin cascade;
+create table usuarios_admin(
+    id                  bigserial             constraint pk_usuarios_admin primary key,
+    nick                varchar(100) not null constraint uq_usuarios_nick_admin unique,
+    password            char(60)     not null constraint ck_password_valida_admin
+                                              check (length(password) = 60),
+    email               varchar(100)
 );
 
 drop table if exists usuarios_baneados cascade;
 create table usuarios_baneados(
     usuario_id bigint constraint fk_usuarios_baneados_usuarios references usuarios (id),
-    baneado bool not null default false,
     constraint pk_usuarios_baneados primary key (usuario_id)
+);
+
+drop table if exists ips_baneadas cascade;
+create table ips_baneadas(
+    ip inet constraint pk_ips_baneados primary key
 );
 
 drop table if exists tokens cascade;
@@ -45,6 +58,13 @@ create table articulos(
                       on update cascade on delete cascade,
     fecha     timestamp not null,
     precio money not null
+);
+
+drop table if exists articulos_retirados cascade;
+create table articulos_retirados(
+    articulo_id bigint constraint fk_articulos_retirados_articulos references articulos (id),
+    usuario_id bigint constraint fk_articulos_retirados_usuarios references usuarios (id),
+    constraint pk_articulos_retirados primary key (articulo_id, usuario_id)
 );
 
 drop table if exists etiquetas cascade;
@@ -122,13 +142,16 @@ create table pm(
     visto bool not null default false
 );
 
-insert into usuarios(nick, password, email, registro_verificado, activado, latitud, longitud)
+insert into usuarios(nick, password, email, registro_verificado, ip, latitud, longitud)
     values('admin', crypt('admin', gen_salt('bf')), 'guillermo.lopez@iesdonana.org',
-            true, true, null, null),
-          ('guillermo', crypt('guillermo', gen_salt('bf')), 'guillermo.lopez@iesdonana.org',
-            true, true, 36.7736776, -6.3529689),
+            true, null, null, null),
+          ('guillermo', crypt('guillermo', gen_salt('bf')), 'lopezgarciaguillermo@live.com',
+            true, null, 36.7736776, -6.3529689),
           ('archsupremo', crypt('archsupremo', gen_salt('bf')), 'jdkdejava@gmail.com',
-            true, true, 36.7795776, -6.3529689);
+            true, null, 36.7795776, -6.3529689);
+
+insert into usuarios_admin(nick, password, email)
+    values('archlinux', crypt('archlinux', gen_salt('bf')), 'arch@hotmail.com');
 
 insert into articulos(nombre, descripcion, usuario_id, fecha, precio)
     values('Movil Xperia M4 Aqua', 'Semi nuevo', 1, current_timestamp, 50.3),
@@ -241,7 +264,8 @@ create view v_articulos_raw as
     left join v_etiquetas e on e.articulo_id = a.id
     group by a.id, a.nombre, a.descripcion,
              a.usuario_id, a.precio, a.fecha,
-             u.nick, u.latitud, u.longitud;
+             u.nick, u.latitud, u.longitud
+    having a.id not in (select articulo_id from articulos_retirados);
 
 drop view if exists v_ventas;
 create view v_ventas as
@@ -261,6 +285,8 @@ create view v_articulos as
              fecha, precio, nick, etiquetas, latitud,
              longitud
     having id not in (select articulo_id from ventas)
+           and
+           usuario_id not in (select usuario_id from usuarios_baneados)
     order by fecha desc;
 
 drop view if exists v_etiquetas_articulos cascade;
@@ -270,6 +296,14 @@ create view v_etiquetas_articulos as
            precio, nick, a.favorito
     from v_etiquetas e join v_articulos a
     on a.articulo_id = e.articulo_id;
+
+drop view if exists v_favoritos cascade;
+create view v_favoritos as
+    select id as articulo_id, nombre, descripcion, a.usuario_id, precio,
+             nick, f.usuario_id as usuario_favorito, TRUE as favorito,
+             etiquetas
+    from v_articulos a join favoritos f
+    on a.id = f.articulo_id;
 
 drop view if exists v_ventas_vendedor;
 create view v_ventas_vendedor as
@@ -301,14 +335,12 @@ create view v_usuarios_validados as
     from usuarios
     where registro_verificado = true;
 
-
-drop view if exists v_favoritos cascade;
-create view v_favoritos as
-    select id as articulo_id, nombre, descripcion, a.usuario_id, precio,
-             nick, f.usuario_id as usuario_favorito, TRUE as favorito,
-             etiquetas
-    from v_articulos a join favoritos f
-    on a.id = f.articulo_id;
+drop view if exists v_usuarios;
+create view v_usuarios as
+    select u.*, CASE WHEN u.id = ub.usuario_id THEN true ELSE false END as baneado
+    from usuarios u
+    left join usuarios_baneados ub
+    on u.id = ub.usuario_id;
 
 drop view if exists v_usuarios_localizacion cascade;
 create view v_usuarios_localizacion as

@@ -1,7 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Flashdata
-{
+class Flashdata {
     public function load($mensajes_externo) {
         $CI =& get_instance();
         $mensajes = $CI->session->flashdata('mensajes');

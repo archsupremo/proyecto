@@ -84,6 +84,7 @@ class Portada extends CI_Controller {
       $data['tags_busqueda'] = ($this->input->get('tags') !== NULL) ? trim($this->input->get('tags')) : '';
       $data['order_busqueda'] = $order;
       $data['order_distancia'] = (isset($distancia)) ? $distancia: 0;
+
       $this->template->load('/frontend/index', $data);
   }
 }

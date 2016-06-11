@@ -7,26 +7,49 @@ function usuario_logueado() {
 
     if ($CI->Usuario->logueado()):
         $usuario = $CI->session->userdata('usuario');
-        $out .= '<li>'.
-                    anchor('/pdf/', 'Generar pdf con información del usuario',
-                           'id="pdf" class=""');
-                '</li>';
-        $out .= '<li>'.
-                 anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar información personal',
-                        'id="editar_perfil" class=""');
-                '</li>';
-        $out .= '<li>'.
-                    anchor('/articulos/subir/', 'Subir articulo',
-                           'id="subir_articulo" class=""');
-                 '</li>';
-        $out .= '<li>'.
-                    anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil',
-                           'id="perfil" class=""');
-                 '</li>';
-        $out .= '<li>'.
-                 anchor('/usuarios/logout/', 'Logout',
-                        'id="logout" class=""');
-                '</li>';
+        if($usuario['admin'] === FALSE) {
+            $out .= '<li>'.
+                        anchor('/pdf/', 'Generar pdf con información del usuario',
+                               'id="pdf" class=""');
+                    '</li>';
+            $out .= '<li>'.
+                     anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar información personal',
+                            'id="editar_perfil" class=""');
+                    '</li>';
+            $out .= '<li>'.
+                        anchor('/articulos/subir/', 'Subir articulo',
+                               'id="subir_articulo" class=""');
+                     '</li>';
+            $out .= '<li>'.
+                        anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil',
+                               'id="perfil" class=""');
+                     '</li>';
+            $out .= '<li>'.
+                     anchor('/usuarios/logout/', 'Logout',
+                            'id="logout" class=""');
+                    '</li>';
+        } else {
+            $out .= '<li>'.
+                        anchor('/backend/usuarios/listado_usuarios/', 'Ver tabla con listado de usuarios',
+                               'id="listado_usuarios" class=""');
+                    '</li>';
+            // $out .= '<li>'.
+            //          anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar información personal',
+            //                 'id="editar_perfil" class=""');
+            //         '</li>';
+            // $out .= '<li>'.
+            //             anchor('/articulos/subir/', 'Subir articulo',
+            //                    'id="subir_articulo" class=""');
+            //          '</li>';
+            // $out .= '<li>'.
+            //             anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil',
+            //                    'id="perfil" class=""');
+            //          '</li>';
+            $out .= '<li>'.
+                     anchor('/usuarios/logout/', 'Logout',
+                            'id="logout" class=""');
+                    '</li>';
+        }
     endif;
 
     return $out;
@@ -63,8 +86,8 @@ function registro() {
 }
 
 function usuario_id() {
-        $CI =& get_instance();
-        return $CI->session->userdata('usuario')['id'];
+    $CI =& get_instance();
+    return $CI->session->userdata('usuario')['id'];
 }
 
 function logueado() {
@@ -76,7 +99,11 @@ function nick() {
     $CI =& get_instance();
     if($CI->Usuario->logueado()) {
         $usuario = $CI->session->userdata("usuario");
-        $usuario =  $CI->Usuario->por_id($usuario['id']);
+        if($usuario['admin'] === TRUE) {
+            $usuario = $CI->Usuario->por_id_admin($usuario['id']);
+        } else {
+            $usuario = $CI->Usuario->por_id($usuario['id']);
+        }
         if ($usuario !== FALSE) {
             return $usuario['nick'];
         }
@@ -85,6 +112,13 @@ function nick() {
 
 function dar_usuario() {
     $CI =& get_instance();
-
     return $CI->session->userdata('usuario');
+}
+
+function es_admin() {
+    $CI =& get_instance();
+    if(logueado()) {
+        return $CI->session->userdata('usuario')['admin'];
+    }
+    return FALSE;
 }

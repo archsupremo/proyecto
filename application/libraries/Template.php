@@ -1,7 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Template
-{
+class Template {
     public $data_template = array();
 
     public function set($clave, $valor)
@@ -10,8 +9,7 @@ class Template
     }
 
     public function load($vista, $data = array(), $data_template = array(),
-                         $template = 'template')
-    {
+                         $template = 'template') {
         $CI =& get_instance();
         $this->data_template['contents'] = $CI->load->view($vista, $data, TRUE);
         $this->data_template = array_merge($this->data_template,

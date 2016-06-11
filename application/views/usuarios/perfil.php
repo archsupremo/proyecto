@@ -310,29 +310,33 @@
                 </div>
             </div>
             <?php if($usuario_perfil !== TRUE): ?>
-                <div>
-                    <div class="rt01pagitem">Escribir PM</div>
-                    <div class="container">
-                    <div class="row font-blokk">
-                        <div class="row large-centered columns">
-                            <?php if ( ! empty(error_array())): ?>
-                                <div data-alert class="alert-box alert radius alerta">
-                                  <?= validation_errors() ?>
-                                  <a href="#" class="close">&times;</a>
-                                </div>
-                            <?php endif ?>
-                            <?= form_open('/usuarios/insertar_pm/' . $usuario['id']) ?>
-                                <div class="nick-field">
-                                  <?= form_label('Mensaje:', 'mensaje') ?>
-                                  <?= form_textarea('mensaje', set_value('mensaje', '', FALSE),
-                                                 'id="mensaje" class=""') ?>
-                                </div>
-                                <?= form_submit('enviar', 'Enviar', 'class="success button small radius"') ?>
-                            <?= form_close() ?>
+                <?php if($usuario['baneado'] !== 't'): ?>
+                    <?php if(!es_admin()): ?>
+                    <div>
+                        <div class="rt01pagitem">Escribir PM</div>
+                        <div class="container">
+                        <div class="row font-blokk">
+                            <div class="row large-centered columns">
+                                <?php if ( ! empty(error_array())): ?>
+                                    <div data-alert class="alert-box alert radius alerta">
+                                      <?= validation_errors() ?>
+                                      <a href="#" class="close">&times;</a>
+                                    </div>
+                                <?php endif ?>
+                                <?= form_open('/usuarios/insertar_pm/' . $usuario['id']) ?>
+                                    <div class="nick-field">
+                                      <?= form_label('Mensaje:', 'mensaje') ?>
+                                      <?= form_textarea('mensaje', set_value('mensaje', '', FALSE),
+                                                     'id="mensaje" class=""') ?>
+                                    </div>
+                                    <?= form_submit('enviar', 'Enviar', 'class="success button small radius"') ?>
+                                <?= form_close() ?>
+                            </div>
+                        </div>
                         </div>
                     </div>
-                    </div>
-                </div>
+                <?php endif; ?>
+            <?php endif; ?>
             <?php else: ?>
                 <div>
                     <div class="rt01pagitem">Mis Compras</div>

@@ -37,6 +37,14 @@ class Articulo extends CI_Model{
                                array($articulo_id));
   }
 
+  public function retirar_articulo($articulo_id, $usuario_id) {
+      return $this->db->insert('articulos_retirados',
+                               array(
+                                   'articulo_id' => $articulo_id,
+                                   'usuario_id' => $usuario_id
+                               ));
+  }
+
   // Operaciones de lectura
   public function todos($limit, $fecha, $order, $distancia,
                         $latitud, $longitud, $articulos_viejos) {

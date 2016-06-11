@@ -1,67 +1,6 @@
 <?php template_set('title', 'Portada') ?>
 <div class="container">
     <div class="large-3 columns">
-        <h4>¿Quien esta vendiendo a tu alrededor?</h4>
-        <input id="pac-input" class="controls" type="text" placeholder="Buscar por ciudad, región, país...">
-        <div class="mapa_index" id="map"></div>
-        <br>
-        <div class="row">
-            <?= form_radio('distancia_usuario', '1000', TRUE) ?>
-                A 1km de ti
-            <?= form_radio('distancia_usuario', '5000', FALSE) ?>
-                A 5km de ti
-            <?= form_radio('distancia_usuario', '10000', FALSE) ?>
-                A 10km de ti
-        </div>
-    </div>
-    <div class="large-6 columns" id="centro">
-        <?php foreach ($articulos as $v): ?>
-            <div class="large-4 columns left articulos"
-                 id="<?= $v['articulo_id'] ?>">
-                <div class="">
-                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
-                        <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
-                    <?php else: ?>
-                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
-                    <?php endif; ?>
-
-                    <?= anchor('/articulos/buscar/' . $v['articulo_id'],
-                                img(array(
-                                    'src' => $url,
-                                    'title' => $v['nombre'],
-                                    'alt' => $v['nombre'],
-                                ))) ?>
-                </div>
-                <div class="">
-                    <?= $v['precio'] ?>
-                </div>
-                <div class="">
-                    <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre'].$v['articulo_id']) ?>
-                </div>
-                <div class="">
-                    <?= $v['etiquetas'] ?>
-                </div>
-                <div class="">
-                    <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
-                    </div>
-                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['usuario_id'] . '.jpg')): ?>
-                        <?php $url = '/imagenes_usuarios/' . $v['usuario_id'] . '.jpg' ?>
-                    <?php else: ?>
-                        <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
-                    <?php endif; ?>
-                    <?= anchor('/usuarios/perfil/' . $v['usuario_id'],
-                                img(array(
-                                    'src' => $url,
-                                    'title' => $v['nick'],
-                                    'alt' => $v['nick'],
-                                    'class' => 'imagen_nick',
-                                ))) ?>
-                    <?= anchor('/usuarios/perfil/' . $v['usuario_id'], $v['nick']) ?>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-    <div class="large-3 columns">
         <?= form_open('/frontend/portada/index', 'method="GET"') ?>
         <h3>Ordenar por precio</h3>
             <div class="row">
@@ -113,8 +52,86 @@
                  </div>
              </fieldset>
         </div>
+        <?= form_close() ?>
     </div>
-    <?= form_close() ?>
+    <div class="large-6 columns" id="centro">
+        <?php foreach ($articulos as $v): ?>
+            <div class="large-4 columns left articulos"
+                 id="<?= $v['articulo_id'] ?>">
+                <div class="">
+                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
+                        <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
+                    <?php else: ?>
+                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                    <?php endif; ?>
+
+                    <?= anchor('/articulos/buscar/' . $v['articulo_id'],
+                                img(array(
+                                    'src' => $url,
+                                    'title' => $v['nombre'],
+                                    'alt' => $v['nombre'],
+                                ))) ?>
+                </div>
+                <div class="">
+                    <?= $v['precio'] ?>
+                </div>
+                <div class="">
+                    <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre'].$v['articulo_id']) ?>
+                </div>
+                <div class="">
+                    <?= $v['etiquetas'] ?>
+                </div>
+                <div class="">
+                    <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
+                    </div>
+                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['usuario_id'] . '.jpg')): ?>
+                        <?php $url = '/imagenes_usuarios/' . $v['usuario_id'] . '.jpg' ?>
+                    <?php else: ?>
+                        <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+                    <?php endif; ?>
+                    <?= anchor('/usuarios/perfil/' . $v['usuario_id'],
+                                img(array(
+                                    'src' => $url,
+                                    'title' => $v['nick'],
+                                    'alt' => $v['nick'],
+                                    'class' => 'imagen_nick',
+                                ))) ?>
+                    <?= anchor('/usuarios/perfil/' . $v['usuario_id'], $v['nick']) ?>
+                </div>
+                <br>
+                <?php if(es_admin()): ?>
+                    <?= anchor('#', 'Retirar articulo',
+                               'class="alert button tiny radius"
+                                data-reveal-id="articulo_'.$v['id'].'"') ?>
+                    <div id="articulo_<?= $v['articulo_id'] ?>" class="reveal-modal"
+                        data-reveal aria-labelledby="modalTitle"
+                        aria-hidden="true" role="dialog">
+                      <h2 id="modalTitle">¿Está totalmente seguro de retirar el articulo <?= $v['nombre'] ?>
+                          del usuario <?= $v['nick'] ?>?</h2>
+                      <p class="lead">El retirado sera definitivo y no se podrá recuperar el articulo.</p>
+                      <?= anchor('/articulos/retirar_articulo/' . $v['articulo_id'],
+                                 'Sí, retirar el articulo.',
+                                 'class="success button small radius" role="button"') ?>
+                      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="large-3 columns">
+        <h4>¿Quien esta vendiendo a tu alrededor?</h4>
+        <input id="pac-input" class="controls" type="text" placeholder="Buscar por ciudad, región, país...">
+        <div class="mapa_index" id="map"></div>
+        <br>
+        <div class="row">
+            <?= form_radio('distancia_usuario', '1000', TRUE) ?>
+                A 1km de ti
+            <?= form_radio('distancia_usuario', '5000', FALSE) ?>
+                A 5km de ti
+            <?= form_radio('distancia_usuario', '10000', FALSE) ?>
+                A 10km de ti
+        </div>
+    </div>
 </div>
 
 <div class="row masArticulos">

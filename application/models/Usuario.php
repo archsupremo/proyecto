@@ -20,9 +20,47 @@ class Usuario extends CI_Model {
         return $this->db->where('id', $id)->update('pm', $valores);
     }
 
+    public function banear_usuario($usuario_id) {
+        return $this->db->insert('usuarios_baneados', array('usuario_id' => $usuario_id));
+    }
+
+    public function banear_ip($ip) {
+        return $this->db->insert('ips_baneadas', array('ip' => $ip));
+    }
+
     // Operaciones de Lectura
+    public function todos() {
+        return $this->db->get('v_usuarios')->result_array();
+    }
+
+    public function ip_baneada($ip) {
+        $res = $this->db->get_where('ips_baneadas', array('ip' => $ip));
+        return $res->num_rows() > 0 ? TRUE : FALSE;
+    }
+
+    public function get_ip_usuario($usuario_id) {
+        $this->db->select('ip');
+        $res = $this->db->get_where('v_usuarios', array('id' => $usuario_id));
+        return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
+    public function usuario_baneado_nick($nick) {
+        $res = $this->db->get_where('v_usuarios', array('nick' => strtolower($nick), 'baneado' => TRUE));
+        return $res->num_rows() > 0 ? FALSE : TRUE;
+    }
+
+    public function usuario_baneado($usuario_id) {
+        $res = $this->db->get_where('usuarios_baneados', array('usuario_id' => $usuario_id));
+        return $res->num_rows() > 0 ? TRUE : FALSE;
+    }
+
     public function por_id($id) {
-        $res = $this->db->get_where('usuarios', array('id' => $id));
+        $res = $this->db->get_where('v_usuarios', array('id' => $id));
+        return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
+    public function por_id_admin($id) {
+        $res = $this->db->get_where('usuarios_admin', array('id' => $id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
@@ -32,12 +70,27 @@ class Usuario extends CI_Model {
     }
 
     public function logueado() {
+        if($this->session->has_userdata('usuario')) {
+            $usuario = $this->session->userdata('usuario');
+            if($this->usuario_baneado($usuario['id']) && !$usuario['admin']) {
+                return FALSE;
+            }
+        }
         return $this->session->has_userdata('usuario');
     }
 
     public function por_nick($nick) {
         $res = $this->db->get_where('usuarios', array('nick' => strtolower($nick)));
+
+        if($res->num_rows() === 0) {
+            $res = $this->db->get_where('usuarios_admin', array('nick' => strtolower($nick)));
+        }
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
+    }
+
+    public function es_admin($nick) {
+        $res = $this->db->get_where('usuarios_admin', array('nick' => strtolower($nick)));
+        return $res->num_rows() > 0 ? TRUE : FALSE;
     }
 
     public function por_password_old($password_old, $usuario_id) {
@@ -53,6 +106,9 @@ class Usuario extends CI_Model {
     }
 
     public function por_nick_registrado($nick) {
+        if($this->es_admin($nick)) {
+            return TRUE;
+        }
         $res = $this->db->get_where('v_usuarios_validados', array('nick' => $nick));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
@@ -78,11 +134,6 @@ class Usuario extends CI_Model {
 
     public function existe_email($email) {
         return $this->por_email($email) !== FALSE;
-    }
-
-    public function es_admin() {
-        $usuario = $this->session->userdata("usuario");
-        return $usuario['rol_id'] === '1';
     }
 
     public function actualizar_password($id, $nueva_password) {
