@@ -8,6 +8,10 @@ class Etiquetas extends CI_Controller{
         //Codeigniter : Write Less Do More
     }
 
+    public function index() {
+        redirect('/frontend/portada/');
+    }
+
     public function buscar($palabras = NULL) {
         if($palabras === NULL) {
             $palabras = "";

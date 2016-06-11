@@ -35,12 +35,10 @@ class Usuarios extends CI_Controller{
       $usuario = $this->Usuario->por_nick($nick);
 
       if ($usuario !== FALSE &&
-          password_verify($password, $usuario['password']) === TRUE)
-      {
+          password_verify($password, $usuario['password']) === TRUE) {
           return TRUE;
       }
-      else
-      {
+      else {
           $this->form_validation->set_message('_password_valido',
               'La {field} no es válida.');
           return FALSE;
@@ -153,7 +151,7 @@ class Usuarios extends CI_Controller{
   }
 
   function index() {
-      redirect('/frontend/portada/index');
+      redirect('/frontend/portada/');
   }
 
   public function foto($id = NULL) {
@@ -280,12 +278,13 @@ class Usuarios extends CI_Controller{
                 unset($valores['registrar']);
                 unset($valores['password_confirm']);
                 unset($valores['geolocalizacion']);
+                unset($valores['localizacion']);
 
                 $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
                 $valores['registro_verificado'] = FALSE;
                 $valores['ip'] = $this->blacklist->get_real_ip();
-                $valores['latitud'] = (double) $valores['latitud'];
-                $valores['longitud'] = (double) $valores['longitud'];
+                $valores['latitud'] = ($valores['latitud'] !== 'null') ? (double) $valores['latitud'] : NULL;
+                $valores['longitud'] = ($valores['longitud'] !== 'null') ? (double) $valores['longitud'] : NULL;
                 $valores['nick'] = strtolower($valores['nick']);
 
                 $this->Usuario->insertar($valores);
@@ -891,5 +890,9 @@ class Usuarios extends CI_Controller{
 
         $this->Venta->borrar_compra($venta_id, $valores);
         redirect('/frontend/portada/');
+    }
+
+    public function ubicacion_manual() {
+        $this->load->view('/usuarios/ubicacion_manual');
     }
 }

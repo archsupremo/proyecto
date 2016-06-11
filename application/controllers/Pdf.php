@@ -13,8 +13,7 @@ class Pdf extends CI_Controller {
             mkdir("./files/pdfs", 0777);
         }
     }
-
-
+    
     public function index() {
         if(!$this->Usuario->logueado()) {
             $mensajes[] = array('error' =>

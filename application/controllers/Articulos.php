@@ -9,7 +9,7 @@ class Articulos extends CI_Controller {
   }
 
   public function index() {
-
+      redirect('/frontend/portada/');
   }
 
   public function masArticulos($limit = NULL) {

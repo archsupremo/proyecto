@@ -5,11 +5,10 @@ class Usuarios extends CI_Controller{
 
   public function __construct() {
     parent::__construct();
-    //Codeigniter : Write Less Do More
   }
 
   function index() {
-      redirect('/frontend/usuarios');
+      redirect('/frontend/portada/');
   }
 
   public function listado_usuarios() {

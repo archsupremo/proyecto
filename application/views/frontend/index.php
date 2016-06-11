@@ -534,10 +534,6 @@
     }
   }
 
-  function obtener_antipodas(latitud, longitud) {
-      return {anti_latitud: -latitud, anti_longitud: (180 - Math.abs(longitud))};
-  }
-
   function respuesta(respuesta) {
       var infowindow = new google.maps.InfoWindow();
 
