@@ -124,6 +124,13 @@
                   map.setCenter(pos);
                   marker_yo.setPosition(pos);
 
+                  var geocoder = new google.maps.Geocoder();
+                  geocoder.geocode({'latLng': pos}, function(results, status) {
+                      if (status == google.maps.GeocoderStatus.OK) {
+                          address = results[0]['formatted_address'];
+                      }
+                  });
+
                   position_changed = undefined;
               }
           });
@@ -151,7 +158,6 @@
                     anchor: new google.maps.Point(30, 60),
                     scaledSize: new google.maps.Size(60, 60)
                 }
-                // animation: google.maps.Animation.BOUNCE,
             });
             var geocoder = new google.maps.Geocoder();
             marker_yo.addListener('dragend', function (e) {
@@ -163,16 +169,6 @@
 
                         pos = new google.maps.LatLng(latitud, longitud);
                         map.setCenter(pos);
-
-
-
-
-                        //
-                        // $.cookie('latitud', latitud, { expires: 999 });
-                        // $.cookie('longitud', longitud, { expires: 999 });
-                        //
-                        // $('input[name="latitud"]').first().val(latitud);
-                        // $('input[name="longitud"]').first().val(longitud);
                     }
                 });
             });

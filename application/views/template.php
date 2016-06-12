@@ -24,6 +24,7 @@
     <link href="/css/animacion.css" rel="stylesheet">
     <link href="/css/imagen_error.css" rel="stylesheet">
     <link href="/css/imagen_perfil.css" rel="stylesheet">
+    <link href="/css/estilos_slider.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
 
     <!-- Foundation y rateYo -->
@@ -82,12 +83,15 @@
           </section>
         </nav>
     </header>
-    <?= miga_pan() ?>
+    <section itemscope itemtype="http://schema.org/WebPage">
+        <span itemprop="breadcrumb">
+            <?= miga_pan() ?>
+        </span>
+    </section>
 
     <?= mensajes() ?>
     <?= $contents ?>
 
-    <hr>
     <footer class="footer" role="contentinfo">
       <section class="row full-width" role="main">
         <article class="small-12 medium-3 large-4 columns">
@@ -123,7 +127,7 @@
               <li>
                   <a href="/info/reglas_convivencia"
                      title="Reglas para la convivencia de los distintos usuarios">
-                     Reglas de Respecto
+                     Reglas de Convivencia
                   </a>
               </li>
             <!-- <li><a href="#">FAQ's</a></li> -->

@@ -1,10 +1,4 @@
 <?php template_set('title', 'Perfil de Usuario') ?>
-<style media="screen">
-    div.font-blokk > h3 {
-        border: 1px solid black;
-        margin: 0.75em;
-    }
-</style>
 <div class="row large-6">
     <?php if ( ! empty(error_array())): ?>
         <div data-alert class="alert-box alert radius alerta">
@@ -13,20 +7,48 @@
         </div>
     <?php endif ?>
 </div>
-<div class="row large-6 alert-box secondary radiu">
-    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $usuario['id'] . '.jpg')): ?>
-        <?php $url = '/imagenes_usuarios/' . $usuario['id'] . '.jpg' ?>
-    <?php else: ?>
-        <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
-    <?php endif; ?>
-    <?= anchor('/usuarios/perfil/' . $usuario['id'],
-                img(array(
-                    'src' => $url,
-                    'title' => $usuario['nick'],
-                    'alt' => $usuario['nick'],
-                    'class' => 'th circular_shadow zoomIt',
-                ))) ?>
-    <?= anchor('/usuarios/perfil/' . $usuario['id'], $usuario['nick']) ?>
+<div class="row large-4 alert-box secondary radius">
+    <div class="row" itemscope itemtype="http://schema.org/Person">
+        <div class="large-6 columns" itemprop="image">
+            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $usuario['id'] . '.jpg')): ?>
+                <?php $url = '/imagenes_usuarios/' . $usuario['id'] . '.jpg' ?>
+            <?php else: ?>
+                <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+            <?php endif; ?>
+            <?= anchor('/usuarios/perfil/' . $usuario['id'],
+                        img(array(
+                            'src' => $url,
+                            'title' => $usuario['nick'],
+                            'alt' => $usuario['nick'],
+                            'class' => 'th circular_shadow zoomIt',
+                        ))) ?>
+        </div>
+        <div class="large-6 columns">
+            <h5 itemprop="name">
+                <?= anchor('/usuarios/perfil/' . $usuario['id'], $usuario['nick']) ?>
+            </h5>
+            <p>
+                <span>
+                    Articulos Disponibles: <?= count($articulos_usuarios) ?>
+                </span>
+                <span>
+                    Articulos Vendidos: <?= count($articulos_vendidos) ?>
+                </span>
+                <?php $valoraciones = 0; ?>
+                <?php foreach ($valoraciones_ventas as $v) {
+                    if($v['valoracion'] === NULL) continue;
+                    $valoraciones++;
+                } ?>
+                <?php foreach ($valoraciones_compras as $v) {
+                    if($v['valoracion'] === NULL) continue;
+                    $valoraciones++;
+                } ?>
+                <span>
+                    Valoraciones: <?= $valoraciones ?>
+                </span>
+            </p>
+        </div>
+    </div>
 </div>
 <div class="row large-6">
     <p class="text-center">
@@ -52,12 +74,12 @@
                   "isKeyboard" : true,
                   "mobile"     : { "speed": 400 }
               }'>
-              <div>
+              <div itemscope itemtype="http://schema.org/GeoShape">
                   <?php if($usuario['latitud'] !== NULL && $usuario['longitud'] !== NULL): ?>
                       <div class="rt01pagitem">
                           <h2 id="modalTitle">Ubicación de <?= $usuario['nick'] ?></h2>
                       </div>
-                      <div class="ruby-map">
+                      <div class="ruby-map" itemprop="box">
                           <a class="rt01iframe"
                              href="https://www.google.com/maps/embed/v1/place?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&amp;&amp;q=<?= $usuario['latitud'] ?>,<?= $usuario['longitud'] ?>&zoom=15&maptype=roadmap"
                              width="100%" height="600" frameborder="0" style="border:0" allowfullscreen></a>
@@ -93,8 +115,9 @@
                 <div class="row font-blokk articulos">
                     <?php if( ! empty($articulos_usuarios)): ?>
                         <?php foreach ($articulos_usuarios as $v): ?>
-                            <article class="large-3 columns left">
-                                <div class="">
+                            <article class="large-3 columns left"
+                                     itemscope itemtype="http://schema.org/Product">
+                                <div class="" itemprop="logo">
                                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                                         <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
                                     <?php else: ?>
@@ -103,18 +126,21 @@
                                     <?= anchor('/articulos/buscar/' . $v['id'],
                                         img($url)) ?>
                                 </div>
-                                <div class="">
-                                    <?= $v['precio'] ?>
+                                <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                    <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
+                                    <span class="oculto" itemprop="price"><?= preg_replace('/,/', '.', substr($v['precio'], 0 , -4)) ?></span>
                                 </div>
-                                <div class="">
+                                <div class="" itemprop="name">
                                     <?= anchor('/articulos/buscar/' . $v['id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
-                                    <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
-                                        <?php if($etiqueta === '') break; ?>
-                                        <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
-                                                   'class="button tiny radius"') ?>
-                                    <?php endforeach; ?>
+                                    <div class="" itemprop="category">
+                                        <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
+                                            <?php if($etiqueta === '') break; ?>
+                                            <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                                                       'class="button tiny radius"') ?>
+                                        <?php endforeach; ?>
+                                    </div>
                                     <?php if($usuario_perfil === TRUE): ?>
                                         <br>
                                         <a href="/articulos/vender/<?= $v['id'] ?>"
@@ -131,22 +157,6 @@
                                            class="alert button tiny radius">
                                            Borrar Articulo
                                         </a>
-                                        <!-- <a href=""
-                                           class="small secondary radius button split">
-                                           Opciones
-                                           <span data-options="align: right"
-                                                 data-dropdown="drop_articulo_disponible_<?= $v['id']?>">
-                                           </span>
-                                        </a>
-                                        <ul id="drop_articulo_disponible_<?= $v['id'] ?>"
-                                            class="f-dropdown" data-dropdown-content>
-                                           <li></li>
-                                           <li>
-                                               <a href="#" data-reveal-id="articulo_disponible_<?= $v['id'] ?>">
-                                                   Borrar Articulo
-                                               </a>
-                                           </li>
-                                        </ul> -->
                                         <div id="articulo_disponible_<?= $v['id'] ?>" class="reveal-modal"
                                             data-reveal aria-labelledby="modalTitle"
                                             aria-hidden="true" role="dialog">
@@ -173,8 +183,9 @@
                 <div class="row font-blokk articulos">
                 <?php if( ! empty($articulos_vendidos)): ?>
                     <?php foreach ($articulos_vendidos as $v): ?>
-                        <article class="large-3 columns left">
-                            <div class="">
+                        <article class="large-3 columns left"
+                                 itemscope itemtype="http://schema.org/Product">
+                            <div class="" itemprop="logo">
                                 <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                                     <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
                                 <?php else: ?>
@@ -183,18 +194,21 @@
                                 <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                             img($url)) ?>
                             </div>
-                            <div class="">
-                                <?= $v['precio'] ?>
+                            <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
+                                <span class="oculto" itemprop="price"><?= preg_replace('/,/', '.', substr($v['precio'], 0 , -4)) ?></span>
                             </div>
-                            <div class="">
+                            <div class="" itemprop="name">
                                 <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                             </div>
                             <div class="">
-                                <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
-                                    <?php if($etiqueta === '') break; ?>
-                                    <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
-                                               'class="button tiny radius"') ?>
-                                <?php endforeach; ?>
+                                <div class="" itemprop="category">
+                                    <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
+                                        <?php if($etiqueta === '') break; ?>
+                                        <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                                                   'class="button tiny radius"') ?>
+                                    <?php endforeach; ?>
+                                </div>
                                 <?php if($usuario_perfil === TRUE): ?>
                                     <br>
                                     <?php if($v['valoracion'] === NULL && $v['comprador_id'] !== NULL): ?>
@@ -207,30 +221,6 @@
                                        class="alert button tiny radius">
                                         Borrar Articulo
                                     </a>
-                                    <!-- <p>
-                                        <a href=""
-                                           class="small secondary radius button split">
-                                           Opciones
-                                           <span data-options="align: right"
-                                                 data-dropdown="drop_articulo_vendido_<?= $v['articulo_id']?>">
-                                           </span>
-                                        </a>
-                                        <br>
-                                    </p>
-                                    <ul id="drop_articulo_vendido_<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
-                                        <?php if($v['valoracion'] === NULL && $v['comprador_id'] !== NULL): ?>
-                                            <li>
-                                                <a href="/usuarios/valorar_comprador/<?= $v['venta_id'] ?>">
-                                                    Valorar al comprador
-                                                </a>
-                                            </li>
-                                        <?php endif; ?>
-                                        <li>
-                                            <a href="#" data-reveal-id="articulo_vendido_<?= $v['articulo_id'] ?>">
-                                                Borrar Articulo
-                                            </a>
-                                        </li>
-                                    </ul> -->
                                     <div id="articulo_vendido_<?= $v['articulo_id'] ?>" class="reveal-modal"
                                         data-reveal aria-labelledby="modalTitle"
                                         aria-hidden="true" role="dialog">
@@ -251,71 +241,132 @@
                     </div>
                 </div>
             </div>
+            <?php if(! empty($valoraciones_ventas) || ! empty($valoraciones_compras)): ?>
             <div>
                 <div class="rt01pagitem">Valoraciones</div>
                 <div class="container">
                 <div class="row font-blokk">
-                    <ul class="accordion" data-accordion>
-                      <li class="accordion-navigation">
-                        <a href="#panel1a">Ventas</a>
-                        <div id="panel1a" class="content active">
-                            <div class="row">
-                                <?php foreach ($valoraciones_ventas as $v): ?>
-                                    <?php if($v['valoracion'] === NULL) continue; ?>
-                                    <div class="large-6 columns left">
-                                        <div class="">
-                                            <h5>Comprador =>
-                                                <?= anchor('/usuarios/perfil/' .
-                                                    $v['comprador_id'],
-                                                    $v['comprador_nick']) ?>
-                                            </h5>
-                                        </div>
-                                        <div class="">
-                                            <p>Le vendió a <?= $v['comprador_nick'] ?>
-                                                <?= $v['nombre'] ?></p>
-                                        </div>
-                                        <div class="valoracion" value="<?= $v['valoracion'] ?>">
-                                        </div>
-                                        <div class="">
-                                            <p><?= $v['valoracion_text'] ?></p>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                    <?php foreach ($valoraciones_ventas as $v): ?>
+                        <?php if($v['valoracion'] === NULL) continue; ?>
+                        <div class="row valoraciones ventas" itemscope itemtype="http://schema.org/Review">
+                            <div class="large-3 columns" itemscope itemtype="http://schema.org/Person">
+                                <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['comprador_id'] . '.jpg')): ?>
+                                    <?php $url = 'imagenes_usuarios/' . $v['comprador_id'] . '.jpg' ?>
+                                <?php else: ?>
+                                    <?php $url = 'imagenes_usuarios/sin-imagen.jpg' ?>
+                                <?php endif; ?>
+                                <?= anchor('/usuarios/perfil/' . $v['comprador_id'],
+                                            img(array(
+                                                'src' => $url,
+                                                'title' => $v['comprador_nick'],
+                                                'alt' => $v['comprador_nick'],
+                                                'class' => 'th circular_shadow zoomIt',
+                                                'itemprop' => 'image'
+                                            ))) ?>
+                            </div>
+                            <div class="large-7 columns">
+                                <div class="">
+                                    <h5 itemprop="author">
+                                        <?= anchor('/usuarios/perfil/' .
+                                            $v['comprador_id'],
+                                            $v['comprador_nick']) ?>
+                                    </h5>
+                                </div>
+                                <div class="frase">
+                                    <p itemprop="name">Le vendió
+                                        a <?= $v['comprador_nick'] ?>
+                                        <span itemprop="itemReviewed">
+                                            <?= $v['nombre'] ?>
+                                        </span>
+                                    </p>
+                                </div>
+                                <span class="oculto" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                                    <span itemprop="bestRating">
+                                        5
+                                    </span>
+                                    <span itemprop="ratingValue">
+                                        <?= $v['valoracion'] ?>
+                                    </span>
+                                    <span itemprop="worstRating">
+                                        0
+                                    </span>
+                                    <?= $v['valoracion'] ?>
+                                </span>
+                                <div class="valoracion" value="<?= $v['valoracion'] ?>">
+                                </div>
+                                <div class="" itemprop="reviewBody">
+                                    <p><?= $v['valoracion_text'] ?></p>
+                                </div>
+                            </div>
+                            <div class="large-2 columns">
+                                <p itemprop="datePublished">
+                                    <?= $v['fecha_venta'] ?>
+                                </p>
                             </div>
                         </div>
-                      </li>
-                      <li class="accordion-navigation">
-                        <a href="#panel2a">Compras</a>
-                        <div id="panel2a" class="content">
-                            <div class="row">
-                                <?php foreach ($valoraciones_compras as $v): ?>
-                                    <?php if($v['valoracion'] === NULL) continue; ?>
-                                    <div class="large-6 columns left">
-                                        <div class="">
-                                            <h5>Vendedor =>
-                                                <?= anchor('/usuarios/perfil/' .
-                                                    $v['vendedor_id'],
-                                                    $v['vendedor_nick']) ?>
-                                            </h5>
-                                        </div>
-                                        <div class="">
-                                            <p><?= $v['vendedor_nick'] ?> le
-                                                vendio <?= $v['nombre'] ?></p>
-                                        </div>
-                                        <div class="valoracion" value="<?= $v['valoracion'] ?>">
-                                        </div>
-                                        <div class="">
-                                            <p><?= $v['valoracion_text'] ?></p>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                    <?php foreach ($valoraciones_compras as $v): ?>
+                        <?php if($v['valoracion'] === NULL) continue; ?>
+                        <div class="row valoraciones compras" itemscope itemtype="http://schema.org/Review">
+                            <div class="large-3 columns" itemscope itemtype="http://schema.org/Person">
+                                <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['vendedor_id'] . '.jpg')): ?>
+                                    <?php $url = 'imagenes_usuarios/' . $v['vendedor_id'] . '.jpg' ?>
+                                <?php else: ?>
+                                    <?php $url = 'imagenes_usuarios/sin-imagen.jpg' ?>
+                                <?php endif; ?>
+                                <?= anchor('/usuarios/perfil/' . $v['vendedor_id'],
+                                            img(array(
+                                                'src' => $url,
+                                                'title' => $v['vendedor_nick'],
+                                                'alt' => $v['vendedor_nick'],
+                                                'class' => 'th circular_shadow zoomIt',
+                                            ))) ?>
+                            </div>
+                            <div class="large-7 columns">
+                                <div class="">
+                                    <h5 itemprop="author">
+                                        <?= anchor('/usuarios/perfil/' .
+                                            $v['vendedor_id'],
+                                            $v['vendedor_nick']) ?>
+                                    </h5>
+                                </div>
+                                <div class="frase">
+                                    <p itemprop="name">
+                                        <?= $v['vendedor_nick'] ?> le vendió
+                                        <span itemprop="itemReviewed">
+                                            <?= $v['nombre'] ?>
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="valoracion" value="<?= $v['valoracion'] ?>">
+                                </div>
+                                <span class="oculto" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                                    <span itemprop="bestRating">
+                                        5
+                                    </span>
+                                    <span itemprop="ratingValue">
+                                        <?= $v['valoracion'] ?>
+                                    </span>
+                                    <span itemprop="worstRating">
+                                        0
+                                    </span>
+                                    <?= $v['valoracion'] ?>
+                                </span>
+                                <div class="" itemprop="reviewBody">
+                                    <p><?= $v['valoracion_text'] ?></p>
+                                </div>
+                            </div>
+                            <div class="large-2 columns">
+                                <p itemprop="datePublished">
+                                    <?= $v['fecha_venta'] ?>
+                                </p>
                             </div>
                         </div>
-                      </li>
-                    </ul>
+                    <?php endforeach; ?>
+                    </div>
+                    </div>
                 </div>
-                </div>
-            </div>
+            <?php endif; ?>
             <?php if($usuario_perfil !== TRUE): ?>
                 <?php if($usuario['baneado'] !== 't'): ?>
                     <?php if(!es_admin()): ?>
@@ -351,8 +402,9 @@
                     <div class="row font-blokk articulos">
                     <?php if( ! empty($articulos_comprados)): ?>
                         <?php foreach ($articulos_comprados as $v): ?>
-                            <article class="large-3 columns left">
-                                <div class="">
+                            <article class="large-3 columns left"
+                                     itemscope itemtype="http://schema.org/Product">
+                                <div class="" itemprop="logo">
                                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                                         <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
                                     <?php else: ?>
@@ -361,19 +413,21 @@
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                                 img($url)) ?>
                                 </div>
-                                <div class="">
-                                    <?= $v['precio'] ?>
+                                <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                    <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
+                                    <span class="oculto" itemprop="price"><?= preg_replace('/,/', '.', substr($v['precio'], 0 , -4)) ?></span>
                                 </div>
-                                <div class="">
+                                <div class="" itemprop="name">
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
-                                    <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
-                                        <?php if($etiqueta === '') break; ?>
-                                        <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
-                                                   'class="button tiny radius"') ?>
-                                    <?php endforeach; ?>
-                                    <br>
+                                    <div class="" itemprop="category">
+                                        <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
+                                            <?php if($etiqueta === '') break; ?>
+                                            <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                                                       'class="button tiny radius"') ?>
+                                        <?php endforeach; ?>
+                                    </div>
                                     <?php if($v['valoracion'] === NULL): ?>
                                         <a href="/usuarios/valorar_vendedor/<?= $v['venta_id'] ?>"
                                            class="info button tiny radius">
@@ -384,30 +438,6 @@
                                        class="alert button tiny radius">
                                         Yo no he comprado esto!!!
                                     </a>
-                                    <!-- <p>
-                                        <a href=""
-                                           class="small secondary radius button split">
-                                           Opciones
-                                           <span data-options="align: right"
-                                                 data-dropdown="drop_articulo_comprados_<?= $v['articulo_id'] ?>">
-                                           </span>
-                                        </a>
-                                        <br>
-                                   </p>
-                                   <ul id="drop_articulo_comprados_<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
-                                       <?php if($v['valoracion'] === NULL): ?>
-                                           <li>
-                                               <a href="/usuarios/valorar_vendedor/<?= $v['venta_id'] ?>">
-                                                   Valorar al vendedor
-                                               </a>
-                                           </li>
-                                       <?php endif; ?>
-                                       <li>
-                                           <a href="#" data-reveal-id="compra_<?= $v['articulo_id'] ?>">
-                                               Yo no he comprado esto!!!
-                                           </a>
-                                       </li>
-                                   </ul> -->
                                    <div id="compra_<?= $v['articulo_id'] ?>" class="reveal-modal"
                                        data-reveal aria-labelledby="modalTitle"
                                        aria-hidden="true" role="dialog">
@@ -437,7 +467,8 @@
                     <div class="row font-blokk articulos">
                     <?php if( ! empty($articulos_favoritos)): ?>
                         <?php foreach ($articulos_favoritos as $v): ?>
-                            <article class="large-3 columns left">
+                            <article class="large-3 columns left"
+                                     itemscope itemtype="http://schema.org/Product">
                                 <div class="">
                                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                                         <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
@@ -447,40 +478,25 @@
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                                 img($url)) ?>
                                 </div>
-                                <div class="">
-                                    <?= $v['precio'] ?>
+                                <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                    <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
+                                    <span class="oculto" itemprop="price"><?= preg_replace('/,/', '.', substr($v['precio'], 0 , -4)) ?></span>
                                 </div>
-                                <div class="">
+                                <div class="" itemprop="name">
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
-                                    <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
-                                        <?php if($etiqueta === '') break; ?>
-                                        <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
-                                                   'class="button tiny radius"') ?>
-                                    <?php endforeach; ?>
-                                    <br>
+                                    <div class="" itemprop="category">
+                                        <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
+                                            <?php if($etiqueta === '') break; ?>
+                                            <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                                                       'class="button tiny radius"') ?>
+                                        <?php endforeach; ?>
+                                    </div>
                                     <a href="#" data-reveal-id="favorito_<?= $v['articulo_id'] ?>"
                                        class="alert button tiny radius">
                                         Eliminar de Favoritos
                                     </a>
-                                    <!-- <p>
-                                        <a href=""
-                                           class="small secondary radius button split">
-                                           Opciones
-                                           <span data-options="align: right"
-                                                 data-dropdown="drop_articulo_favorito_<?= $v['articulo_id'] ?>">
-                                           </span>
-                                        </a>
-                                        <br>
-                                   </p>
-                                   <ul id="drop_articulo_favorito_<?= $v['articulo_id'] ?>" class="f-dropdown" data-dropdown-content>
-                                      <li>
-                                          <a href="#" data-reveal-id="favorito_<?= $v['articulo_id'] ?>">
-                                              Eliminar de Favoritos
-                                          </a>
-                                      </li>
-                                   </ul> -->
                                    <div id="favorito_<?= $v['articulo_id'] ?>" class="reveal-modal"
                                        data-reveal aria-labelledby="modalTitle"
                                        aria-hidden="true" role="dialog">
@@ -517,30 +533,42 @@
                             <a href="#panel1a">PM's No Vistos</a>
                             <div id="panel1a" class="content active">
                                 <?php foreach ($pm_no_vistos as $v): ?>
-                                        <div class="">
-                                            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg')): ?>
-                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg' ?>
+                                    <div class="row pm" itemscope itemtype="http://schema.org/Message">
+                                        <div class="large-3 columns">
+                                            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
+                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
                                             <?php else: ?>
-                                                <?php $url = '/imagenes_usuarios/sin-imagen_thumbnail.jpeg' ?>
+                                                <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
                                             <?php endif; ?>
                                             <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
                                                         img(array(
                                                             'src' => $url,
                                                             'title' => $v['nick_emisor'],
                                                             'alt' => $v['nick_emisor'],
-                                                            'class' => 'th',
+                                                            'class' => 'th circular_shadow zoomIt',
                                                         ))) ?>
-                                            <?= anchor('/usuarios/perfil/' . $v['emisor_id'], $v['nick_emisor']) ?>
                                         </div>
-                                        <div class="toggle toggle-light"
-                                             data-toggle-on="false"
-                                             id="<?= $v['id'] ?>"></div>
-                                        <div class="">
-                                            <?= $v['mensaje'] ?>
+                                        <div class="large-6 columns">
+                                            <span itemprop="sender">
+                                                <?= anchor('/usuarios/perfil/' . $v['emisor_id'], $v['nick_emisor']) ?>
+                                            </span>
+                                            <div class="" itemprop="messageAttachment">
+                                                <?= $v['mensaje'] ?>
+                                            </div>
                                         </div>
-                                        <div class="">
-                                            <?= $v['fecha_mensaje'] ?>
+                                        <div class="large-3 columns">
+                                            <div class="" itemprop="dateSent">
+                                                <?= $v['fecha_mensaje'] ?>
+                                            </div>
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <div class="toggle toggle-light"
+                                                 data-toggle-on="false"
+                                                 id="<?= $v['id'] ?>">
+                                             </div>
                                         </div>
+                                    </div>
                                 <?php endforeach; ?>
                             </div>
                           </li>
@@ -548,30 +576,42 @@
                             <a href="#panel2a">PM's Vistos</a>
                             <div id="panel2a" class="content">
                                 <?php foreach ($pm_vistos as $v): ?>
-                                        <div class="">
-                                            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg')): ?>
-                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '_thumbnail.jpeg' ?>
+                                    <div class="row pm" itemscope itemtype="http://schema.org/Message">
+                                        <div class="large-3 columns">
+                                            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
+                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
                                             <?php else: ?>
-                                                <?php $url = '/imagenes_usuarios/sin-imagen_thumbnail.jpeg' ?>
+                                                <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
                                             <?php endif; ?>
                                             <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
                                                         img(array(
                                                             'src' => $url,
                                                             'title' => $v['nick_emisor'],
                                                             'alt' => $v['nick_emisor'],
-                                                            'class' => 'th',
+                                                            'class' => 'th circular_shadow zoomIt',
                                                         ))) ?>
-                                            <?= anchor('/usuarios/perfil/' . $v['emisor_id'], $v['nick_emisor']) ?>
                                         </div>
-                                        <div class="toggle toggle-light"
-                                             data-toggle-on="true"
-                                             id="<?= $v['id'] ?>"></div>
-                                        <div class="">
-                                            <?= $v['mensaje'] ?>
+                                        <div class="large-6 columns">
+                                            <span itemprop="sender">
+                                                <?= anchor('/usuarios/perfil/' . $v['emisor_id'], $v['nick_emisor']) ?>
+                                            </span>
+                                            <div class="" itemprop="messageAttachment">
+                                                <?= $v['mensaje'] ?>
+                                            </div>
                                         </div>
-                                        <div class="">
-                                            <?= $v['fecha_mensaje'] ?>
+                                        <div class="large-3 columns">
+                                            <div class="" itemprop="dateSent">
+                                                <?= $v['fecha_mensaje'] ?>
+                                            </div>
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <div class="toggle toggle-light"
+                                                 data-toggle-on="true"
+                                                 id="<?= $v['id'] ?>">
+                                             </div>
                                         </div>
+                                    </div>
                                 <?php endforeach; ?>
                             </div>
                           </li>
@@ -582,6 +622,7 @@
             <?php endif; ?>
 </div>
 </div>
+<br>
 <style media="screen">
     .articulos {
         position: relative;

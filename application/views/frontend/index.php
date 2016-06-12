@@ -37,12 +37,24 @@
                      <div class="row">
                       <div class="large-12 columns ui-widget">
                           <?= form_label('Nombre articulo:', 'nombre') ?>
-                          <?= form_input('nombre', set_value('nombre', $nombre_busqueda, FALSE),
-                                         'id="nombre" class="" placeholder="Buscar por nombre..."') ?>
+                          <?= form_input(array(
+                                        'type' => 'search',
+                                        'name' => 'nombre',
+                                        'id' => 'nombre',
+                                        'value' => set_value('nombre', $nombre_busqueda, FALSE),
+                                        'class' => '',
+                                        'placeholder' => 'Buscar por nombre...'
+                          )) ?>
 
                           <?= form_label('Etiquetas:', 'tags') ?>
-                          <?= form_input('tags', set_value('tags', $tags_busqueda, FALSE),
-                                        'id="tags" class="" placeholder="Buscar por etiquetas..."') ?>
+                          <?= form_input(array(
+                                        'type' => 'search',
+                                        'name' => 'tags',
+                                        'id' => 'tags',
+                                        'value' => set_value('tags', $tags_busqueda, FALSE),
+                                        'class' => '',
+                                        'placeholder' => 'Buscar por etiquetas...'
+                          )) ?>
 
                           <?= form_hidden('latitud', '40.4168') ?>
                           <?= form_hidden('longitud', '-3.7038') ?>
@@ -56,7 +68,7 @@
     </section>
     <section class="large-6 columns" id="centro">
         <?php if(empty($articulos)): ?>
-            <section class="row" id="error">
+            <section class="row">
                 <article class="large-12 large-centered columns">
                     <img src="/img/nada.jpg" alt="" />
                 </article>
@@ -72,9 +84,9 @@
             </section>
         <?php endif; ?>
         <?php foreach ($articulos as $v): ?>
-            <article class="large-4 columns left articulos"
-                 id="<?= $v['articulo_id'] ?>">
-                <div class="">
+            <article class="large-4 columns left articulos" id="<?= $v['articulo_id'] ?>"
+                     itemscope itemtype="http://schema.org/Product">
+                <div class="" itemprop="logo">
                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                         <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
                     <?php else: ?>
@@ -88,22 +100,23 @@
                                     'alt' => $v['nombre'],
                                 ))) ?>
                 </div>
-                <div class="">
-                    <?= $v['precio'] ?>
+                <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                    <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
+                    <span class="oculto" itemprop="price"><?= preg_replace('/,/', '.', substr($v['precio'], 0 , -4)) ?></span>
                 </div>
-                <div class="">
+                <div class="" itemprop="name">
                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre'].$v['articulo_id']) ?>
                 </div>
-                <div class="">
+                <div class="" itemprop="category">
                     <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
                         <?php if($etiqueta === '') break; ?>
                         <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
                                    'class="button tiny radius"') ?>
                     <?php endforeach; ?>
                 </div>
-                <div class="">
-                    <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
-                    </div>
+                <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
+                </div>
+                <div class="" itemprop="brand">
                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['usuario_id'] . '.jpg')): ?>
                         <?php $url = '/imagenes_usuarios/' . $v['usuario_id'] . '.jpg' ?>
                     <?php else: ?>
@@ -154,28 +167,14 @@
     </div>
 </div>
 
-<?php if( ! empty($articulos)): ?>
 <div class="row masArticulos">
     <div class="large-1 large-centered columns">
-        <img src="/img/mas.jpg" class="th" id="mas" alt="Mas productos" />
+        <?php if( ! empty($articulos)): ?>
+            <img src="/img/mas.jpg" class="th" id="mas" alt="Mas productos" />
+        <?php endif; ?>
     </div>
 </div>
-<?php endif; ?>
 
-<style media="screen">
-    #centro {
-        position: relative;
-    }
-    #centro > article {
-        width: 30%;
-        height: auto;
-        position: absolute;
-        border: 1px solid black;
-    }
-    .masArticulos {
-        margin-bottom: 2em;
-    }
-</style>
 <script type="text/javascript" >
     $('#centro').shapeshift({
         gutterY: 40,
@@ -204,7 +203,7 @@
         $(".favorito").rateYo(valores_defecto);
         $('.es_favorito').rateYo("rating", 1);
         $('.favorito').rateYo().on("rateyo.set", function (e, data) {
-            var articulo_id = $(this).parent().parent().attr("id");
+            var articulo_id = $(this).parent().attr("id");
             $.ajax({
                 url: "<?= base_url() ?>articulos/favoritos/" + articulo_id,
                 type: 'POST',
@@ -327,9 +326,14 @@
                                         +response[producto].nombre+response[producto].articulo_id+'</a>';
                             div += '</div>';
                             if(response[producto].etiquetas != null) {
-                                div += '<div class="">';
-                                    div += response[producto].etiquetas;
-                                div += '</div>';
+                                var etiquetas = response[producto].etiquetas.split(",");
+                                for(var i = 0; i < etiquetas.length; i++) {
+                                    if(etiquetas[i] == '') break;
+                                    div += '<a href="/frontend/portada/index?tags='
+                                            +etiquetas[i]+'"'
+                                            +' class="button tiny radius">'
+                                            +etiquetas[i]+'</a>';
+                                }
                             }
                             div += '<div class="favorito"></div>';
                             div += '<div class="">';
@@ -467,8 +471,6 @@
 
     map.addListener('bounds_changed', function () {
         if(position_changed != undefined) {
-            //var latitud = position_changed.lat();
-            //var longitud = position_changed.lng();
             latitud = position_changed.lat();
             longitud = position_changed.lng();
 
@@ -527,8 +529,6 @@
           geocoder.geocode({'latLng': this.getPosition()}, function(results, status) {
               if (status == google.maps.GeocoderStatus.OK) {
                   var address=results[0]['formatted_address'];
-                  // alert(address);
-
                   var latitud = results[0]['geometry']['location'].lat();
                   var longitud = results[0]['geometry']['location'].lng();
 
@@ -550,10 +550,8 @@
           strokeColor: "#FF0000",
           strokeOpacity: 0.6,
           strokeWeight: 2,
-          //fillColor: "#FF0000",
           fillOpacity: 0.1,
           map: map,
-          //editable: true
       });
       draw_circle.addListener('center_changed', function (e) {
           var latitud = this.center.lat();
@@ -639,11 +637,10 @@
           var contentString = '<div id="content">'+
           '<div id="siteNotice">'+
           '</div>'+
-          //'<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
           '<div id="bodyContent">'+
-          '<p>Articulos disponibles => '+usuario.articulos_disponibles+'</p>'+
-          '<p>Ventas => '+usuario.ventas+'</p>'+
-          '<p>Valoraciones => '+usuario.valoraciones+'</p>'+
+          '<p>Articulos disponibles: '+usuario.articulos_disponibles+'</p>'+
+          '<p>Ventas: '+usuario.ventas+'</p>'+
+          '<p>Valoraciones: '+usuario.valoraciones+'</p>'+
           '<p><a href="<?= base_url() ?>usuarios/perfil/'+usuario.id+'">'+
             'Ver perfil de '+usuario.nick+'</a></p>'+
           '</div>'+

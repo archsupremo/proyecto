@@ -1,18 +1,18 @@
 <?php template_set('title', 'Registro') ?>
 
 <div class="row">
-    <div class="large-6 large-centered columns menu-login">
+    <div class="large-6 large-centered columns">
           <?php if ( ! empty(error_array())): ?>
             <div data-alert class="alert-box alert radius alerta">
               <?= validation_errors() ?>
               <a href="#" class="close">&times;</a>
             </div>
           <?php endif ?>
-          <?= form_open('/usuarios/registrar') ?>
+          <?= form_open('/usuarios/registrar', 'itemscope itemtype="http://schema.org/Person"') ?>
             <div class="">
               <?= form_label('Nick:', 'nick') ?>
               <?= form_input('nick', set_value('nick', '', FALSE),
-                             'id="nick" class=""') ?>
+                             'id="nick" class="" itemprop="additionalName"') ?>
             </div>
             <div class="">
               <?= form_label('Email:', 'email') ?>
@@ -21,7 +21,8 @@
                             'name' => 'email',
                             'id' => 'email',
                             'value' => set_value('email', '', FALSE),
-                            'class' => ''
+                            'class' => '',
+                            'itemprop' => 'email'
               )) ?>
             </div>
             <div class="">
@@ -34,16 +35,19 @@
               <?= form_password('password_confirm', '',
                                 'id="password_confirm" class=""') ?>
             </div>
-            <div class="">
-              <?= form_label('Localización:', 'localizacion') ?>
-              <?= form_input('localizacion', '',
-                             'id="localizacion" disabled="disabled" class=""') ?>
-            </div>
-            <div class="">
-                <?= form_hidden('latitud', 'null') ?>
-                <?= form_hidden('longitud', 'null') ?>
-                <?= form_checkbox('geolocalizacion', ""); ?>
-                <?= form_label('Desea usted dar su ubicación', 'geolocalizacion') ?>
+            <div class="" itemscope itemtype="http://schema.org/GeoCoordinates">
+                <div class="">
+                  <?= form_label('Localización:', 'localizacion') ?>
+                  <?= form_input('localizacion', '',
+                                 'id="localizacion" disabled="disabled" class=""
+                                  itemprop="address"') ?>
+                </div>
+                <div class="">
+                    <input type="hidden" name="latitud" value="null" itemprop="latitude">
+                    <input type="hidden" name="longitud" value="null" itemprop="longitude">
+                    <?= form_checkbox('geolocalizacion', ""); ?>
+                    <?= form_label('Desea usted dar su ubicación', 'geolocalizacion') ?>
+                </div>
             </div>
             <?= form_submit('registrar', 'Registrar', 'class="success button small radius"') ?>
             <?= anchor('/usuarios/login', 'Volver', 'class="alert button small radius" role="button"') ?>

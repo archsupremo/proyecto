@@ -1,7 +1,7 @@
 <?php template_set('title', 'Vender Articulo') ?>
 
 <div class="row">
-    <div class="large-6 large-centered columns menu-login">
+    <div class="row large-6 large-centered columns">
         <?php if ( ! empty(error_array())): ?>
             <div data-alert class="alert-box alert radius alerta">
               <?= validation_errors() ?>
@@ -11,46 +11,19 @@
     </div>
     <div class="large-6 columns">
         <div class="wrapper">
-            <!-- SLIDER PREVIEW - begin -->
-            <style>
-                .slider-nested {
-                    width: 700px;
-                    padding: 5px;
-                    margin-left: -10em;
-                    background-color: #fff;
-                    border-radius: 3px;
-                    box-shadow: 0 1px 1px hsla(0,0%,0%,.5);
-                }
-                @media only screen and (max-width: 959px) {
-                    .slider-nested {
-                        margin-left: 0em;
-                        width: 100%;
-                    }
-                }
-                @media only screen and (max-width: 479px) {
-                    .slider-nested {
-                        position: static;
-                        margin-left: 0em;
-                        width: auto;
-                        margin-top: 5px;
-                        border: 1px solid #e5e5e5;
-                        box-shadow: none;
-                    }
-                }
-            </style>
-
             <div class="container">
-                <div class="rt01 slider-nested rt01timer-arcTop"
+                <div class="rt01 slider-nested-venta rt01timer-arcTop"
                     data-tabs='{
                         "isAutoInit"  : true,
                         "optionsPlus" : "slider",
                         "fx"          : "line",
                         "speed"       : 600,
                         "width"       : 940,
-                        "height"      : 500,
+                        "height"      : 600,
                         "widthSlide"  : [ 0.95, [748, 768, 959], [940, 960, 3000] ],
                         "margin"      : [ 2, [5, 480, 767], [10, 768, 959], [30, 960, 3000] ],
                         "pag"         : { "sizeMarkTo": "padding" },
+                        "imagePosition": "stretch",
 
                         "isLoop"      : true,
                         "isNav"       : false,
@@ -60,14 +33,23 @@
 
                         "mobile"      : { "speed": 400 }
                     }'>
+                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $articulo['id'] . '_1' . '.jpg')): ?>
+                        <?php $url = '/imagenes_articulos/' . $articulo['id'] . '_1' . '.jpg' ?>
+                    <?php else: ?>
+                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                    <?php endif; ?>
+                    <?= anchor($url, $articulo['nombre'], 'class="rt01imgback"') ?>
 
-                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
-                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
-                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
-                    <a class="rt01imgback" href="<?= '/imagenes_articulos/' . $articulo['id'] . '_1.jpg' ?>">vietnam 1</a>
+                    <?php for($i = 2; $i <= 4; $i++): ?>
+                        <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $articulo['id'] . '_' .$i. '.jpg')): ?>
+                            <?php $url = '/imagenes_articulos/' . $articulo['id'] . '_' .$i. '.jpg' ?>
+                        <?php else: ?>
+                            <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                        <?php endif; ?>
+                        <?= anchor($url, $articulo['nombre'], 'class="rt01imgback"') ?>
+                    <?php endfor; ?>
                 </div>
             </div>
-            <!-- SLIDER PREVIEW - end -->
         </div>
     </div>
     <div class="large-4 columns">

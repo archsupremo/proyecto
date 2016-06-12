@@ -1,3 +1,9 @@
+span.oculto {
+    display: none;
+}
+div.font-blokk > h3 {
+    margin: 0.75em;
+}
 .menu-login {
     margin-top: 3.5em;
 }
@@ -45,4 +51,43 @@ html, body {
 .imagen_lazy {
     width: 5em;
     height: 5em;
+}
+.valoraciones, .pm {
+    padding: 2em;
+    padding-bottom: 0em;
+}
+.pm:not(:last-child) {
+    border-bottom: 1px solid black;
+}
+.ventas, .compras {
+  -webkit-transition : border 2000ms ease-out;
+  -moz-transition : border 2000ms ease-out;
+  -o-transition : border 2000ms ease-out;
+  transition : border 2000ms ease-out;
+}
+.ventas:hover {
+    border-bottom: 1px solid blue;
+}
+.compras:hover {
+    border-bottom: 1px solid orange;
+}
+.ventas .frase {
+    color: green;
+}
+.compras .frase {
+    color: orange;
+}
+
+/*---------Para el shapeshift---------*/
+#centro {
+    position: relative;
+}
+#centro > article {
+    width: 30%;
+    height: auto;
+    position: absolute;
+    border: 1px solid black;
+}
+.masArticulos {
+    margin-bottom: 2em;
 }

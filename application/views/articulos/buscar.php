@@ -1,7 +1,7 @@
 <?php template_set('title', 'Buscar Articulo') ?>
 
 <div class="row">
-    <div class="row large-6 columns menu-login">
+    <div class="row large-6 large-centered columns">
         <?php if ( ! empty(error_array())): ?>
             <div data-alert class="alert-box alert radius alerta">
               <?= validation_errors() ?>
@@ -11,44 +11,6 @@
     </div>
     <div class="large-3 columns">
         <div class="wrapper">
-            <!-- SLIDER PREVIEW - begin -->
-            <style>
-                .slider-nested {
-                    width: 500px;
-                    padding: 5px;
-                    margin-left: -12em;
-                    margin-top: 3em;
-                    background-color: #fff;
-                    border-radius: 3px;
-                    box-shadow: 0 1px 1px hsla(0,0%,0%,.5);
-                }
-                .datos {
-                    margin-right: -8em;
-                }
-                @media only screen and (max-width: 959px) {
-                    .slider-nested {
-                        margin-left: 0em;
-                        width: 100%;
-                    }
-                    .datos {
-                        margin-right: 0em;
-                    }
-                }
-                @media only screen and (max-width: 479px) {
-                    .slider-nested {
-                        position: static;
-                        margin-left: 0em;
-                        width: auto;
-                        margin-top: 5px;
-                        border: 1px solid #e5e5e5;
-                        box-shadow: none;
-                    }
-                    .datos {
-                        margin-right: 0em;
-                    }
-                }
-            </style>
-
             <div class="container">
                 <div class="rt01 slider-nested rt01timer-arcTop"
                     data-tabs='{
@@ -95,9 +57,9 @@
     <section class="large-7 columns datos">
         <h3>Datos del articulo</h3>
         <article class="alert-box info radius">
-            <p>Precio => <?= $articulo['precio'] ?></p>
-            <p>Nombre => <?= $articulo['nombre'] ?></p>
-            <p>Descripcion => <?= $articulo['descripcion'] ?></p>
+            <p><?= $articulo['precio'] ?></p>
+            <p><?= $articulo['nombre'] ?></p>
+            <p><?= $articulo['descripcion'] ?></p>
             <?php if($articulo['etiquetas'] != ""): ?>
                 <?php foreach (preg_split('/,/', $articulo['etiquetas']) as $etiqueta): ?>
                     <?php if($etiqueta === '') break; ?>
@@ -107,34 +69,45 @@
             <?php endif; ?>
         </article>
         <article class="alert-box info radius">
-            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $articulo['usuario_id'] . '_thumbnail.jpeg')): ?>
-                <?php $url = '/imagenes_usuarios/' . $articulo['usuario_id'] . '_thumbnail.jpeg' ?>
-            <?php else: ?>
-                <?php $url = '/imagenes_usuarios/sin-imagen_thumbnail.jpeg' ?>
-            <?php endif; ?>
-            <?= anchor('/usuarios/perfil/' . $articulo['usuario_id'],
-                        img(array(
-                            'src' => $url,
-                            'title' => $articulo['nick'],
-                            'alt' => $articulo['nick'],
-                            'class' => 'th',
-                        ))) ?>
-            <?= anchor('/usuarios/perfil/' . $usuario['id'], $usuario['nick']) ?>
+            <div class="row">
+                <div class="large-6 columns">
+                    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $usuario['id'] . '.jpg')): ?>
+                        <?php $url = '/imagenes_usuarios/' . $usuario['id'] . '.jpg' ?>
+                    <?php else: ?>
+                        <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+                    <?php endif; ?>
+                    <?= anchor('/usuarios/perfil/' . $usuario['id'],
+                                img(array(
+                                    'src' => $url,
+                                    'title' => $usuario['nick'],
+                                    'alt' => $usuario['nick'],
+                                    'class' => 'th circular_shadow zoomIt',
+                                ))) ?>
+                </div>
+                <div class="large-6 columns">
+                    <h5>
+                        <?= anchor('/usuarios/perfil/' . $usuario['id'], $usuario['nick']) ?>
+                    </h5>
+                    <p>
+                        Articulos Disponibles: <?= count($articulos_usuarios) + 1 ?>
+                    </p>
+                </div>
+            </div>
         </article>
-        <article class="alert-box info radius">
-            <div class="rt01 tabs-preview ma-b-100"
-                    data-tabs='{
-                        "isAutoInit" : true,
-                        "fx"         : "line",
-                        "speed"      : 600,
-                        "pag"        : { "align": "center", "isMark": false, "sizeMarkTo": "padding", "moreClass": "style-arrow" },
+        <?php if($usuario['latitud'] !== NULL && $usuario['longitud'] !== NULL): ?>
+            <article class="alert-box info radius">
+                <div class="rt01 tabs-preview ma-b-100"
+                        data-tabs='{
+                            "isAutoInit" : true,
+                            "fx"         : "line",
+                            "speed"      : 600,
+                            "pag"        : { "align": "center", "isMark": false, "sizeMarkTo": "padding", "moreClass": "style-arrow" },
 
-                        "width"      : 940,
-                        "isKeyboard" : true,
-                        "mobile"     : { "speed": 400 }
-                    }'>
-                    <div>
-                        <?php if($usuario['latitud'] !== NULL && $usuario['longitud'] !== NULL): ?>
+                            "width"      : 940,
+                            "isKeyboard" : true,
+                            "mobile"     : { "speed": 400 }
+                        }'>
+                        <div>
                             <div class="rt01pagitem">
                                 <h4 id="modalTitle">Ubicación de <?= $usuario['nick'] ?></h4>
                             </div>
@@ -143,12 +116,10 @@
                                    href="https://www.google.com/maps/embed/v1/place?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&amp;&amp;q=<?= $usuario['latitud'] ?>,<?= $usuario['longitud'] ?>&zoom=15&maptype=roadmap"
                                    width="100%" height="300" frameborder="0" style="border:0" allowfullscreen></a>
                             </div>
-                        <?php else: ?>
-                            El usuario <?= $usuario['nick'] ?> no ha aceptado dar su ubicacion.
-                        <?php endif; ?>
-                    </div>
-            </div>
-        </article>
+                        </div>
+                </div>
+            </article>
+        <?php endif; ?>
         <article class="text-center alert-box secondary radius">
             <h4>Otros productos de <?= $usuario['nick'] ?></h4>
             <?php if(!empty($articulos_usuarios)): ?>

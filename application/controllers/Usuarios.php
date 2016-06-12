@@ -464,8 +464,9 @@ class Usuarios extends CI_Controller{
         }
 
         $this->breadcrumbcomponent->add('Home', base_url());
-        $this->breadcrumbcomponent->add('Perfil ' . $data['usuario']['nick'],
+        $this->breadcrumbcomponent->add('Perfil',
                                         base_url() . '/usuarios/perfil/' . $usuario_id);
+        $this->breadcrumbcomponent->add($data['usuario']['nick'], base_url());
 
         $this->template->load("/usuarios/perfil", $data);
     }

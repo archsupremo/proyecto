@@ -8,11 +8,11 @@
             <a href="#" class="close">&times;</a>
           </div>
         <?php endif ?>
-        <?= form_open_multipart('/usuarios/editar_perfil/' . $usuario['id']) ?>
+        <?= form_open('/usuarios/editar_perfil/' . $usuario['id'], 'itemscope itemtype="http://schema.org/Person"') ?>
           <div class="">
             <?= form_label('Nick:', 'nick') ?>
             <?= form_input('nick', set_value('nick', $usuario['nick'], FALSE),
-                           'id="nick" class="input_validation"') ?>
+                           'id="nick" class="input_validation" itemprop="additionalName"') ?>
             <!-- <small class="error">Invalid entry</small> -->
           </div>
           <div class="">
@@ -22,14 +22,22 @@
                           'name' => 'email',
                           'id' => 'email',
                           'value' => set_value('email', $usuario['email'], FALSE),
-                          'class' => ''
+                          'class' => '',
+                          'itemprop' => 'email'
             )) ?>
             <!-- <small class="error">Invalid entry</small> -->
           </div>
-          <div class="">
-            <?= form_label('Localización:', 'localizacion') ?>
-            <?= form_input('localizacion', '',
-                           'id="localizacion" disabled="disabled" class=""') ?>
+          <div class="" itemscope itemtype="http://schema.org/GeoCoordinates">
+              <input type="hidden" name="latitud"
+                     value="<?= set_value('latitud', $usuario['latitud'], FALSE) ?>"
+                     itemprop="latitude">
+              <input type="hidden" name="longitud"
+                     value="<?= set_value('longitud', $usuario['longitud'], FALSE) ?>"
+                     itemprop="longitude">
+              <?= form_label('Localización:', 'localizacion') ?>
+              <?= form_input('localizacion', '',
+                             'id="localizacion" disabled="disabled" class=""
+                              itemprop="address"') ?>
           </div>
           <div class="">
             <?= form_label('Contraseña Antigua:', 'password_old') ?>
@@ -47,8 +55,6 @@
                               'id="password_confirm" class=""') ?>
           </div>
           <div class="">
-              <?= form_hidden('latitud', set_value('latitud', $usuario['latitud'], FALSE)) ?>
-              <?= form_hidden('longitud', set_value('longitud', $usuario['longitud'], FALSE)) ?>
               <?= form_checkbox('geolocalizacion', "", $usuario['latitud'] !== 'null' && $usuario['longitud'] !== 'null'); ?>
               <?= form_label('Desea usted dar su ubicación', 'geolocalizacion') ?>
           </div>
@@ -60,6 +66,7 @@
           </div>
           <?= form_submit('editar', 'Editar', 'class="success button small radius"') ?>
           <?= anchor('/usuarios/login', 'Volver', 'class="alert button small radius" role="button"') ?>
+          <?= anchor('#', 'Actualizar Ubicación', 'id="actualizar" class="info button small radius" role="button"') ?>
         <?= form_close() ?>
     </div>
     <div class="large-4 columns menu-login dropzone needsclick" id="dropzone">
@@ -233,6 +240,24 @@ async defer></script>
     });
 </script>
 <script type="text/javascript">
+    function actualizar_localizacion() {
+        navigator.geolocation.getCurrentPosition(function (posicion) {
+            var latitud = posicion.coords.latitude;
+            var longitud = posicion.coords.longitude;
+
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({'latLng': new google.maps.LatLng(latitud, longitud)}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var address = results[0]['formatted_address'];
+                    $("#localizacion").val(address);
+                }
+            });
+            $("input[name=latitud]").first().val(latitud);
+            $("input[name=longitud]").first().val(longitud);
+        }, function (error) {
+            $('#error_geolocalizacion').foundation('reveal', 'open');
+        });
+    }
     $("input[name=email_favorito]").click(function () {
         if($(this).is(':checked')) {
             $(this).val("t");
@@ -240,24 +265,13 @@ async defer></script>
             $(this).val("f");
         }
     });
+    $("#actualizar").click(function (evento) {
+        evento.preventDefault();
+        actualizar_localizacion();
+    });
     $("input[name=geolocalizacion]").click(function () {
         if($(this).is(':checked')) {
-            navigator.geolocation.getCurrentPosition(function (posicion) {
-                var latitud = posicion.coords.latitude;
-                var longitud = posicion.coords.longitude;
-
-                var geocoder = new google.maps.Geocoder();
-                geocoder.geocode({'latLng': new google.maps.LatLng(latitud, longitud)}, function(results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        var address = results[0]['formatted_address'];
-                        $("#localizacion").val(address);
-                    }
-                });
-                $("input[name=latitud]").first().val(latitud);
-                $("input[name=longitud]").first().val(longitud);
-            }, function (error) {
-                $('#error_geolocalizacion').foundation('reveal', 'open');
-            });
+            actualizar_localizacion();
         } else {
             $("input[name=latitud]").first().val("null");
             $("input[name=longitud]").first().val("null");

@@ -34,8 +34,9 @@
       </div>
     </div>
 
-    <audio id="song">
-      <source src="http://scummbar.com/mi2/DOTT/03%20-%20Busting%20The%20Candy%20Machine.mp3">
+    <audio id="song" itemscope itemtype="http://schema.org/AudioObject">
+        <source itemprop="embedUrl" src="http://scummbar.com/mi2/DOTT/03%20-%20Busting%20The%20Candy%20Machine.mp3">
+        <span class="oculto" itemprop="playerType">HTML 5</span>
     </audio>
     <br>
     <br>
