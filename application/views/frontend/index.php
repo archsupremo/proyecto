@@ -55,6 +55,22 @@
         <?= form_close() ?>
     </section>
     <section class="large-6 columns" id="centro">
+        <?php if(empty($articulos)): ?>
+            <section class="row" id="error">
+                <article class="large-12 large-centered columns">
+                    <img src="/img/nada.jpg" alt="" />
+                </article>
+                <article class="large-5 large-centered columns">
+                    <p>
+                        No hay nada por aqui >.<
+                    </p>
+                </article>
+                <article class="large-4 large-centered columns">
+                    <?= anchor('/frontend/portada', 'Ver productos',
+                               'class="success button small radius"') ?>
+                </article>
+            </section>
+        <?php endif; ?>
         <?php foreach ($articulos as $v): ?>
             <article class="large-4 columns left articulos"
                  id="<?= $v['articulo_id'] ?>">
@@ -79,7 +95,11 @@
                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre'].$v['articulo_id']) ?>
                 </div>
                 <div class="">
-                    <?= $v['etiquetas'] ?>
+                    <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
+                        <?php if($etiqueta === '') break; ?>
+                        <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                                   'class="button tiny radius"') ?>
+                    <?php endforeach; ?>
                 </div>
                 <div class="">
                     <div class="favorito <?= ($v['favorito'] === "t") ? 'es_favorito' : 'no_favorito' ?>">
@@ -134,11 +154,13 @@
     </div>
 </div>
 
+<?php if( ! empty($articulos)): ?>
 <div class="row masArticulos">
     <div class="large-1 large-centered columns">
         <img src="/img/mas.jpg" class="th" id="mas" alt="Mas productos" />
     </div>
 </div>
+<?php endif; ?>
 
 <style media="screen">
     #centro {
@@ -170,10 +192,49 @@
 </script>
 
 <script type="text/javascript">
+    var valores_defecto = {
+        numStars: 1,
+        maxValue: 1,
+        fullStar: true,
+        <?php if(!logueado()): ?>
+            readOnly: true,
+        <?php endif; ?>
+    };
+    $(function () {
+        $(".favorito").rateYo(valores_defecto);
+        $('.es_favorito').rateYo("rating", 1);
+        $('.favorito').rateYo().on("rateyo.set", function (e, data) {
+            var articulo_id = $(this).parent().parent().attr("id");
+            $.ajax({
+                url: "<?= base_url() ?>articulos/favoritos/" + articulo_id,
+                type: 'POST',
+                async: true,
+                success: function(response) {},
+                error: function (error) {},
+            });
+        });
+    });
+    $(".favorito").click(function () {
+        var valor = parseInt($(this).rateYo("rating"));
+
+        if (valores_defecto.readOnly == undefined) {
+            if(valor != 0) {
+                $(this).rateYo("destroy");
+                $(this).rateYo(valores_defecto);
+                $(this).rateYo("rating", 0);
+            }
+        }
+    });
+    if (valores_defecto.readOnly != undefined) {
+        $(".favorito").css("cursor", "not-allowed");
+        $(".favorito").attr("title", "Logueate para añadir a favoritos");
+    }
+</script>
+
+<script type="text/javascript">
     var limite = 10;
     var scrollInfinito = false;
     var articulos_viejos = [];
-    // alert(window.location.search);
 
     $(window).scroll(function() {
         if(($(window).scrollTop() >= ($(document).height() - $("footer").first().height()) - $(window).height())
@@ -265,9 +326,12 @@
                                 div += '<a href="/articulos/buscar/'+response[producto].articulo_id+'">'
                                         +response[producto].nombre+response[producto].articulo_id+'</a>';
                             div += '</div>';
-                            div += '<div class="">';
-                                div += response[producto].etiquetas;
-                            div += '</div>';
+                            if(response[producto].etiquetas != null) {
+                                div += '<div class="">';
+                                    div += response[producto].etiquetas;
+                                div += '</div>';
+                            }
+                            div += '<div class="favorito"></div>';
                             div += '<div class="">';
                                 div += '<a href="/usuarios/perfil/'+response[producto].usuario_id+'">';
 
@@ -283,8 +347,33 @@
                                 div += '<a href="/usuarios/perfil/'+response[producto].usuario_id+'">'+response[producto].nick+'</a>';
                             div += '</div>';
                         div += '</article>';
+
                     $('#centro').append(div);
-                    $("#centro").find("img").last().load(function () {
+                    var valores_defecto = {
+                        numStars: 1,
+                        maxValue: 1,
+                        fullStar: true,
+                        <?php if(!logueado()): ?>
+                            readOnly: true,
+                        <?php endif; ?>
+                    };
+                    $(function () {
+                        $(".favorito").last().rateYo(valores_defecto);
+                        // $('.es_favorito').rateYo("rating", 1);
+                        $('.favorito').last().rateYo().on("rateyo.set", function (e, data) {
+                            var articulo_id = $(this).parent().attr("id");
+                            $.ajax({
+                                url: "<?= base_url() ?>articulos/favoritos/" + articulo_id,
+                                type: 'POST',
+                                async: true,
+                                success: function(response) {
+                                },
+                                error: function (error) {
+                                },
+                            });
+                        });
+                    });
+                    $("#centro").find("img").load(function () {
                         $(function() {
                             $("#centro").trigger("ss-destroy");
                             $('#centro').shapeshift({
@@ -313,48 +402,6 @@
         },
         forceLowercase: false
     });
-</script>
-
-<script type="text/javascript">
-    var valores_defecto = {
-        numStars: 1,
-        maxValue: 1,
-        fullStar: true,
-        <?php if(!logueado()): ?>
-            readOnly: true,
-        <?php endif; ?>
-    };
-    $(function () {
-        $(".favorito").rateYo(valores_defecto);
-        $('.es_favorito').rateYo("rating", 1);
-        $('.favorito').rateYo().on("rateyo.set", function (e, data) {
-            var articulo_id = $(this).parent().parent().attr("id");
-            $.ajax({
-                url: "<?= base_url() ?>articulos/favoritos/" + articulo_id,
-                type: 'POST',
-                async: true,
-                success: function(response) {
-                },
-                error: function (error) {
-                },
-            });
-        });
-    });
-    $(".favorito").click(function () {
-        var valor = parseInt($(this).rateYo("rating"));
-
-        if (valores_defecto.readOnly == undefined) {
-            if(valor != 0) {
-                $(this).rateYo("destroy");
-                $(this).rateYo(valores_defecto);
-                $(this).rateYo("rating", 0);
-            }
-        }
-    });
-    if (valores_defecto.readOnly != undefined) {
-        $(".favorito").css("cursor", "not-allowed");
-        $(".favorito").attr("title", "Logueate para añadir a favoritos");
-    }
 </script>
 
 <script type="text/javascript">

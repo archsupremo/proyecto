@@ -351,4 +351,10 @@ class Articulo extends CI_Model{
                                array($articulo_id));
       return ($res->num_rows() > 0) ? TRUE : FALSE;
   }
+
+  public function articulo_favorito_email($articulo_id) {
+      $res = $this->db->query("select * from v_favoritos_email where articulo_id = ?",
+                               array($articulo_id));
+      return ($res->num_rows() > 0) ? $res->result_array() : FALSE;
+  }
 }

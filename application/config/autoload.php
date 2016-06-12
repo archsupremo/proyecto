@@ -60,7 +60,7 @@ $autoload['packages'] = array();
 */
 $autoload['libraries'] = array('database', 'form_validation',
                                'Template', 'session', 'Flashdata',
-                               'Blacklist');
+                               'Blacklist', 'breadcrumbcomponent');
 
 /*
 | -------------------------------------------------------------------

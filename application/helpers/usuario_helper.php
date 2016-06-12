@@ -33,18 +33,6 @@ function usuario_logueado() {
                         anchor('/backend/usuarios/listado_usuarios/', 'Ver tabla con listado de usuarios',
                                'id="listado_usuarios" class=""');
                     '</li>';
-            // $out .= '<li>'.
-            //          anchor('/usuarios/editar_perfil/' . $usuario['id'], 'Editar información personal',
-            //                 'id="editar_perfil" class=""');
-            //         '</li>';
-            // $out .= '<li>'.
-            //             anchor('/articulos/subir/', 'Subir articulo',
-            //                    'id="subir_articulo" class=""');
-            //          '</li>';
-            // $out .= '<li>'.
-            //             anchor('/usuarios/perfil/' . $usuario['id'], 'Ver perfil',
-            //                    'id="perfil" class=""');
-            //          '</li>';
             $out .= '<li>'.
                      anchor('/usuarios/logout/', 'Logout',
                             'id="logout" class=""');
@@ -121,4 +109,9 @@ function es_admin() {
         return $CI->session->userdata('usuario')['admin'];
     }
     return FALSE;
+}
+
+function miga_pan() {
+    $CI =& get_instance();
+    return $CI->breadcrumbcomponent->output();
 }

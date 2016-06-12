@@ -27,6 +27,11 @@
             <!-- <small class="error">Invalid entry</small> -->
           </div>
           <div class="">
+            <?= form_label('Localización:', 'localizacion') ?>
+            <?= form_input('localizacion', '',
+                           'id="localizacion" disabled="disabled" class=""') ?>
+          </div>
+          <div class="">
             <?= form_label('Contraseña Antigua:', 'password_old') ?>
             <?= form_password('password_old', '',
                               'id="password_old" class=""') ?>
@@ -44,14 +49,14 @@
           <div class="">
               <?= form_hidden('latitud', set_value('latitud', $usuario['latitud'], FALSE)) ?>
               <?= form_hidden('longitud', set_value('longitud', $usuario['longitud'], FALSE)) ?>
-              <?= form_checkbox('geolocalizacion', "", TRUE); ?>
+              <?= form_checkbox('geolocalizacion', "", $usuario['latitud'] !== 'null' && $usuario['longitud'] !== 'null'); ?>
               <?= form_label('Desea usted dar su ubicación', 'geolocalizacion') ?>
           </div>
           <div class="">
-              <?= form_checkbox('confirm_venta_favorito', "", FALSE); ?>
+              <?= form_checkbox('email_favorito', $usuario['email_favorito'], $usuario['email_favorito'] ==='t'); ?>
               <?= form_label('Desea usted que se envie un mensaje de correo<br> '.
                              'electronico cuando un articulo favorito se venda',
-                             'confirm_venta_favorito') ?>
+                             'email_favorito') ?>
           </div>
           <?= form_submit('editar', 'Editar', 'class="success button small radius"') ?>
           <?= anchor('/usuarios/login', 'Volver', 'class="alert button small radius" role="button"') ?>
@@ -70,6 +75,18 @@
           </span>
         </div>
     </div>
+</div>
+
+<div id="error_geolocalizacion" class="reveal-modal"
+     data-reveal aria-labelledby="Error"
+     aria-hidden="true" role="dialog">
+  <h2 id="firstModalTitle">Error de Geolocalización</h2>
+  <p>
+     Perdone, pero hemos detectado que en su navegador, usted tiene prohibida la
+     geolocalización. Por ello, si quiere usted establecer la gelolocalizacion
+     de forma personal, clicke <a href="#" rel='pop-up'>aquí</a>.
+  </p>
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
 
 <script type="text/javascript">
@@ -196,39 +213,67 @@
         alert("Ha ocurrido el error => " + error.statusText);
     }
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&libraries=places"
+async defer></script>
 <script type="text/javascript">
-    /*
-    navigator.geolocation.getCurrentPosition(function (posicion) {
-        var latitud = posicion.coords.latitude;
-        var longitud = posicion.coords.longitude;
+    $(document).ready(function() {
+        if($("input[name=latitud]").first().val() != "" &&
+           $("input[name=longitud]").first().val() != "") {
+               var latitud = $("input[name=latitud]").first().val();
+               var longitud = $("input[name=longitud]").first().val();
 
-        $("input[name=latitud]").first().val(latitud);
-        $("input[name=longitud]").first().val(longitud);
-
-        $("input[name=geolocalizacion]").click(function () {
-            if($(this).is(':checked')) {
-                $("input[name=latitud]").first().val(latitud);
-                $("input[name=longitud]").first().val(longitud);
-            } else {
-                $("input[name=latitud]").first().val("");
-                $("input[name=longitud]").first().val("");
-            }
-        });
-    }, function(error) {
-        switch(error.code) {
-            case error.PERMISSION_DENIED:
-            case error.POSITION_UNAVAILABLE:
-                alert("Imposible detectar la posición actual");
-            break;
-
-            case error.TIMEOUT:
-                // alert("La posicion debe recuperar el tiempo de espera");
-            break;
-
-            default:
-                alert("Error desconocido");
-            break;
+               var geocoder = new google.maps.Geocoder();
+               geocoder.geocode({'latLng': new google.maps.LatLng(latitud, longitud)}, function(results, status) {
+                   if (status == google.maps.GeocoderStatus.OK) {
+                       var address = results[0]['formatted_address'];
+                       $("#localizacion").val(address);
+                   }
+               });
         }
     });
-    */
+</script>
+<script type="text/javascript">
+    $("input[name=email_favorito]").click(function () {
+        if($(this).is(':checked')) {
+            $(this).val("t");
+        } else {
+            $(this).val("f");
+        }
+    });
+    $("input[name=geolocalizacion]").click(function () {
+        if($(this).is(':checked')) {
+            navigator.geolocation.getCurrentPosition(function (posicion) {
+                var latitud = posicion.coords.latitude;
+                var longitud = posicion.coords.longitude;
+
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({'latLng': new google.maps.LatLng(latitud, longitud)}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        var address = results[0]['formatted_address'];
+                        $("#localizacion").val(address);
+                    }
+                });
+                $("input[name=latitud]").first().val(latitud);
+                $("input[name=longitud]").first().val(longitud);
+            }, function (error) {
+                $('#error_geolocalizacion').foundation('reveal', 'open');
+            });
+        } else {
+            $("input[name=latitud]").first().val("null");
+            $("input[name=longitud]").first().val("null");
+            $("#localizacion").val("");
+        }
+    });
+</script>
+<script type="text/javascript">
+    $("a[rel='pop-up']").click(function (evento) {
+        evento.preventDefault();
+
+      	var caracteristicas = "height=700,width=800,scrollTo,resizable=1,scrollbars=1,location=0";
+      	nueva = window.open('<?= base_url() ?>usuarios/ubicacion_manual',
+                            'Ubicación Manual', caracteristicas);
+    });
+    function cerrar_modal() {
+        $('#error_geolocalizacion').foundation('reveal', 'close');
+    }
 </script>

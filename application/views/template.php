@@ -15,10 +15,15 @@
     <link rel="stylesheet" href="/toogle/css/toggles-full.css">
     <link rel="stylesheet" href="/toogle/css/themes/toggles-all.css">
     <link rel="stylesheet" href="/rubytabs/rubytabs.css">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css"
+          rel="stylesheet">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <link href="/tag/jquery.tag-editor.css" rel="stylesheet">
     <link href="/css/estilos_mapa.css" rel="stylesheet">
     <link href="/css/alineacion_bloques.css" rel="stylesheet">
+    <link href="/css/animacion.css" rel="stylesheet">
+    <link href="/css/imagen_error.css" rel="stylesheet">
+    <link href="/css/imagen_perfil.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
 
     <!-- Foundation y rateYo -->
@@ -77,15 +82,12 @@
           </section>
         </nav>
     </header>
+    <?= miga_pan() ?>
+
     <?= mensajes() ?>
     <?= $contents ?>
+
     <hr>
-
-    <!-- For Foundation Icons, put this in your head -->
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css"
-          rel="stylesheet">
-
-    <!-- Footer -->
     <footer class="footer" role="contentinfo">
       <section class="row full-width" role="main">
         <article class="small-12 medium-3 large-4 columns">

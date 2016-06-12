@@ -140,6 +140,10 @@ class Usuarios extends CI_Controller{
         $this->session->set_userdata('last_uri',
                         parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
     }
+    $this->breadcrumbcomponent->add('Home', base_url());
+    $this->breadcrumbcomponent->add('Login',
+                                    base_url() . '/usuarios/login/');
+
     $this->output->delete_cache('/frontend/portada/');
     $this->template->load('/usuarios/login');
   }
@@ -283,6 +287,7 @@ class Usuarios extends CI_Controller{
                 $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
                 $valores['registro_verificado'] = FALSE;
                 $valores['ip'] = $this->blacklist->get_real_ip();
+                $valores['email_favorito'] = FALSE;
                 $valores['latitud'] = ($valores['latitud'] !== 'null') ? (double) $valores['latitud'] : NULL;
                 $valores['longitud'] = ($valores['longitud'] !== 'null') ? (double) $valores['longitud'] : NULL;
                 $valores['nick'] = strtolower($valores['nick']);
@@ -317,6 +322,10 @@ class Usuarios extends CI_Controller{
                 redirect('/usuarios/login');
             }
         }
+
+        $this->breadcrumbcomponent->add('Home', base_url());
+        $this->breadcrumbcomponent->add('Registrar',
+                                        base_url() . '/usuarios/registrar/');
         $this->template->load('/usuarios/registrar');
     }
 
@@ -454,6 +463,10 @@ class Usuarios extends CI_Controller{
             }
         }
 
+        $this->breadcrumbcomponent->add('Home', base_url());
+        $this->breadcrumbcomponent->add('Perfil ' . $data['usuario']['nick'],
+                                        base_url() . '/usuarios/perfil/' . $usuario_id);
+
         $this->template->load("/usuarios/perfil", $data);
     }
 
@@ -555,21 +568,14 @@ class Usuarios extends CI_Controller{
         if ($this->form_validation->run() === TRUE) {
 
             $valores = $this->input->post();
-
             unset($valores['editar']);
             unset($valores['password_confirm']);
             unset($valores['password_old']);
             unset($valores['geolocalizacion']);
 
-            $valores['latitud'] = (double) $valores['latitud'];
-            $valores['longitud'] = (double) $valores['longitud'];
-            if($valores['latitud'] === (double) 0) {
-                $valores['latitud'] = NULL;
-            }
-            if($valores['longitud'] === (double) 0) {
-                $valores['longitud'] = NULL;
-            }
-
+            $valores['latitud'] = ($valores['latitud'] !== 'null') ? (double) $valores['latitud'] : NULL;
+            $valores['longitud'] = ($valores['longitud'] !== 'null') ? (double) $valores['longitud'] : NULL;
+            $valores['email_favorito'] = ($valores['email_favorito'] === 't') ? TRUE : FALSE;
             $valores['password'] = password_hash($valores['password'], PASSWORD_DEFAULT);
             $valores['ip'] = $this->blacklist->get_real_ip();
             $this->Usuario->editar($valores, $usuario_id);
@@ -581,6 +587,17 @@ class Usuarios extends CI_Controller{
             redirect('/frontend/portada/');
         }
         $data['usuario'] = $this->Usuario->por_id($usuario_id);
+
+        $this->breadcrumbcomponent->add('Home', base_url());
+        $this->breadcrumbcomponent->add('Editar Perfil',
+                                        base_url() . '/usuarios/editar_perfil/' . $usuario_id);
+        $this->breadcrumbcomponent->add($data['usuario']['nick'], base_url());
+
+        if($data['usuario']['latitud'] == '')
+            $data['usuario']['latitud'] = 'null';
+        if($data['usuario']['longitud'] == '')
+            $data['usuario']['longitud'] = 'null';
+
         $this->template->load("/usuarios/editar_perfil", $data);
     }
 
@@ -811,6 +828,13 @@ class Usuarios extends CI_Controller{
 
         $data['venta'] = $venta;
 
+        $this->breadcrumbcomponent->add('Home', base_url());
+        $this->breadcrumbcomponent->add('Perfil',
+                                        base_url() . 'usuarios/perfil/'.$usuario_id);
+        $this->breadcrumbcomponent->add('Valorar Vendedor',
+                                        base_url() . 'usuarios/valorar_vendedor/'.$data['venta']['venta_id']);
+        $this->breadcrumbcomponent->add($data['venta']['vendedor_nick'], base_url());
+
         $this->template->load('/usuarios/valorar_vendedor', $data);
     }
 
@@ -869,6 +893,13 @@ class Usuarios extends CI_Controller{
         }
 
         $data['venta'] = $venta;
+
+        $this->breadcrumbcomponent->add('Home', base_url());
+        $this->breadcrumbcomponent->add('Perfil',
+                                        base_url() . 'usuarios/perfil/'.$usuario_id);
+        $this->breadcrumbcomponent->add('Valorar Comprador',
+                                        base_url() . 'usuarios/valorar_comprador/'.$data['venta']['venta_id']);
+        $this->breadcrumbcomponent->add($data['venta']['comprador_nick'], base_url());
 
         $this->template->load('/usuarios/valorar_comprador', $data);
     }

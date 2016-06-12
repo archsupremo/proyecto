@@ -1,0 +1,64 @@
+html,body {
+  margin:0;
+}
+
+/* Bernard Bernoulli: Animación del personaje */
+#bern {
+  width:112px;
+  height:156px;
+  margin:auto;
+  background:url(https://cdn.rawgit.com/ManzDev/cursos-assets/gh-pages/css3/bernard-sprite.png) repeat-x;
+  animation:walk .8s steps(6) infinite;
+  /* Posiciono el personaje sobre el camino de madera */
+  position:relative;
+  bottom:34px;
+}
+
+/* Animación de personaje caminando: Simplemente mueve el sprite sheet hacia la izquierda, realizando el movimiento. */
+@keyframes walk {
+  /* Partimos de la primera viñeta del sprite sheet */
+  0% { background-position:0 }
+  /* El tamaño total de ancho del sprite. Es negativo para que no "camine" hacia atrás */
+  100% { background-position:-672px }
+}
+
+/* Animación del cielo. Efecto "Parallax", va más lento que el mar. */
+#sky {
+  background:url(https://cdn.rawgit.com/ManzDev/cursos-assets/gh-pages/css3/monkey-sky.png) repeat-X;
+  animation: movebg 9s linear infinite;
+}
+
+/* Animación del mar. */
+#sea {
+  background:url(https://cdn.rawgit.com/ManzDev/cursos-assets/gh-pages/css3/monkey-sea.png) repeat-x;
+  animation: movebg 6s linear infinite;
+  /* Posicionamos el mar, para que no solape al cielo */
+  position:relative;
+  top:145px;
+  /* Pequeño degradado interior para suavizar el mar. */
+  box-shadow:10px 10px 45px RGBA(0,0,0, 0.85) inset;
+}
+
+/* Animación para mover cielo y mar */
+@keyframes movebg {
+  0% { background-position:550px }
+  100% { background-position:0 }
+}
+
+#gb {
+  width:104px;
+  height:150px;
+  background:url(https://cdn.rawgit.com/ManzDev/cursos-assets/gh-pages/css3/monkey-guybrush.png) no-repeat;
+  animation:gbwalk 1s steps(6) infinite;
+  margin:auto;
+  position:relative;
+  top:34px;
+
+  /* No apto para ordenadores lentos */
+  /*filter:drop-shadow(5px 5px 5px #000);*/
+}
+
+@keyframes gbwalk {
+  0% { background-position:0 }
+  100% { background-position:-624px }
+}

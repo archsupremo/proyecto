@@ -17,6 +17,7 @@ create table usuarios(
                                               check (length(password) = 60),
     email               varchar(100) not null,
     registro_verificado bool         not null default false,
+    email_favorito      bool         not null default false,
     ip                  inet default null,
     latitud             double precision default null,
     longitud            double precision default null
@@ -142,13 +143,13 @@ create table pm(
     visto bool not null default false
 );
 
-insert into usuarios(nick, password, email, registro_verificado, ip, latitud, longitud)
+insert into usuarios(nick, password, email, registro_verificado, email_favorito, ip, latitud, longitud)
     values('admin', crypt('admin', gen_salt('bf')), 'guillermo.lopez@iesdonana.org',
-            true, null, null, null),
+            true, true, null, null, null),
           ('guillermo', crypt('guillermo', gen_salt('bf')), 'lopezgarciaguillermo@live.com',
-            true, null, 36.7736776, -6.3529689),
+            true, false, null, 36.7736776, -6.3529689),
           ('archsupremo', crypt('archsupremo', gen_salt('bf')), 'jdkdejava@gmail.com',
-            true, null, 36.7795776, -6.3529689);
+            true, false, null, 36.7795776, -6.3529689);
 
 insert into usuarios_admin(nick, password, email)
     values('archlinux', crypt('archlinux', gen_salt('bf')), 'arch@hotmail.com');
@@ -302,8 +303,14 @@ create view v_favoritos as
     select id as articulo_id, nombre, descripcion, a.usuario_id, precio,
              nick, f.usuario_id as usuario_favorito, TRUE as favorito,
              etiquetas
-    from v_articulos a join favoritos f
+    from v_articulos_raw a join favoritos f
     on a.id = f.articulo_id;
+
+drop view if exists v_favoritos_email cascade;
+create view v_favoritos_email as
+    select f.articulo_id, f.usuario_id, u.nick, u.email
+    from favoritos f join usuarios u on f.usuario_id = u.id
+    where u.email_favorito is true;
 
 drop view if exists v_ventas_vendedor;
 create view v_ventas_vendedor as

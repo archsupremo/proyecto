@@ -1,5 +1,4 @@
 <?php template_set('title', 'Perfil de Usuario') ?>
-
 <style media="screen">
     div.font-blokk > h3 {
         border: 1px solid black;
@@ -13,6 +12,21 @@
           <a href="#" class="close">&times;</a>
         </div>
     <?php endif ?>
+</div>
+<div class="row large-6 alert-box secondary radiu">
+    <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $usuario['id'] . '.jpg')): ?>
+        <?php $url = '/imagenes_usuarios/' . $usuario['id'] . '.jpg' ?>
+    <?php else: ?>
+        <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+    <?php endif; ?>
+    <?= anchor('/usuarios/perfil/' . $usuario['id'],
+                img(array(
+                    'src' => $url,
+                    'title' => $usuario['nick'],
+                    'alt' => $usuario['nick'],
+                    'class' => 'th circular_shadow zoomIt',
+                ))) ?>
+    <?= anchor('/usuarios/perfil/' . $usuario['id'], $usuario['nick']) ?>
 </div>
 <div class="row large-6">
     <p class="text-center">
@@ -76,10 +90,10 @@
                     <?php endif; ?>
                 </div>
                 <div class="container">
-                <div class="row font-blokk">
+                <div class="row font-blokk articulos">
                     <?php if( ! empty($articulos_usuarios)): ?>
                         <?php foreach ($articulos_usuarios as $v): ?>
-                            <div class="large-3 columns left">
+                            <article class="large-3 columns left">
                                 <div class="">
                                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                                         <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
@@ -96,7 +110,11 @@
                                     <?= anchor('/articulos/buscar/' . $v['id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
-                                    <?= $v['etiquetas'] ?>
+                                    <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
+                                        <?php if($etiqueta === '') break; ?>
+                                        <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                                                   'class="button tiny radius"') ?>
+                                    <?php endforeach; ?>
                                     <?php if($usuario_perfil === TRUE): ?>
                                         <br>
                                         <a href="/articulos/vender/<?= $v['id'] ?>"
@@ -141,42 +159,21 @@
                                         </div>
                                     <?php endif; ?>
                                 </div>
-                            </div>
+                            </article>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <h3>El usuario <?= $usuario['nick'] ?> no tiene productos a la venta actualmente >.<</h3>
                     <?php endif; ?>
-                </div>
-                <div class="row large-centered columns">
-                    <ul class="pagination right">
-                      <li class="arrow unavailable">
-                          <a href="">&laquo;</a>
-                      </li>
-                      <li class="current">
-                          <a href="">1</a>
-                      </li>
-                      <li><a href="">2</a></li>
-                      <li><a href="">3</a></li>
-                      <li><a href="">4</a></li>
-                      <li class="unavailable">
-                          <a href="">&hellip;</a>
-                      </li>
-                      <li><a href="">12</a></li>
-                      <li><a href="">13</a></li>
-                      <li class="arrow">
-                          <a href="">&raquo;</a>
-                      </li>
-                    </ul>
                 </div>
                 </div>
             </div>
             <div>
                 <div class="rt01pagitem">Ventas</div>
                 <div class="container">
-                <div class="row font-blokk">
+                <div class="row font-blokk articulos">
                 <?php if( ! empty($articulos_vendidos)): ?>
                     <?php foreach ($articulos_vendidos as $v): ?>
-                        <div class="large-3 columns left">
+                        <article class="large-3 columns left">
                             <div class="">
                                 <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                                     <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
@@ -193,7 +190,11 @@
                                 <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                             </div>
                             <div class="">
-                                <?= $v['etiquetas'] ?>
+                                <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
+                                    <?php if($etiqueta === '') break; ?>
+                                    <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                                               'class="button tiny radius"') ?>
+                                <?php endforeach; ?>
                                 <?php if($usuario_perfil === TRUE): ?>
                                     <br>
                                     <?php if($v['valoracion'] === NULL && $v['comprador_id'] !== NULL): ?>
@@ -242,7 +243,7 @@
                                     </div>
                                 <?php endif; ?>
                             </div>
-                        </div>
+                        </article>
                     <?php endforeach; ?>
                     <?php else: ?>
                         <h3>El usuario <?= $usuario['nick'] ?> no tiene ventas actualmente >.<</h3>
@@ -347,10 +348,10 @@
                 <div>
                     <div class="rt01pagitem">Mis Compras</div>
                     <div class="container">
-                    <div class="row font-blokk">
+                    <div class="row font-blokk articulos">
                     <?php if( ! empty($articulos_comprados)): ?>
                         <?php foreach ($articulos_comprados as $v): ?>
-                            <div class="large-3 columns left">
+                            <article class="large-3 columns left">
                                 <div class="">
                                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                                         <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
@@ -367,7 +368,11 @@
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
-                                    <?= $v['etiquetas'] ?>
+                                    <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
+                                        <?php if($etiqueta === '') break; ?>
+                                        <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                                                   'class="button tiny radius"') ?>
+                                    <?php endforeach; ?>
                                     <br>
                                     <?php if($v['valoracion'] === NULL): ?>
                                         <a href="/usuarios/valorar_vendedor/<?= $v['venta_id'] ?>"
@@ -418,7 +423,7 @@
                                      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
                                    </div>
                                 </div>
-                            </div>
+                            </article>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <h3>No tienes compras actualmente >.<</h3>
@@ -429,10 +434,10 @@
                 <div>
                     <div class="rt01pagitem">Mis Favoritos</div>
                     <div class="container">
-                    <div class="row font-blokk">
+                    <div class="row font-blokk articulos">
                     <?php if( ! empty($articulos_favoritos)): ?>
                         <?php foreach ($articulos_favoritos as $v): ?>
-                            <div class="large-3 columns left">
+                            <article class="large-3 columns left">
                                 <div class="">
                                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
                                         <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
@@ -449,7 +454,11 @@
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                                 </div>
                                 <div class="">
-                                    <?= $v['etiquetas'] ?>
+                                    <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
+                                        <?php if($etiqueta === '') break; ?>
+                                        <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                                                   'class="button tiny radius"') ?>
+                                    <?php endforeach; ?>
                                     <br>
                                     <a href="#" data-reveal-id="favorito_<?= $v['articulo_id'] ?>"
                                        class="alert button tiny radius">
@@ -491,7 +500,7 @@
                                      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
                                    </div>
                                 </div>
-                            </div>
+                            </article>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <h3>No tienes articulos en la seccion de favoritos actualmente >.<</h3>
@@ -573,6 +582,32 @@
             <?php endif; ?>
 </div>
 </div>
+<style media="screen">
+    .articulos {
+        position: relative;
+    }
+    .articulos > article {
+        width: 30%;
+        height: auto;
+        position: absolute;
+        border: 1px solid black;
+    }
+</style>
+<script type="text/javascript" >
+    $('.articulos').shapeshift({
+        gutterY: 40,
+        enableDrag: false,
+        enableResize: false
+    });
+    $( window ).resize(function() {
+        $(".articulos").trigger("ss-destroy");
+        $('.articulos').shapeshift({
+            enableDrag: false,
+            enableResize: false
+        });
+    });
+</script>
+
 <script type="text/javascript">
     $('.toggle').toggles({
         drag: true,

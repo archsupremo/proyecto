@@ -14,7 +14,7 @@ class Portada extends CI_Controller {
       $longitud = -3.7038;
       $order = '';
 
-      if($this->input->get('nombre') !== NULL && $this->input->get('tags') !== NULL) {
+      if($this->input->get('nombre') !== NULL || $this->input->get('tags') !== NULL) {
           if($this->input->get('order_distancia') !== NULL) {
               $distancia = trim($this->input->get('order_distancia'));
 

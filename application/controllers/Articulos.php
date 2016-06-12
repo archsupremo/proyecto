@@ -27,7 +27,7 @@ class Articulos extends CI_Controller {
       $longitud = -3.7038;
       $order = '';
 
-      if($this->input->get('nombre') !== NULL && $this->input->get('tags') !== NULL) {
+      if($this->input->get('nombre') !== NULL || $this->input->get('tags') !== NULL) {
           if($this->input->get('order_distancia') !== NULL) {
               $distancia = $this->input->get('order_distancia');
 
@@ -129,25 +129,18 @@ class Articulos extends CI_Controller {
   }
 
   public function favoritos($articulo_id) {
-      if (!$this->Usuario->logueado()) {
-          $mensajes[] = array('error' =>
-                  "Parametros incorrectos para añadir/eliminar a favoritos el articulo.");
-          $this->flashdata->load($mensajes);
-          redirect('/frontend/portada/');
-      }
-      if($articulo_id === NULL || $this->Articulo->por_id($articulo_id) === FALSE) {
-          $mensajes[] = array('error' =>
-              "Parametros incorrectos para añadir/eliminiar a favoritos el articulo.");
-          $this->flashdata->load($mensajes);
+      if (!$this->Usuario->logueado() ||
+           $articulo_id === NULL ||
+           $this->Articulo->por_id($articulo_id) === FALSE) {
 
-          redirect('/frontend/portada/');
-      }
-      $usuario = $this->session->userdata('usuario');
-
-      if($this->Articulo->existe_favorito($usuario['id'], $articulo_id)) {
-          $this->Articulo->borrar_favorito($usuario['id'], $articulo_id);
+          echo "articulo no valido";
       } else {
-          $this->Articulo->insertar_favorito($usuario['id'], $articulo_id);
+          $usuario = $this->session->userdata('usuario');
+          if($this->Articulo->existe_favorito($usuario['id'], $articulo_id)) {
+              $this->Articulo->borrar_favorito($usuario['id'], $articulo_id);
+          } else {
+              $this->Articulo->insertar_favorito($usuario['id'], $articulo_id);
+          }
       }
   }
 
@@ -219,6 +212,13 @@ class Articulos extends CI_Controller {
       $data['articulo']['precio'] = str_replace(',', '.', $data['articulo']['precio']);
       $data['articulo']['precio'] = substr($data['articulo']['precio'], 0, -4);
 
+      $this->breadcrumbcomponent->add('Home', base_url());
+      $this->breadcrumbcomponent->add('Perfil',
+                                      base_url() . 'usuarios/perfil/'.$data['articulo']['usuario_id']);
+      $this->breadcrumbcomponent->add('Editar Articulo',
+                                      base_url() . 'articulos/editar_articulo/'.$data['articulo']['id']);
+      $this->breadcrumbcomponent->add($data['articulo']['nombre'], base_url());
+
       $this->template->load('/articulos/editar_articulo', $data);
   }
 
@@ -283,6 +283,10 @@ class Articulos extends CI_Controller {
           }
       }
 
+      $this->breadcrumbcomponent->add('Home', base_url());
+      $this->breadcrumbcomponent->add('Subir Articulo',
+                                      base_url() . '/articulos/subir/');
+
       $this->template->load('/articulos/subir');
   }
 
@@ -329,6 +333,13 @@ class Articulos extends CI_Controller {
                 break;
               endif;
           }
+
+          $articulo = $this->Articulo->por_id($articulo_id);
+          $this->breadcrumbcomponent->add('Home', base_url());
+          $this->breadcrumbcomponent->add('Subir Imágenes',
+                                          base_url() . '/articulos/subir_imagenes/');
+          $this->breadcrumbcomponent->add($articulo['nombre'], base_url());
+
           $this->template->load('/articulos/subir_imagenes');
       } else {
           redirect('/frontend/portada');
@@ -421,6 +432,21 @@ class Articulos extends CI_Controller {
                   $valores['comprador_id'] = $comprador['id'];
                   $venta_realizada = $this->Articulo->vender($valores);
 
+                  $usuarios_favoritos = $this->Articulo->articulo_favorito_email($articulo_id);
+                  $articulo = $this->Articulo->por_id($articulo_id);
+                  if($usuarios_favoritos !== FALSE) {
+                      foreach ($usuarios_favoritos as $user) {
+                          $enlace = anchor('/articulos/buscar/'.$articulo_id, $articulo['nombre']);
+                          $message = "Le comunicamos que el articulo " . $enlace .
+                                     " que usted tiene en su lista de favoritos ha sido vendido.";
+                          $this->load->library('email');
+                          $this->email->from('jdkdejava@gmail.com');
+                          $this->email->to($user['email']);
+                          $this->email->subject('Articulo Vendido en BuyAndSell');
+                          $this->email->message($message);
+                          $this->email->send();
+                      }
+                  }
                   if(isset($venta['valoracion']) && $venta['valoracion'] !== NULL &&
                      isset($venta['valoracion_text']) && $venta['valoracion_text'] !== NULL) {
                       $valoracion = array(
@@ -447,6 +473,13 @@ class Articulos extends CI_Controller {
           1 => "Venta con valoracion",
           2 => "Venta sin usuario",
       );
+
+      $this->breadcrumbcomponent->add('Home', base_url());
+      $this->breadcrumbcomponent->add('Perfil',
+                                      base_url() . 'usuarios/perfil/'.$data['articulo']['usuario_id']);
+      $this->breadcrumbcomponent->add('Vender',
+                                      base_url() . 'articulos/vender/'.$data['articulo']['id']);
+      $this->breadcrumbcomponent->add($data['articulo']['nombre'], base_url());
 
       $this->template->load('/articulos/vender', $data);
   }

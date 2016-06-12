@@ -92,17 +92,36 @@
             <!-- SLIDER PREVIEW - end -->
         </div>
     </div>
-    <div class="large-7 columns datos">
+    <section class="large-7 columns datos">
         <h3>Datos del articulo</h3>
-        <div class="alert-box info radius">
+        <article class="alert-box info radius">
             <p>Precio => <?= $articulo['precio'] ?></p>
             <p>Nombre => <?= $articulo['nombre'] ?></p>
             <p>Descripcion => <?= $articulo['descripcion'] ?></p>
             <?php if($articulo['etiquetas'] != ""): ?>
-                <p>Etiquetas => <?= $articulo['etiquetas'] ?></p>
+                <?php foreach (preg_split('/,/', $articulo['etiquetas']) as $etiqueta): ?>
+                    <?php if($etiqueta === '') break; ?>
+                    <?= anchor('/frontend/portada/index?tags='.$etiqueta, $etiqueta,
+                               'class="button tiny radius"') ?>
+                <?php endforeach; ?>
             <?php endif; ?>
-        </div>
-        <div class="alert-box info radius">
+        </article>
+        <article class="alert-box info radius">
+            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $articulo['usuario_id'] . '_thumbnail.jpeg')): ?>
+                <?php $url = '/imagenes_usuarios/' . $articulo['usuario_id'] . '_thumbnail.jpeg' ?>
+            <?php else: ?>
+                <?php $url = '/imagenes_usuarios/sin-imagen_thumbnail.jpeg' ?>
+            <?php endif; ?>
+            <?= anchor('/usuarios/perfil/' . $articulo['usuario_id'],
+                        img(array(
+                            'src' => $url,
+                            'title' => $articulo['nick'],
+                            'alt' => $articulo['nick'],
+                            'class' => 'th',
+                        ))) ?>
+            <?= anchor('/usuarios/perfil/' . $usuario['id'], $usuario['nick']) ?>
+        </article>
+        <article class="alert-box info radius">
             <div class="rt01 tabs-preview ma-b-100"
                     data-tabs='{
                         "isAutoInit" : true,
@@ -129,23 +148,8 @@
                         <?php endif; ?>
                     </div>
             </div>
-        </div>
-        <div class="alert-box info radius">
-            <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $articulo['usuario_id'] . '_thumbnail.jpeg')): ?>
-                <?php $url = '/imagenes_usuarios/' . $articulo['usuario_id'] . '_thumbnail.jpeg' ?>
-            <?php else: ?>
-                <?php $url = '/imagenes_usuarios/sin-imagen_thumbnail.jpeg' ?>
-            <?php endif; ?>
-            <?= anchor('/usuarios/perfil/' . $articulo['usuario_id'],
-                        img(array(
-                            'src' => $url,
-                            'title' => $articulo['nick'],
-                            'alt' => $articulo['nick'],
-                            'class' => 'th',
-                        ))) ?>
-        <?= anchor('/usuarios/perfil/' . $usuario['id'], $usuario['nick']) ?>
-        </div>
-        <div class="text-center alert-box secondary radius">
+        </article>
+        <article class="text-center alert-box secondary radius">
             <h4>Otros productos de <?= $usuario['nick'] ?></h4>
             <?php if(!empty($articulos_usuarios)): ?>
                 <div class="slider lazy">
@@ -164,14 +168,13 @@
                                            'class' => 'imagen_lazy'
                                        )),
                                        'title="' . $v['nombre'] . '"') ?>
-
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
                 <h6>El usuario <?= $usuario['nick'] ?> no tiene mas productos a la venta >.<</h6>
             <?php endif; ?>
-        </div>
+        </article>
     </div>
 </div>
 
