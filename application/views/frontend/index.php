@@ -1,9 +1,9 @@
 <?php template_set('title', 'Portada') ?>
 <div class="container">
-    <div class="large-3 columns">
+    <section class="large-3 columns">
         <?= form_open('/frontend/portada/index', 'method="GET"') ?>
         <h3>Ordenar por precio</h3>
-            <div class="row">
+            <article class="row">
                 <?= form_radio('order', '', set_radio('order', $order_busqueda, $order_busqueda === '')) ?>
                     Por novedad
                 <br>
@@ -15,9 +15,9 @@
                 <br>
                 <?= form_radio('order', 'precio_desc', set_radio('order', $order_busqueda, $order_busqueda === 'precio_desc')) ?>
                     De mayor a menor precio
-            </div>
+            </article>
         <h3>Buscar por distancia</h3>
-            <div class="row">
+            <article class="row">
                 <?= form_radio('order_distancia', '0', set_radio('order_distancia', $order_distancia, TRUE)) ?>
                     Sin limite de distancia
                 <br>
@@ -29,34 +29,34 @@
                 <br>
                 <?= form_radio('order_distancia', '10000', set_radio('order_distancia', $order_distancia, $order_distancia === '10000')) ?>
                     A 10km de ti
-            </div>
+            </article>
         <h3>Búsqueda personalizada</h3>
-        <div class="row">
-             <fieldset>
-                 <legend>Búsqueda Personalizada</legend>
-                 <div class="row">
-                  <div class="large-12 columns ui-widget">
-                      <?= form_label('Nombre articulo:', 'nombre') ?>
-                      <?= form_input('nombre', set_value('nombre', $nombre_busqueda, FALSE),
-                                     'id="nombre" class="" placeholder="Buscar por nombre..."') ?>
+            <article class="row">
+                 <fieldset>
+                     <legend>Búsqueda Personalizada</legend>
+                     <div class="row">
+                      <div class="large-12 columns ui-widget">
+                          <?= form_label('Nombre articulo:', 'nombre') ?>
+                          <?= form_input('nombre', set_value('nombre', $nombre_busqueda, FALSE),
+                                         'id="nombre" class="" placeholder="Buscar por nombre..."') ?>
 
-                      <?= form_label('Etiquetas:', 'tags') ?>
-                      <?= form_input('tags', set_value('tags', $tags_busqueda, FALSE),
-                                    'id="tags" class="" placeholder="Buscar por etiquetas..."') ?>
+                          <?= form_label('Etiquetas:', 'tags') ?>
+                          <?= form_input('tags', set_value('tags', $tags_busqueda, FALSE),
+                                        'id="tags" class="" placeholder="Buscar por etiquetas..."') ?>
 
-                      <?= form_hidden('latitud', '40.4168') ?>
-                      <?= form_hidden('longitud', '-3.7038') ?>
-                      <br>
-                      <?= form_submit('', 'Buscar', 'class="success button tiny radius"') ?>
-                  </div>
-                 </div>
-             </fieldset>
-        </div>
+                          <?= form_hidden('latitud', '40.4168') ?>
+                          <?= form_hidden('longitud', '-3.7038') ?>
+                          <br>
+                          <?= form_submit('', 'Buscar', 'class="success button tiny radius"') ?>
+                      </div>
+                     </div>
+                 </fieldset>
+            </article>
         <?= form_close() ?>
-    </div>
-    <div class="large-6 columns" id="centro">
+    </section>
+    <section class="large-6 columns" id="centro">
         <?php foreach ($articulos as $v): ?>
-            <div class="large-4 columns left articulos"
+            <article class="large-4 columns left articulos"
                  id="<?= $v['articulo_id'] ?>">
                 <div class="">
                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
@@ -115,9 +115,9 @@
                       <a class="close-reveal-modal" aria-label="Close">&#215;</a>
                     </div>
                 <?php endif; ?>
-            </div>
+            </article>
         <?php endforeach; ?>
-    </div>
+    </section>
     <div class="large-3 columns">
         <h4>¿Quien esta vendiendo a tu alrededor?</h4>
         <input id="pac-input" class="controls" type="text" placeholder="Buscar por ciudad, región, país...">
@@ -144,7 +144,7 @@
     #centro {
         position: relative;
     }
-    #centro > div {
+    #centro > article {
         width: 30%;
         height: auto;
         position: absolute;
@@ -224,7 +224,7 @@
 
     function masArticulos(limite) {
         var url_search = window.location.search;
-        $.each($('#centro').children("div"), function(index, val) {
+        $.each($('#centro').children("article"), function(index, val) {
             if(articulos_viejos.indexOf($(this).prop("id")) == -1) {
                 articulos_viejos.push($(this).prop("id"));
             }
@@ -243,7 +243,7 @@
                     return;
                 }
                 for(var producto in response) {
-                    var div = '<div class="large-4 columns left articulos" id="'
+                    var div = '<article class="large-4 columns left articulos" id="'
                               + response[producto].articulo_id + '">';
                             div += '<div class="">';
                                 div += '<a href="/articulos/buscar/' + response[producto].articulo_id + '">';
@@ -282,7 +282,7 @@
                                 div += '</a>';
                                 div += '<a href="/usuarios/perfil/'+response[producto].usuario_id+'">'+response[producto].nick+'</a>';
                             div += '</div>';
-                        div += '</div>';
+                        div += '</article>';
                     $('#centro').append(div);
                     $("#centro").find("img").last().load(function () {
                         $(function() {

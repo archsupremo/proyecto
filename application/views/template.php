@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <link href="/tag/jquery.tag-editor.css" rel="stylesheet">
     <link href="/css/estilos_mapa.css" rel="stylesheet">
+    <link href="/css/alineacion_bloques.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
 
     <!-- Foundation y rateYo -->
@@ -44,57 +45,6 @@
     <script src="/nested/core/jquery.shapeshift.js"></script>
 
     <script src="/cookie/jquery.cookie.js"></script>
-
-    <style media="screen">
-        .menu-login {
-            margin-top: 3.5em;
-        }
-        .flashdata {
-            margin-top: 5em;
-        }
-        .imagen_nick {
-            height: 40%;
-            width: 40%;
-            border-radius: 25px;
-        }
-        .input_validation {
-            margin-bottom: 0em;
-        }
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        .front_button {
-            background-color: transparent !important;
-            border: 0px;
-            color: #000;
-            padding: 0px;
-            padding-top: 0.9375em;
-        }
-        .box {
-			-moz-border-radius:3px;
-  		    -khtml-border-radius: 3px;
-			-webkit-border-radius:3px;
-			border-radius:3px;
-
-            -webkit-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
-            -moz-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
-            -ms-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
-            -o-transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000);
-            transition: all 300ms cubic-bezier(1.000, 0.000, 0.000, 1.000); /* easeInOutExpo */
-
-            -webkit-transition-property: left, right, top;
-            -moz-transition-property: left, right, top;
-            -ms-transition-property: left, right, top;
-            -o-transition-property: left, right, top;
-            transition-property: left, right, top;
-        }
-        .imagen_lazy {
-            width: 5em;
-            height: 5em;
-        }
-    </style>
   </head>
   <body>
     <header class="">
@@ -103,8 +53,6 @@
             <li class="name">
               <h1><a href="/frontend/portada">BuyAndSell</a></h1>
             </li>
-             <!-- Remove the class "menu-icon" to get rid of menu icon.
-                  Take out "Menu" to just have icon alone -->
             <li class="toggle-topbar menu-icon">
                 <a href="#">
                     <span>Menu</span>
@@ -112,18 +60,19 @@
             </li>
           </ul>
           <section class="top-bar-section">
-            <!-- Right Nav Section -->
             <ul class="right">
                 <?= login() ?>
                 <li class="divider"></li>
                 <?= registro() ?>
                 <li class="divider"></li>
-              <li class="has-dropdown">
-                <a href="#"><?= nick() ?></a>
-                <ul class="dropdown">
-                  <?= usuario_logueado() ?>
-                </ul>
-              </li>
+                <?php if(logueado()): ?>
+                    <li class="has-dropdown">
+                        <a href="#"><?= nick() ?></a>
+                        <ul class="dropdown">
+                            <?= usuario_logueado() ?>
+                        </ul>
+                    </li>
+                <?php endif; ?>
             </ul>
           </section>
         </nav>
@@ -131,55 +80,60 @@
     <?= mensajes() ?>
     <?= $contents ?>
     <hr>
-    <footer role="contentinfo">
-        <section role="main">
-            <h3>Desarrolladores <br> y <br> Analistas</h3>
-            <article>
-                <img src="imagenes/llave.png" class="llave" alt="llave">
-                <p title="Webmaster">Guillermo López García</p>
-            </article>
-        </section>
-        <section role="main">
-            <h3>Terminos y <br> Condiciones <br> de uso</h3>
-            <article>
-                <img src="imagenes/llave.png" class="llave" alt="llave">
-                <div class="condiciones">
-                    <ul>
-                        <li>
-                            <a href=""
-                               title="Terminos Y Condiciones de Uso del Sitio Web">
-                               Sitio Web
-                            </a>
-                        </li>
-                        <li>
-                            <a href=""
-                               title="Licencia de Uso de NCSOFT para nosotros">
-                               Licencia de NCSoft
-                            </a>
-                        </li>
-                        <li>
-                            <a href=""
-                               title="Autorizacion de Servidores para el Indexado">
-                               Autorizacion de Servidores
-                            </a>
-                        </li>
-                        <li>
-                            <a href=""
-                               title="Documento que especifica nuestras reglas para indexar Servidores">
-                               Reglas de Indexado
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </article>
-        </section>
-        <section role="main">
-            <h3>Tecnologias<br>Empleadas</h3>
-            <article>
-                <img src="imagenes/llave.png" class="llave" alt="llave">
-                <img src="imagenes/html5ycss3.png" class="tecnologias" alt="html5 y css3" title="HTML 5 y CSS 3">
-            </article>
-        </section>
+
+    <!-- For Foundation Icons, put this in your head -->
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css"
+          rel="stylesheet">
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+      <section class="row full-width" role="main">
+        <article class="small-12 medium-3 large-4 columns">
+          <i class="fi-laptop"></i>
+          <p>Sitio web orientado a la compra-venta de articulos de segunda mano entre los distintos usuarios</p>
+        </article>
+        <article class="small-12 medium-3 large-4 columns">
+          <i class="fi-html5"></i>
+          <i class="fi-css3"></i>
+          <p>Basado en las tecnologías HTML5 y CSS3 para asegurar la mayor accesibilidad y usabilidad posible para el usuario.</p>
+        </article>
+        <article class="small-6 medium-3 large-2 columns">
+          <h4>Terminos y Condiciones de uso</h4>
+          <ul class="footer-links">
+              <li>
+                  <a href="/info/uso_sitio"
+                     title="Términos Y Condiciones de Uso del Sitio Web">
+                     Uso del Sitio Web
+                  </a>
+              </li>
+              <li>
+                  <a href="/info/politica_datos"
+                     title="Nuestra politica sobre sus datos">
+                     Politica de Privacidad
+                  </a>
+              </li>
+              <li>
+                  <a href="/info/cookies"
+                     title="Cookies Web">
+                     Cookies
+                  </a>
+              </li>
+              <li>
+                  <a href="/info/reglas_convivencia"
+                     title="Reglas para la convivencia de los distintos usuarios">
+                     Reglas de Respecto
+                  </a>
+              </li>
+            <!-- <li><a href="#">FAQ's</a></li> -->
+          <ul>
+        </article>
+        <article class="small-6 medium-3 large-2 columns">
+          <h4>Sigueme!!!</h4>
+          <ul class="footer-links">
+            <li><a href="https://github.com/archsupremo">GitHub</a></li>
+          <ul>
+        </article>
+      </section>
     </footer>
     <script>
       $(document).foundation();
