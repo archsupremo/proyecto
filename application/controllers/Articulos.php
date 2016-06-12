@@ -8,6 +8,19 @@ class Articulos extends CI_Controller {
     //Codeigniter : Write Less Do More
   }
 
+  public function existe_imagen($nombre = NULL) {
+      $existe = FALSE;
+      if($nombre !== NULL) {
+          if(is_file($_SERVER["DOCUMENT_ROOT"] . '/imagenes_articulos/' . $nombre)):
+              $existe = TRUE;
+          endif;
+      }
+
+      echo json_encode(array(
+          'existe' => $existe
+      ));
+  }
+
   public function index() {
       redirect('/frontend/portada/');
   }

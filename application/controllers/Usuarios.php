@@ -433,8 +433,8 @@ class Usuarios extends CI_Controller{
 
             redirect('/frontend/portada/');
         }
-        $data['articulos_usuarios'] = $this->Usuario->por_id_vista($usuario_id);
         $data['usuario'] = $this->Usuario->por_id($usuario_id);
+        $data['articulos_usuarios'] = $this->Usuario->por_id_vista($usuario_id);
         $data['articulos_vendidos'] = $this->Usuario->ventas_usuario($usuario_id);
         $data['articulos_favoritos'] = array();
         $data['pm'] = array();
@@ -890,6 +890,19 @@ class Usuarios extends CI_Controller{
 
         $this->Venta->borrar_compra($venta_id, $valores);
         redirect('/frontend/portada/');
+    }
+
+    public function existe_imagen($nombre = NULL) {
+        $existe = FALSE;
+        if($nombre !== NULL) {
+            if(is_file($_SERVER["DOCUMENT_ROOT"] . '/imagenes_usuarios/' . $nombre)):
+                $existe = TRUE;
+            endif;
+        }
+
+        echo json_encode(array(
+            'existe' => $existe
+        ));
     }
 
     public function ubicacion_manual() {

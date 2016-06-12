@@ -188,11 +188,38 @@
         $(this).prop("src", "/img/loading.gif");
     });
 
-    function existeUrl(url) {
-       var http = new XMLHttpRequest();
-       http.open('HEAD', url, false);
-       http.send();
-       return http.status!=404;
+    function existeImagenArticulo(nombre) {
+       var existe = false;
+       $.ajax({
+           url: "<?= base_url() ?>articulos/existe_imagen/" + nombre,
+           type: 'POST',
+           data: {},
+           async: false,
+           cache: false,
+           success: function (response) {
+               existe = response.existe;
+           },
+           error: function (error) {},
+           dataType: 'json'
+       });
+       return existe;
+    }
+
+    function existeImagenUsuario(nombre) {
+        var existe = false;
+       $.ajax({
+           url: "<?= base_url() ?>usuarios/existe_imagen/" + nombre,
+           type: 'POST',
+           async: false,
+           cache: false,
+           data: {},
+           success: function (response) {
+               existe = response.existe;
+           },
+           error: function (error) {},
+           dataType: 'json'
+       });
+       return existe;
     }
 
     function masArticulos(limite) {
@@ -222,7 +249,7 @@
                                 div += '<a href="/articulos/buscar/' + response[producto].articulo_id + '">';
 
                                 var nombre_imagen =
-                                (existeUrl('/imagenes_articulos/'+response[producto].articulo_id+'_1.jpg')) ?
+                                (existeImagenArticulo(response[producto].articulo_id+'_1.jpg')) ?
                                 (response[producto].articulo_id+'_1.jpg') : 'sin-imagen.jpg';
 
                                 div += '<img src="/imagenes_articulos/'
@@ -245,7 +272,7 @@
                                 div += '<a href="/usuarios/perfil/'+response[producto].usuario_id+'">';
 
                                 var nombre_imagen =
-                                (existeUrl('/imagenes_usuarios/'+response[producto].usuario_id+'.jpg')) ?
+                                (existeImagenUsuario(response[producto].usuario_id+'.jpg')) ?
                                 (response[producto].usuario_id+'.jpg') : 'sin-imagen.jpg';
 
                                 div += '<img class="imagen_nick" src="/imagenes_usuarios/'
