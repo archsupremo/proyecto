@@ -15,6 +15,7 @@ class Etiqueta extends CI_Model{
   }
 
   public function insertar($nombre) {
+      $nombre = substr($nombre, 0, 100);
       $res = $this->db->query("insert into etiquetas(nombre) values(?)".
                               "returning id",
                               array($nombre));
@@ -27,6 +28,10 @@ class Etiqueta extends CI_Model{
                                   strtolower($nombre)
                               ));
       return ($res->num_rows() > 0) ? $res->row_array() : FALSE;
+  }
+
+  public function borrar_etiquetas_articulo($articulo_id) {
+      return $this->db->delete('etiquetas_articulos', array('articulo_id' => $articulo_id));
   }
 
   public function insertar_etiqueta_articulo($valores) {

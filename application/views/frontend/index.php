@@ -46,7 +46,7 @@
 
                       <?= form_hidden('latitud', '40.4168') ?>
                       <?= form_hidden('longitud', '-3.7038') ?>
-
+                      <br>
                       <?= form_submit('', 'Buscar', 'class="success button tiny radius"') ?>
                   </div>
                  </div>

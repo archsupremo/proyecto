@@ -8,19 +8,6 @@ class Articulos extends CI_Controller {
     //Codeigniter : Write Less Do More
   }
 
-  public function existe_imagen($nombre = NULL) {
-      $existe = FALSE;
-      if($nombre !== NULL) {
-          if(is_file($_SERVER["DOCUMENT_ROOT"] . '/imagenes_articulos/' . $nombre)):
-              $existe = TRUE;
-          endif;
-      }
-
-      echo json_encode(array(
-          'existe' => $existe
-      ));
-  }
-
   public function index() {
       redirect('/frontend/portada/');
   }
@@ -128,10 +115,29 @@ class Articulos extends CI_Controller {
       $this->template->load("/articulos/buscar", $data);
   }
 
+  public function eliminar_favorito($articulo_id = NULL) {
+      if (!$this->Usuario->logueado() || $articulo_id === NULL) {
+          $mensajes[] = array('error' =>
+                  "Parametros incorrectos para añadir/eliminar a favoritos el articulo.");
+          $this->flashdata->load($mensajes);
+          redirect('/frontend/portada/');
+      }
+      $usuario = $this->session->userdata('usuario');
+      $this->Articulo->borrar_favorito($usuario['id'], $articulo_id);
+
+      redirect('/usuarios/perfil/' . $usuario['id']);
+  }
+
   public function favoritos($articulo_id) {
+      if (!$this->Usuario->logueado()) {
+          $mensajes[] = array('error' =>
+                  "Parametros incorrectos para añadir/eliminar a favoritos el articulo.");
+          $this->flashdata->load($mensajes);
+          redirect('/frontend/portada/');
+      }
       if($articulo_id === NULL || $this->Articulo->por_id($articulo_id) === FALSE) {
           $mensajes[] = array('error' =>
-              "Parametros incorrectos para añadir a favoritos el articulo.");
+              "Parametros incorrectos para añadir/eliminiar a favoritos el articulo.");
           $this->flashdata->load($mensajes);
 
           redirect('/frontend/portada/');
@@ -143,6 +149,77 @@ class Articulos extends CI_Controller {
       } else {
           $this->Articulo->insertar_favorito($usuario['id'], $articulo_id);
       }
+  }
+
+  public function editar_articulo($articulo_id = NULL) {
+      if (!$this->Usuario->logueado()) {
+          $mensajes[] = array('error' =>
+                  "No puedes editar un articulo si no estas logueado.");
+          $this->flashdata->load($mensajes);
+          redirect('/frontend/portada/');
+      }
+      $usuario = $this->session->userdata('usuario');
+      if($this->Articulo->por_id_editar($usuario['id'], $articulo_id) === FALSE) {
+          $mensajes[] = array('error' =>
+                  "No puedes editar un articulo que no es tuyo.");
+          $this->flashdata->load($mensajes);
+          redirect('/frontend/portada/');
+      }
+
+      if ($this->input->post('editar') !== NULL) {
+          $reglas = array(
+              array(
+                  'field' => 'nombre',
+                  'label' => 'Nombre',
+                  'rules' => 'trim|required|max_length[100]',
+              ),
+              array(
+                  'field' => 'descripcion',
+                  'label' => 'Descripción',
+                  'rules' => 'trim|required|max_length[500]',
+              ),
+              array(
+                  'field' => 'tags',
+                  'label' => 'Etiquetas',
+                  'rules' => 'trim|required',
+              ),
+          );
+          $this->form_validation->set_rules($reglas);
+          if ($this->form_validation->run() === TRUE) {
+              $articulo = $this->input->post();
+
+              $articulo['precio'] = (double) $articulo['precio'];
+              $etiquetas = $articulo['tags'];
+              $etiquetas = preg_split('/,/', $etiquetas);
+
+              unset($articulo['editar']);
+              unset($articulo['tags']);
+
+              $articulo['usuario_id'] = $this->session->userdata('usuario')['id'];
+              $this->Articulo->editar($articulo, $articulo_id);
+              $this->Etiqueta->borrar_etiquetas_articulo($articulo_id);
+
+              foreach($etiquetas as $v) {
+                  $etiqueta = $this->Etiqueta->existe_etiqueta($v);
+                  if(!$etiqueta) {
+                      $etiqueta = $this->Etiqueta->insertar($v);
+                  }
+
+                  $this->Etiqueta->insertar_etiqueta_articulo(array(
+                      'etiqueta_id' => $etiqueta['id'],
+                      'articulo_id' => $articulo_id
+                  ));
+              }
+
+              redirect('/frontend/portada');
+          }
+      }
+      $data['articulo'] = $this->Articulo->por_id($articulo_id);
+      $data['articulo']['precio'] = str_replace('.', '', $data['articulo']['precio']);
+      $data['articulo']['precio'] = str_replace(',', '.', $data['articulo']['precio']);
+      $data['articulo']['precio'] = substr($data['articulo']['precio'], 0, -4);
+
+      $this->template->load('/articulos/editar_articulo', $data);
   }
 
   public function subir() {
@@ -158,12 +235,12 @@ class Articulos extends CI_Controller {
               array(
                   'field' => 'nombre',
                   'label' => 'Nombre',
-                  'rules' => 'trim|required',
+                  'rules' => 'trim|required|max_length[100]',
               ),
               array(
                   'field' => 'descripcion',
                   'label' => 'Descripción',
-                  'rules' => 'trim|required',
+                  'rules' => 'trim|required|max_length[500]',
               ),
               array(
                   'field' => 'tags',
@@ -430,5 +507,17 @@ class Articulos extends CI_Controller {
           $this->session->unset_userdata('last_uri');
           redirect($uri);
       }
+  }
+  public function existe_imagen($nombre = NULL) {
+      $existe = FALSE;
+      if($nombre !== NULL) {
+          if(is_file($_SERVER["DOCUMENT_ROOT"] . '/imagenes_articulos/' . $nombre)):
+              $existe = TRUE;
+          endif;
+      }
+
+      echo json_encode(array(
+          'existe' => $existe
+      ));
   }
 }

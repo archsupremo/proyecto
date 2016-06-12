@@ -20,6 +20,9 @@ class Articulo extends CI_Model{
                               ));
       return $res->row_array();
   }
+  public function editar($valores, $articulo_id) {
+      return $this->db->where('id', $articulo_id)->update('articulos', $valores);
+  }
   public function vender($venta) {
       $res = $this->db->query("insert into ventas(vendedor_id, comprador_id, ".
                               "articulo_id, fecha_venta) values(?, ?, ?, current_date) ".
@@ -300,13 +303,22 @@ class Articulo extends CI_Model{
       return $res;
   }
 
+  public function por_id_editar($usuario_id, $articulo_id) {
+      $res = $this->db->get_where('v_articulos',
+                                  array(
+                                      'articulo_id' => $articulo_id,
+                                      'usuario_id' => $usuario_id
+                                  ));
+      return ($res->num_rows() > 0) ? $res->row_array() : FALSE;
+  }
+
   public function por_id($id_articulo) {
       $res = $this->db->query("select * from v_articulos_raw where id::text = ?", array($id_articulo));
       return ($res->num_rows() > 0) ? $res->row_array() : FALSE;
   }
 
   public function por_id_vista($id_usuario, $id_articulo) {
-      $res = $this->db->query("select * from v_articulos where usuario_id = ? and id != ?",
+      $res = $this->db->query("select * from v_articulos where usuario_id = ? and articulo_id != ?",
                               array($id_usuario, $id_articulo));
       return $res->num_rows() > 0 ? $res->result_array() : array();
   }

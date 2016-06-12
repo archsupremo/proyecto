@@ -103,6 +103,12 @@
                                            class="success button tiny radius">
                                            Vender Articulo
                                         </a>
+                                        <br>
+                                        <a href="/articulos/editar_articulo/<?= $v['id'] ?>"
+                                           class="info button tiny radius">
+                                           Editar Articulo
+                                        </a>
+                                        <br>
                                         <a href="#" data-reveal-id="articulo_disponible_<?= $v['id'] ?>"
                                            class="alert button tiny radius">
                                            Borrar Articulo

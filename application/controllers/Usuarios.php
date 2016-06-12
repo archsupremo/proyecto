@@ -240,7 +240,7 @@ class Usuarios extends CI_Controller{
                             'field' => 'nick',
                             'label' => 'Nick',
                             'rules' => array(
-                                'trim', 'required',
+                                'trim', 'required', 'max_length[100]',
                                 array('existe_nick', function ($nick) {
                                         return !$this->Usuario->existe_nick($nick);
                                     }
@@ -254,7 +254,7 @@ class Usuarios extends CI_Controller{
                 'field' => 'email',
                 'label' => 'Email',
                 'rules' => array(
-                    'trim', 'required',
+                    'trim', 'required', 'max_length[100]',
                     array('existe_email', function ($email) {
                             return !$this->Usuario->existe_email($email);
                         }
@@ -650,7 +650,7 @@ class Usuarios extends CI_Controller{
                     'field' => 'mensaje',
                     'label' => 'Mensaje',
                     'rules' => array(
-                        'trim', 'required',
+                        'trim', 'required', 'max_length[500]',
                     ),
                 ),
             );
