@@ -602,19 +602,28 @@ class Usuarios extends CI_Controller{
         $this->template->load("/usuarios/editar_perfil", $data);
     }
 
-    public function usuarios_nick($nick = NULL, $usuario_id = NULL) {
+    public function usuarios_nick($nick = NULL) {
         $sugerencias_nick = array();
         $nick_ocupado = false;
-        $usuario_id = (int) $usuario_id;
-        if($nick !== NULL && $usuario_id !== NULL) {
+        if($nick !== NULL && $this->Usuario->logueado()) {
+            $usuario_id = $this->session->userdata('usuario')['id'];
             $nick_ocupado = $this->Usuario->usuarios_nick($nick, $usuario_id);
+        }
+        if($nick !== NULL) {
+            $nick_ocupado = $this->Usuario->usuarios_nick_total($nick);
         }
         if($nick_ocupado) {
             $sugerencia = "";
             for ($i = 0; true; $i++) {
                 $sugerencia = $nick . rand();
-                if( ! $this->Usuario->usuarios_nick($sugerencia, $usuario_id)) {
-                    $sugerencias_nick[] = $sugerencia;
+                if($this->Usuario->logueado()) {
+                    if( ! $this->Usuario->usuarios_nick($sugerencia, $usuario_id)) {
+                        $sugerencias_nick[] = $sugerencia;
+                    }
+                } else {
+                    if( ! $this->Usuario->usuarios_nick_total($sugerencia)) {
+                        $sugerencias_nick[] = $sugerencia;
+                    }
                 }
                 if(count($sugerencias_nick) === 2) {
                     break;
@@ -629,12 +638,15 @@ class Usuarios extends CI_Controller{
             );
     }
 
-    public function usuarios_email($email = NULL, $usuario_id = NULL) {
+    public function usuarios_email($email = NULL) {
         $email_ocupado = false;
-        $usuario_id = (int) $usuario_id;
         $email = urldecode($email);
-        if($email !== NULL && $usuario_id !== NULL) {
+        if($email !== NULL && $this->Usuario->logueado()) {
+            $usuario_id = $this->session->userdata('usuario')['id'];
             $email_ocupado = $this->Usuario->usuarios_email($email, $usuario_id);
+        }
+        if($email !== NULL) {
+            $email_ocupado = $this->Usuario->usuarios_email_total($email);
         }
         echo json_encode(
                 array(

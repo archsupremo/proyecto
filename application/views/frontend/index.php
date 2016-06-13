@@ -1,9 +1,31 @@
 <?php template_set('title', 'Portada') ?>
+<style media="screen">
+    @media only screen and (max-width: 63em) {
+        img#mas {
+            width: 5em;
+            height: 5em;
+            margin-left: 47.5%;
+            margin-top: -80em;
+        }
+        section.mapa {
+            margin-top: 10em;
+        }
+        section.orden {
+            display: flex;
+            width: 100%;
+            -webkit-justify-content: space-between;
+            -moz-justify-content: space-between;
+            justify-content: space-between;
+        }
+    }
+</style>
+
 <div class="container">
     <section class="large-3 columns">
         <?= form_open('/frontend/portada/index', 'method="GET"') ?>
-        <h3>Ordenar por precio</h3>
-            <article class="row">
+        <section class="orden">
+            <article class="row precio">
+                <h3>Ordenar por precio</h3>
                 <?= form_radio('order', '', set_radio('order', $order_busqueda, $order_busqueda === '')) ?>
                     Por novedad
                 <br>
@@ -16,8 +38,8 @@
                 <?= form_radio('order', 'precio_desc', set_radio('order', $order_busqueda, $order_busqueda === 'precio_desc')) ?>
                     De mayor a menor precio
             </article>
-        <h3>Buscar por distancia</h3>
-            <article class="row">
+            <article class="row distancia">
+                <h3>Buscar por distancia</h3>
                 <?= form_radio('order_distancia', '0', set_radio('order_distancia', $order_distancia, TRUE)) ?>
                     Sin limite de distancia
                 <br>
@@ -30,6 +52,7 @@
                 <?= form_radio('order_distancia', '10000', set_radio('order_distancia', $order_distancia, $order_distancia === '10000')) ?>
                     A 10km de ti
             </article>
+        </section>
         <h3>Búsqueda personalizada</h3>
             <article class="row">
                  <fieldset>
@@ -151,7 +174,7 @@
             </article>
         <?php endforeach; ?>
     </section>
-    <div class="large-3 columns">
+    <section class="large-3 columns mapa">
         <h4>¿Quien esta vendiendo a tu alrededor?</h4>
         <input id="pac-input" class="controls" type="text" placeholder="Buscar por ciudad, región, país...">
         <div class="mapa_index" id="map"></div>
@@ -164,7 +187,7 @@
             <?= form_radio('distancia_usuario', '10000', FALSE) ?>
                 A 10km de ti
         </div>
-    </div>
+    </section>
 </div>
 
 <div class="row masArticulos">
@@ -493,7 +516,11 @@
                       map.setZoom(15);
                     break;
               }
+            $.cookie('latitud', latitud, { expires: 999 });
+            $.cookie('longitud', longitud, { expires: 999 });
 
+            $('input[name="latitud"]').first().val(latitud);
+            $('input[name="longitud"]').first().val(longitud);
             obtener_usuarios(latitud, longitud, draw_circle.getRadius());
             position_changed = undefined;
         }

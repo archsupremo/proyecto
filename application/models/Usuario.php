@@ -3,7 +3,6 @@
 class Usuario extends CI_Model {
     public function __construct() {
         parent::__construct();
-
     }
     // Operaciones Chungas
     public function insertar($valores) {
@@ -185,9 +184,21 @@ class Usuario extends CI_Model {
         return $res->num_rows() > 0 ? TRUE : FALSE;
     }
 
+    public function usuarios_nick_total($nick) {
+        $res = $this->db->query("select * from usuarios where nick = ?",
+                                array(strtolower($nick)));
+        return $res->num_rows() > 0 ? TRUE : FALSE;
+    }
+
     public function usuarios_email($email, $usuario_id) {
         $res = $this->db->query("select * from usuarios where email = ? and id != ?",
                                 array($email, $usuario_id));
+        return $res->num_rows() > 0 ? TRUE : FALSE;
+    }
+
+    public function usuarios_email_total($email) {
+        $res = $this->db->query("select * from usuarios where email = ?",
+                                array($email));
         return $res->num_rows() > 0 ? TRUE : FALSE;
     }
 

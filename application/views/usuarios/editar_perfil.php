@@ -168,11 +168,9 @@
 </script>
 
 <script type="text/javascript">
-    var usuario_id = <?= logueado() ? dar_usuario()['id'] : 'undefined' ?>;
     $('#nick').change(function () {
         $.ajax({
-            url: "<?= base_url() ?>usuarios/usuarios_nick/" +
-                 $(this).val() + "/" + usuario_id,
+            url: "<?= base_url() ?>usuarios/usuarios_nick/" + $(this).val(),
             type: 'GET',
             async: true,
             success: respuesta,
@@ -182,8 +180,7 @@
     });
     $('#email').focusout(function () {
         $.ajax({
-            url: "<?= base_url() ?>usuarios/usuarios_email/" +
-                 encodeURIComponent($(this).val()) + "/" + usuario_id,
+            url: "<?= base_url() ?>usuarios/usuarios_email/" + encodeURIComponent($(this).val()),
             type: 'GET',
             async: true,
             success: respuesta_email,

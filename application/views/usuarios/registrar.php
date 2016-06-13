@@ -67,6 +67,56 @@
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
 
+<script type="text/javascript">
+    $('#nick').change(function () {
+        $.ajax({
+            url: "<?= base_url() ?>usuarios/usuarios_nick/" + $(this).val(),
+            type: 'GET',
+            async: true,
+            success: respuesta,
+            error: error,
+            dataType: "json"
+        });
+    });
+    $('#email').focusout(function () {
+        $.ajax({
+            url: "<?= base_url() ?>usuarios/usuarios_email/" + encodeURIComponent($(this).val()),
+            type: 'GET',
+            async: true,
+            success: respuesta_email,
+            error: error,
+            dataType: "json"
+        });
+    });
+
+    function respuesta(respuesta) {
+        $("#nick").siblings().remove(".error");
+        if(respuesta.nick_ocupado == true) {
+            var small = '<small class="error">';
+            small += 'Nick inválido, por favor, escoja otro.';
+            small += '<br>Sugerencias:<br>';
+            for (var sugerencia in respuesta.sugerencias_nick) {
+                var sugerencia = respuesta.sugerencias_nick[sugerencia];
+                small += '<br>'+sugerencia+'</br>';
+            }
+            small += '</small>';
+            $("#nick").after(small);
+        }
+    }
+    function respuesta_email(respuesta) {
+        $("#email").siblings().remove(".error");
+        if(respuesta.email_ocupado == true) {
+            var small = '<small class="error">';
+            small += 'Email inválido, por favor, escoja otro.';
+            small += '</small>';
+            $("#email").after(small);
+        }
+    }
+    function error(error) {
+        alert("Ha ocurrido el error => " + error.statusText);
+    }
+</script>
+
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&libraries=places"
 async defer></script>
 <script type="text/javascript">
