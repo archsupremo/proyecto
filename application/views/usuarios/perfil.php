@@ -389,7 +389,7 @@
                 </div>
             <?php endif; ?>
             <?php if($usuario_perfil !== TRUE): ?>
-                <?php if($usuario['baneado'] !== 't'): ?>
+                <?php if($usuario['baneado'] !== 't' && logueado()): ?>
                     <?php if(!es_admin()): ?>
                     <div>
                         <div class="rt01pagitem">Escribir PM</div>
