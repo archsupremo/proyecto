@@ -54,7 +54,7 @@ class Usuario extends CI_Model {
     }
 
     public function por_id($id) {
-        $res = $this->db->get_where('v_usuarios', array('id' => $id));
+        $res = $this->db->query("select * from v_usuarios where id::text = ?", array($id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
