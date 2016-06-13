@@ -25,6 +25,7 @@
     <link href="/css/imagen_error.css" rel="stylesheet">
     <link href="/css/imagen_perfil.css" rel="stylesheet">
     <link href="/css/estilos_slider.css" rel="stylesheet">
+    <link href="/css/estilos_dropzonejs_propios.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
 
     <!-- Foundation y rateYo -->

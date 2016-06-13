@@ -1,13 +1,13 @@
 <?php template_set('title', 'Subir Articulo') ?>
 <div class="row">
-    <div class="large-8 large-centered columns menu-login" id="formulario_articulo">
-          <div data-alert class="alert-box alert radius alerta" id="errores_formulario">
-              <?php if ( ! empty($error)): ?>
-                  <?= $error ?>
-              <?php endif ?>
+    <div class="large-9 large-centered columns menu-login">
+        <?php if ( ! empty($error)): ?>
+            <div data-alert class="alert-box alert radius alerta">
+              <?= $error ?>
               <a href="#" class="close">&times;</a>
-          </div>
-        <?= form_open_multipart('/articulos/subir_imagenes', 'id="datos"') ?>
+            </div>
+        <?php endif ?>
+        <?= form_open_multipart('/articulos/subir_imagenes') ?>
           <div class="dropzone needsclick" id="dropzone">
               <div class="dz-message needsclick">
                 <div class="alert-box success radius alerta text-center" role="alert">
@@ -37,9 +37,6 @@
         maxFiles: 4,
         method: "post",
         acceptedFiles: ".jpeg,.jpg,.jpe,.JPEG,.JPG,.JPE",// Archivos permitidos
-        // autoProcessQueue: false,
-        // parallelUploads: 100,
-        // uploadMultiple: true,
         url: '/articulos/subir_imagenes',
         accept: function(file, done) {
             done();
@@ -67,11 +64,6 @@
                 });
                 archivos.unshift(file.num);
             });
-            // $('#datos').submit(function (evento) {
-            //     // evento.preventDefault();
-            //     // evento.stopPropagation();
-            //     // drop.processQueue();
-            // });
             this.on("sendingmultiple", function() {
             });
             this.on("successmultiple", function(files, response) {
@@ -86,10 +78,4 @@
         dictFallbackMessage: 'Tu navegador web no permite el drag de subida de imagenes.',
         dictInvalidFileType: 'Archivo invalido.',
     };
-</script>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-         $('#errores_formulario').hide();
-    });
 </script>

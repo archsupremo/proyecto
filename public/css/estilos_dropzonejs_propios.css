@@ -1,0 +1,13 @@
+.dropzone .dz-preview .dz-image {
+  width: 15em;
+  height: 15em;
+}
+.dz-remove {
+    margin-left: 7em;
+}
+.dz-success-mark {
+    margin-left: 2em !important;
+}
+.dz-details, .dz-progress {
+    margin-left: 4.5em !important;
+}

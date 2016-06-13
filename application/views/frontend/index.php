@@ -105,7 +105,7 @@
                     <span class="oculto" itemprop="price"><?= preg_replace('/,/', '.', substr($v['precio'], 0 , -4)) ?></span>
                 </div>
                 <div class="" itemprop="name">
-                    <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre'].$v['articulo_id']) ?>
+                    <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
                 </div>
                 <div class="" itemprop="category">
                     <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
@@ -323,7 +323,7 @@
                             div += '</div>';
                             div += '<div class="">';
                                 div += '<a href="/articulos/buscar/'+response[producto].articulo_id+'">'
-                                        +response[producto].nombre+response[producto].articulo_id+'</a>';
+                                        +response[producto].nombre+'</a>';
                             div += '</div>';
                             if(response[producto].etiquetas != null) {
                                 var etiquetas = response[producto].etiquetas.split(",");

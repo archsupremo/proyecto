@@ -1,7 +1,7 @@
 <?php template_set('title', 'Editar Perfil de Usuario') ?>
 
 <div class="row">
-    <div class="large-6 columns menu-login">
+    <div class="large-7 columns menu-login">
         <?php if ( ! empty(error_array())): ?>
           <div data-alert class="alert-box alert radius alerta">
             <?= validation_errors() ?>
@@ -90,7 +90,7 @@
   <h2 id="firstModalTitle">Error de Geolocalización</h2>
   <p>
      Perdone, pero hemos detectado que en su navegador, usted tiene prohibida la
-     geolocalización. Por ello, si quiere usted establecer la gelolocalizacion
+     geolocalización. Por ello, si quiere usted establecer la gelolocalización
      de forma personal, clicke <a href="#" rel='pop-up'>aquí</a>.
   </p>
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
@@ -101,10 +101,12 @@
         addRemoveLinks: true,
         paramName: "foto",
         maxFilesize: 0.5, // MB, maximo de archivos
-        maxThumbnailFilesize: 1,// MB,  Cuando el peso del archivo excede este límite, no se generará la imagen en miniatura
+        maxThumbnailFilesize: 1,
         maxFiles: 1,
         method: "post",
-        acceptedFiles: ".jpeg,.jpg,.jpe,.JPEG,.JPG,.JPE",// Archivos permitidos
+        thumbnailWidth: "250",
+        thumbnailHeight: "250",
+        acceptedFiles: ".jpeg,.jpg,.jpe,.JPEG,.JPG,.JPE",
         url: '/usuarios/subir_imagen',
         accept: function(file, done) {
             done();
@@ -125,10 +127,8 @@
                     url: "<?= base_url() ?>usuarios/borrar_imagen/" + <?= $usuario['id'] ?>,
                     type: 'GET',
                     async: true,
-                    success: function() {
-                    },
-                    error: function (error) {
-                    },
+                    success: function() { },
+                    error: function (error) { },
                 });
             });
             $.ajax({
@@ -147,8 +147,7 @@
                         });
                     }
                 },
-                error: function (error) {
-                },
+                error: function (error) { },
                 dataType: 'json'
             });
 
@@ -221,7 +220,7 @@
     }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY6aARD3BZGp4LD2RhzefUdfSIy4mqvzU&libraries=places"
-async defer></script>
+ defer></script>
 <script type="text/javascript">
     $(document).ready(function() {
         if($("input[name=latitud]").first().val() != "" &&
