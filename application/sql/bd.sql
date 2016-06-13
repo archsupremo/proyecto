@@ -221,11 +221,7 @@ insert into ventas(vendedor_id, comprador_id, articulo_id, fecha_venta)
 
 insert into valoraciones_vendedor(venta_id, valoracion, valoracion_text)
     values(1, 3, 'Gran comprador. Responsable y puntual. Lo recomiendo.');
-/*
-insert into valoraciones_comprador(vendedor_id_va, comprador_id_va, venta_id, valoracion, valoracion_text)
-    values(2, 1, 1, 3, ''),
-          (2, 1, 2, 5, '');
-*/
+
 insert into favoritos(usuario_id, articulo_id)
     values(2, 3),
           (2, 6),
@@ -237,18 +233,18 @@ insert into pm(emisor_id, receptor_id, mensaje, fecha, visto)
           (3, 1, 'Tercer Mensaje', current_timestamp, true),
           (3, 1, 'Cuarto Mensaje', current_timestamp, false);
 
-create or replace function concat(text, text) returns text
-    called on null input language plpgsql immutable
-    as $$
-        begin
-            if $1 is null then
-              return $2;
-        end if;
-            if $2 is null then
-              return $1;
-        end if;
-    return $1 || $2;
-end $$;
+-- create or replace function concat(text, text) returns text
+--     called on null input language plpgsql immutable
+--     as $$
+--         begin
+--             if $1 is null then
+--               return $2;
+--         end if;
+--             if $2 is null then
+--               return $1;
+--         end if;
+--     return $1 || $2;
+-- end $$;
 -- Linea fundamental la de a continuación, no quitar por nada del mundo
 -- create aggregate text_concat (text) (sfunc = concat, stype = text);
 
