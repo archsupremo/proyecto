@@ -10,6 +10,7 @@
         }
         .toggle {
             margin-top: -2em;
+            margin-bottom: 0.5em;
         }
         span.info {
             display: block;
