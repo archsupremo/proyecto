@@ -1,5 +1,4 @@
-<section class="row">
-    <br>
+<section class="row informacion">
     <article class="large-12 large-centered columns">
         <h4>Reglas de Convivencia entre los usuarios</h4>
         <h5>Respeto</h5>
@@ -28,23 +27,28 @@
             articulos, ya que, de otro modo solo molestas a otros usuarios.
         </p>
     </article>
+</section>
+
+<section class="row">
     <div id="sky">
       <div id="sea">
         <div id="bern"></div>
       </div>
     </div>
-
-    <audio id="song" itemscope itemtype="http://schema.org/AudioObject">
-        <source itemprop="embedUrl" src="http://scummbar.com/mi2/DOTT/03%20-%20Busting%20The%20Candy%20Machine.mp3">
-        <span class="oculto" itemprop="playerType">HTML 5</span>
-    </audio>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
 </section>
+
+<audio id="song" itemscope itemtype="http://schema.org/AudioObject">
+    <source itemprop="embedUrl" src="http://scummbar.com/mi2/DOTT/03%20-%20Busting%20The%20Candy%20Machine.mp3">
+    <span class="oculto" itemprop="playerType">HTML 5</span>
+</audio>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <script type="text/javascript">
     document.getElementById('song').autoplay = true;

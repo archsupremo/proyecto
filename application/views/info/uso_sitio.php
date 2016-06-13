@@ -1,4 +1,4 @@
-<section class="row">
+<section class="row informacion">
     <br>
     <article class="large-12 large-centered columns">
         <p>

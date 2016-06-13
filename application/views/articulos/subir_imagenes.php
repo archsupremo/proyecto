@@ -1,6 +1,24 @@
 <?php template_set('title', 'Subir Articulo') ?>
+<style media="screen">
+    .dropzone .dz-preview .dz-image {
+      width: 10em;
+      height: 10em;
+    }
+    .dropzone .dz-preview:not(:first-of-type) {
+        margin-left: 5em;
+    }
+    .dz-remove {
+        margin-left: 1.3em !important;
+    }
+    .dz-success-mark {
+        margin-left: -1em !important;
+    }
+    .dz-details, .dz-progress {
+        margin-left: -0.3em !important;
+    }
+</style>
 <div class="row">
-    <div class="large-9 large-centered columns menu-login">
+    <div class="large-12 large-centered columns menu-login">
         <?php if ( ! empty($error)): ?>
             <div data-alert class="alert-box alert radius alerta">
               <?= $error ?>
@@ -36,6 +54,8 @@
         maxThumbnailFilesize: 1,// MB,  Cuando el peso del archivo excede este límite, no se generará la imagen en miniatura
         maxFiles: 4,
         method: "post",
+        thumbnailWidth: "200",
+        thumbnailHeight: "200",
         acceptedFiles: ".jpeg,.jpg,.jpe,.JPEG,.JPG,.JPE",// Archivos permitidos
         url: '/articulos/subir_imagenes',
         accept: function(file, done) {

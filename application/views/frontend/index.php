@@ -1,6 +1,6 @@
 <?php template_set('title', 'Portada') ?>
 <style media="screen">
-    @media only screen and (max-width: 63em) {
+    @media only screen and (max-width: 64em) {
         img#mas {
             width: 5em;
             height: 5em;
@@ -16,6 +16,9 @@
             -webkit-justify-content: space-between;
             -moz-justify-content: space-between;
             justify-content: space-between;
+        }
+        h4 {
+            text-align: center;
         }
     }
 </style>
@@ -451,7 +454,7 @@
     });
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    map.controls[google.maps.ControlPosition.TOP].push(input);
 
     map.addListener('bounds_changed', function() {
         searchBox.setBounds(map.getBounds());

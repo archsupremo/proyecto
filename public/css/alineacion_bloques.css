@@ -1,3 +1,6 @@
+.informacion {
+    text-align: justify;
+}
 span.oculto {
     display: none;
 }
@@ -90,4 +93,12 @@ html, body {
 }
 .masArticulos {
     margin-bottom: 2em;
+}
+
+/*--------- Cambiar letra ------------*/
+@import url('https://fonts.googleapis.com/css?family=Tangerine');
+@media only screen and (max-width: 64em) {
+    body {
+        font-family: 'Tangerine', cursive;
+    }
 }

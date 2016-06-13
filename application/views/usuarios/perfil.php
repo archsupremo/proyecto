@@ -1,4 +1,24 @@
 <?php template_set('title', 'Perfil de Usuario') ?>
+<style media="screen">
+    @media only screen and (max-width: 64em) {
+        .ventas, .compras, .pm, .tarjeta_perfil {
+            text-align: center;
+        }
+        .valoracion, .toggle {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .toggle {
+            margin-top: -2em;
+        }
+        span.info {
+            display: block;
+        }
+        div.fecha_pm {
+            margin-top: 2em;
+        }
+    }
+</style>
 <div class="row large-6">
     <?php if ( ! empty(error_array())): ?>
         <div data-alert class="alert-box alert radius alerta">
@@ -8,7 +28,7 @@
     <?php endif ?>
 </div>
 <div class="row large-4 alert-box secondary radius">
-    <div class="row" itemscope itemtype="http://schema.org/Person">
+    <div class="row tarjeta_perfil" itemscope itemtype="http://schema.org/Person">
         <div class="large-6 columns" itemprop="image">
             <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $usuario['id'] . '.jpg')): ?>
                 <?php $url = '/imagenes_usuarios/' . $usuario['id'] . '.jpg' ?>
@@ -28,10 +48,10 @@
                 <?= anchor('/usuarios/perfil/' . $usuario['id'], $usuario['nick']) ?>
             </h5>
             <p>
-                <span>
+                <span class="info">
                     Articulos Disponibles: <?= count($articulos_usuarios) ?>
                 </span>
-                <span>
+                <span class="info">
                     Articulos Vendidos: <?= count($articulos_vendidos) ?>
                 </span>
                 <?php $valoraciones = 0; ?>
@@ -43,7 +63,7 @@
                     if($v['valoracion'] === NULL) continue;
                     $valoraciones++;
                 } ?>
-                <span>
+                <span class="info">
                     Valoraciones: <?= $valoraciones ?>
                 </span>
             </p>
@@ -264,7 +284,7 @@
                                                 'itemprop' => 'image'
                                             ))) ?>
                             </div>
-                            <div class="large-7 columns">
+                            <div class="large-5 columns">
                                 <div class="">
                                     <h5 itemprop="author">
                                         <?= anchor('/usuarios/perfil/' .
@@ -557,8 +577,10 @@
                                             </div>
                                         </div>
                                         <div class="large-3 columns">
-                                            <div class="" itemprop="dateSent">
-                                                <?= $v['fecha_mensaje'] ?>
+                                            <div class="fecha_pm" itemprop="dateSent">
+                                                <span>
+                                                    <?= $v['fecha_mensaje'] ?>
+                                                </span>
                                             </div>
                                             <br>
                                             <br>
@@ -600,8 +622,10 @@
                                             </div>
                                         </div>
                                         <div class="large-3 columns">
-                                            <div class="" itemprop="dateSent">
-                                                <?= $v['fecha_mensaje'] ?>
+                                            <div class="fecha_pm" itemprop="dateSent">
+                                                <span>
+                                                    <?= $v['fecha_mensaje'] ?>
+                                                </span>
                                             </div>
                                             <br>
                                             <br>
