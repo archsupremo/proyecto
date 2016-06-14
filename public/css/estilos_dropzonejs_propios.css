@@ -8,6 +8,23 @@
 .dz-success-mark {
     margin-left: 2em !important;
 }
-.dz-details, .dz-progress {
+.dz-details, .perfil .dz-progress {
     margin-left: 4.5em !important;
+}
+
+.articulos_subir .dropzone .dz-preview .dz-image {
+  width: 10em;
+  height: 10em;
+}
+.articulos_subir .dropzone .dz-preview:not(:first-of-type) {
+    margin-left: 5em;
+}
+.articulos_subir .dz-remove {
+    margin-left: 1.3em !important;
+}
+.articulos_subir .dz-success-mark {
+    margin-left: -1em !important;
+}
+.articulos_subir .dz-details, .articulos_subir .dz-progress {
+    margin-left: -0.3em !important;
 }

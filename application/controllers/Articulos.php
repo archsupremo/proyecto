@@ -285,7 +285,7 @@ class Articulos extends CI_Controller {
 
       $this->breadcrumbcomponent->add('Home', base_url());
       $this->breadcrumbcomponent->add('Subir Articulo',
-                                      base_url() . '/articulos/subir/');
+                                      base_url() . 'articulos/subir/');
 
       $this->template->load('/articulos/subir');
   }
@@ -337,7 +337,7 @@ class Articulos extends CI_Controller {
           $articulo = $this->Articulo->por_id($articulo_id);
           $this->breadcrumbcomponent->add('Home', base_url());
           $this->breadcrumbcomponent->add('Subir Imágenes',
-                                          base_url() . '/articulos/subir_imagenes/');
+                                          base_url() . 'articulos/subir_imagenes/');
           $this->breadcrumbcomponent->add($articulo['nombre'], base_url());
 
           $this->template->load('/articulos/subir_imagenes');

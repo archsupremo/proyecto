@@ -1,27 +1,4 @@
 <?php template_set('title', 'Portada') ?>
-<style media="screen">
-    @media only screen and (max-width: 64em) {
-        img#mas {
-            width: 5em;
-            height: 5em;
-            margin-left: 47.5%;
-            margin-top: -80em;
-        }
-        section.mapa {
-            margin-top: 10em;
-        }
-        section.orden {
-            display: flex;
-            width: 100%;
-            -webkit-justify-content: space-between;
-            -moz-justify-content: space-between;
-            justify-content: space-between;
-        }
-        h4 {
-            text-align: center;
-        }
-    }
-</style>
 
 <div class="container">
     <section class="large-3 columns">
@@ -56,9 +33,10 @@
                     A 10km de ti
             </article>
         </section>
-        <h3>Búsqueda personalizada</h3>
+        <section>
             <article class="row">
-                 <fieldset>
+                <h3>Búsqueda personalizada</h3>
+                <fieldset>
                      <legend>Búsqueda Personalizada</legend>
                      <div class="row">
                       <div class="large-12 columns ui-widget">
@@ -90,6 +68,7 @@
                      </div>
                  </fieldset>
             </article>
+        </section>
         <?= form_close() ?>
     </section>
     <section class="large-6 columns" id="centro">
@@ -130,9 +109,9 @@
                     <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
                     <span class="oculto" itemprop="price"><?= preg_replace('/,/', '.', substr($v['precio'], 0 , -4)) ?></span>
                 </div>
-                <div class="" itemprop="name">
+                <h6 class="" itemprop="name">
                     <?= anchor('/articulos/buscar/' . $v['articulo_id'], $v['nombre']) ?>
-                </div>
+                </h6>
                 <div class="" itemprop="category">
                     <?php foreach (preg_split('/,/', $v['etiquetas']) as $etiqueta): ?>
                         <?php if($etiqueta === '') break; ?>
@@ -202,16 +181,18 @@
 </div>
 
 <script type="text/javascript" >
-    $('#centro').shapeshift({
-        gutterY: 40,
-        enableDrag: false,
-        enableResize: false
-    });
-    $( window ).resize(function() {
-        $("#centro").trigger("ss-destroy");
+    $("#centro").ready(function () {
         $('#centro').shapeshift({
+            gutterY: 40,
             enableDrag: false,
             enableResize: false
+        });
+        $( window ).resize(function() {
+            $("#centro").trigger("ss-destroy");
+            $('#centro').shapeshift({
+                enableDrag: false,
+                enableResize: false
+            });
         });
     });
 </script>

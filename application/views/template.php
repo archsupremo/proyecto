@@ -58,7 +58,9 @@
         <nav class="top-bar" data-topbar role="navigation" data-options="is_hover: false">
           <ul class="title-area">
             <li class="name">
-              <h1><a href="/frontend/portada">BuyAndSell</a></h1>
+              <h1>
+                  <a href="/frontend/portada">BuyAndSell</a>
+              </h1>
             </li>
             <li class="toggle-topbar menu-icon">
                 <a href="#">
@@ -85,9 +87,9 @@
         </nav>
     </header>
     <section itemscope itemtype="http://schema.org/WebPage">
-        <span itemprop="breadcrumb">
+        <div itemprop="breadcrumb">
             <?= miga_pan() ?>
-        </span>
+        </div>
     </section>
 
     <?= mensajes() ?>
@@ -132,13 +134,13 @@
                   </a>
               </li>
             <!-- <li><a href="#">FAQ's</a></li> -->
-          <ul>
+            </ul>
         </article>
         <article class="small-6 medium-3 large-2 columns">
           <h4>Sigueme!!!</h4>
           <ul class="footer-links">
             <li><a href="https://github.com/archsupremo">GitHub</a></li>
-          <ul>
+          </ul>
         </article>
       </section>
     </footer>

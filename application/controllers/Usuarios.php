@@ -142,7 +142,7 @@ class Usuarios extends CI_Controller{
     }
     $this->breadcrumbcomponent->add('Home', base_url());
     $this->breadcrumbcomponent->add('Login',
-                                    base_url() . '/usuarios/login/');
+                                    base_url() . 'usuarios/login/');
 
     $this->output->delete_cache('/frontend/portada/');
     $this->template->load('/usuarios/login');
@@ -325,7 +325,7 @@ class Usuarios extends CI_Controller{
 
         $this->breadcrumbcomponent->add('Home', base_url());
         $this->breadcrumbcomponent->add('Registrar',
-                                        base_url() . '/usuarios/registrar/');
+                                        base_url() . 'usuarios/registrar/');
         $this->template->load('/usuarios/registrar');
     }
 
@@ -465,7 +465,7 @@ class Usuarios extends CI_Controller{
 
         $this->breadcrumbcomponent->add('Home', base_url());
         $this->breadcrumbcomponent->add('Perfil',
-                                        base_url() . '/usuarios/perfil/' . $usuario_id);
+                                        base_url() . 'usuarios/perfil/' . $usuario_id);
         $this->breadcrumbcomponent->add($data['usuario']['nick'], base_url());
 
         $this->template->load("/usuarios/perfil", $data);
@@ -591,7 +591,7 @@ class Usuarios extends CI_Controller{
 
         $this->breadcrumbcomponent->add('Home', base_url());
         $this->breadcrumbcomponent->add('Editar Perfil',
-                                        base_url() . '/usuarios/editar_perfil/' . $usuario_id);
+                                        base_url() . 'usuarios/editar_perfil/' . $usuario_id);
         $this->breadcrumbcomponent->add($data['usuario']['nick'], base_url());
 
         if($data['usuario']['latitud'] == '')

@@ -85,13 +85,13 @@
 </div>
 
 <div id="error_geolocalizacion" class="reveal-modal"
-     data-reveal aria-labelledby="Error"
+     data-reveal
      aria-hidden="true" role="dialog">
   <h2 id="firstModalTitle">Error de Geolocalización</h2>
   <p>
      Perdone, pero hemos detectado que en su navegador, usted tiene prohibida la
      geolocalización. Por ello, si quiere usted establecer la gelolocalización
-     de forma personal, clicke <a href="#" rel='pop-up'>aquí</a>.
+     de forma personal, clicke <a href="#" rel='nofollow'>aquí</a>.
   </p>
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
@@ -220,8 +220,8 @@
  defer></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        if($("input[name=latitud]").first().val() != "" &&
-           $("input[name=longitud]").first().val() != "") {
+        if($("input[name=latitud]").first().val() != "null" &&
+           $("input[name=longitud]").first().val() != "null") {
                var latitud = $("input[name=latitud]").first().val();
                var longitud = $("input[name=longitud]").first().val();
 
@@ -232,6 +232,8 @@
                        $("#localizacion").val(address);
                    }
                });
+        } else {
+            $("#actualizar").hide();
         }
     });
 </script>
@@ -276,7 +278,7 @@
     });
 </script>
 <script type="text/javascript">
-    $("a[rel='pop-up']").click(function (evento) {
+    $("a[rel='nofollow']").click(function (evento) {
         evento.preventDefault();
 
       	var caracteristicas = "height=700,width=800,scrollTo,resizable=1,scrollbars=1,location=0";

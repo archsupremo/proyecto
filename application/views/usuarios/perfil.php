@@ -1,25 +1,5 @@
 <?php template_set('title', 'Perfil de Usuario') ?>
-<style media="screen">
-    @media only screen and (max-width: 64em) {
-        .ventas, .compras, .pm, .tarjeta_perfil {
-            text-align: center;
-        }
-        .valoracion, .toggle {
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .toggle {
-            margin-top: -2em;
-            margin-bottom: 0.5em;
-        }
-        span.info {
-            display: block;
-        }
-        div.fecha_pm {
-            margin-top: 2em;
-        }
-    }
-</style>
+
 <div class="row large-6">
     <?php if ( ! empty(error_array())): ?>
         <div data-alert class="alert-box alert radius alerta">
@@ -145,7 +125,11 @@
                                         <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
                                     <?php endif; ?>
                                     <?= anchor('/articulos/buscar/' . $v['id'],
-                                        img($url)) ?>
+                                    img(array(
+                                        'src' => $url,
+                                        'title' => $v['nombre'],
+                                        'alt' => $v['nombre'],
+                                    ))) ?>
                                 </div>
                                 <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                     <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
@@ -213,7 +197,11 @@
                                     <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
                                 <?php endif; ?>
                                 <?= anchor('/articulos/buscar/' . $v['articulo_id'],
-                                            img($url)) ?>
+                                    img(array(
+                                        'src' => $url,
+                                        'title' => $v['nombre'],
+                                        'alt' => $v['nombre'],
+                                    ))) ?>
                             </div>
                             <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                 <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
@@ -432,7 +420,11 @@
                                         <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
                                     <?php endif; ?>
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
-                                                img($url)) ?>
+                                        img(array(
+                                            'src' => $url,
+                                            'title' => $v['nombre'],
+                                            'alt' => $v['nombre'],
+                                        ))) ?>
                                 </div>
                                 <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                     <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
@@ -497,7 +489,11 @@
                                         <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
                                     <?php endif; ?>
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
-                                                img($url)) ?>
+                                        img(array(
+                                            'src' => $url,
+                                            'title' => $v['nombre'],
+                                            'alt' => $v['nombre'],
+                                        ))) ?>
                                 </div>
                                 <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                     <span itemprop="priceCurrency"><?= $v['precio'] ?></span>
@@ -648,28 +644,19 @@
 </div>
 </div>
 <br>
-<style media="screen">
-    .articulos {
-        position: relative;
-    }
-    .articulos > article {
-        width: 30%;
-        height: auto;
-        position: absolute;
-        border: 1px solid black;
-    }
-</style>
 <script type="text/javascript" >
-    $('.articulos').shapeshift({
-        gutterY: 40,
-        enableDrag: false,
-        enableResize: false
-    });
-    $( window ).resize(function() {
-        $(".articulos").trigger("ss-destroy");
+    $(document).ready(function () {
         $('.articulos').shapeshift({
+            gutterY: 40,
             enableDrag: false,
             enableResize: false
+        });
+        $( window ).resize(function() {
+            $(".articulos").trigger("ss-destroy");
+            $('.articulos').shapeshift({
+                enableDrag: false,
+                enableResize: false
+            });
         });
     });
 </script>

@@ -81,7 +81,7 @@ html, body {
     color: orange;
 }
 
-/*---------Para el shapeshift---------*/
+
 #centro {
     position: relative;
 }
@@ -94,11 +94,62 @@ html, body {
 .masArticulos {
     margin-bottom: 2em;
 }
+.articulos {
+    position: relative;
+}
+.articulos > article {
+    width: 30%;
+    height: auto;
+    position: absolute;
+    border: 1px solid black;
+}
 
-/*--------- Cambiar letra ------------*/
 @import url('https://fonts.googleapis.com/css?family=Tangerine');
 @media only screen and (max-width: 64em) {
     body {
         font-family: 'Tangerine', cursive;
+    }
+}
+
+
+@media only screen and (max-width: 64em) {
+    img#mas {
+        width: 5em;
+        height: 5em;
+        margin-left: 47.5%;
+        margin-top: -80em;
+    }
+    section.mapa {
+        margin-top: 10em;
+    }
+    section.orden {
+        display: flex;
+        width: 100%;
+        -webkit-justify-content: space-between;
+        -moz-justify-content: space-between;
+        justify-content: space-between;
+    }
+    h4 {
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 64em) {
+    .ventas, .compras, .pm, .tarjeta_perfil {
+        text-align: center;
+    }
+    .valoracion, .toggle {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .toggle {
+        margin-top: -2em;
+        margin-bottom: 0.5em;
+    }
+    span.info {
+        display: block;
+    }
+    div.fecha_pm {
+        margin-top: 2em;
     }
 }

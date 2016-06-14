@@ -1,22 +1,5 @@
 <?php template_set('title', 'Subir Articulo') ?>
-<style media="screen">
-    .dropzone .dz-preview .dz-image {
-      width: 10em;
-      height: 10em;
-    }
-    .dropzone .dz-preview:not(:first-of-type) {
-        margin-left: 5em;
-    }
-    .dz-remove {
-        margin-left: 1.3em !important;
-    }
-    .dz-success-mark {
-        margin-left: -1em !important;
-    }
-    .dz-details, .dz-progress {
-        margin-left: -0.3em !important;
-    }
-</style>
+
 <div class="row">
     <div class="large-12 large-centered columns menu-login">
         <?php if ( ! empty($error)): ?>
@@ -25,7 +8,7 @@
               <a href="#" class="close">&times;</a>
             </div>
         <?php endif ?>
-        <?= form_open_multipart('/articulos/subir_imagenes') ?>
+        <?= form_open_multipart('/articulos/subir_imagenes', 'class="articulos_subir"') ?>
           <div class="dropzone needsclick" id="dropzone">
               <div class="dz-message needsclick">
                 <div class="alert-box success radius alerta text-center" role="alert">
