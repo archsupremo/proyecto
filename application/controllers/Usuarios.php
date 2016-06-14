@@ -749,10 +749,10 @@ class Usuarios extends CI_Controller{
           $imagen = new Imagick($data['upload_data']['full_path']);
           $imagen->adaptiveResizeImage(70, 70);
           $imagen->writeImageFile(fopen("imagenes_usuarios/" . $usuario_id . "_thumbnail.jpeg", "w"));
-
-          $this->output->delete_cache('/usuarios/perfil/' . $usuario_id);
-          $this->output->delete_cache('/usuarios/editar_perfil/' . $usuario_id);
         }
+        
+        $this->output->delete_cache('/usuarios/perfil/' . $usuario_id);
+        $this->output->delete_cache('/usuarios/editar_perfil/' . $usuario_id);
         $this->template->load('/usuarios/editar_perfil');
     }
 
