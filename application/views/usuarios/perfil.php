@@ -223,7 +223,7 @@
                                     <?php if($v['valoracion'] === NULL && $v['comprador_id'] !== NULL): ?>
                                         <a href="/usuarios/valorar_comprador/<?= $v['venta_id'] ?>"
                                            class="info button tiny radius">
-                                            Valorar al comprador
+                                            Valorar a <?= $v['comprador_nick'] ?>
                                         </a>
                                     <?php endif; ?>
                                     <a href="#" data-reveal-id="articulo_vendido_<?= $v['articulo_id'] ?>"
@@ -250,7 +250,7 @@
                     </div>
                 </div>
             </div>
-            <?php if(! empty($valoraciones_ventas) || ! empty($valoraciones_compras)): ?>
+            <?php if($valoraciones > 0): ?>
             <div>
                 <div class="rt01pagitem">Valoraciones</div>
                 <div class="container">
@@ -444,7 +444,7 @@
                                     <?php if($v['valoracion'] === NULL): ?>
                                         <a href="/usuarios/valorar_vendedor/<?= $v['venta_id'] ?>"
                                            class="info button tiny radius">
-                                            Valorar al vendedor
+                                            Valorar a <?= $v['vendedor_nick'] ?>
                                         </a>
                                     <?php endif; ?>
                                     <a href="#" data-reveal-id="compra_<?= $v['articulo_id'] ?>"

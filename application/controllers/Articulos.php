@@ -337,7 +337,7 @@ class Articulos extends CI_Controller {
           }
 
           $this->output->delete_cache('/articulos/subir_imagenes/');
-          $this->output->delete_cache('/articulos/editar_articulo/' . $data['articulo']['id']);
+          $this->output->delete_cache('/articulos/editar_articulo/' . $articulo_id);
 
           $articulo = $this->Articulo->por_id($articulo_id);
           $this->breadcrumbcomponent->add('Home', base_url());

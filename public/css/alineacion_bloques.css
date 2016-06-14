@@ -16,7 +16,7 @@ div.font-blokk > h3 {
 .imagen_nick {
     height: 40%;
     width: 40%;
-    border-radius: 25px;
+    border-radius: 50%;
 }
 .input_validation {
     margin-bottom: 0em;
@@ -55,6 +55,9 @@ html, body {
     width: 5em;
     height: 5em;
 }
+h5.precio_detalle {
+    color: green;
+}
 .valoraciones, .pm {
     padding: 2em;
     padding-bottom: 0em;
@@ -81,27 +84,29 @@ html, body {
     color: orange;
 }
 
-
-#centro {
+#centro, .articulos {
     position: relative;
 }
-#centro > article {
+#centro > article, .articulos > article {
     width: 30%;
     height: auto;
     position: absolute;
+
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
     border: 1px solid black;
+}
+#centro > article > div:first-child img, .articulos > article > div:first-child img {
+    -webkit-border-top-left-radius: 25px;
+    -webkit-border-top-right-radius: 25px;
+    -moz-border-radius-topleft: 25px;
+    -moz-border-radius-topright: 25px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
 }
 .masArticulos {
     margin-bottom: 2em;
-}
-.articulos {
-    position: relative;
-}
-.articulos > article {
-    width: 30%;
-    height: auto;
-    position: absolute;
-    border: 1px solid black;
 }
 
 @import url('https://fonts.googleapis.com/css?family=Tangerine');

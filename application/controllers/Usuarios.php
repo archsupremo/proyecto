@@ -430,7 +430,7 @@ class Usuarios extends CI_Controller{
             'usuario_id' => $usuario_id,
             'token' => $token
         );
-        $this->template->load('/usuarios/regenerar/', $data);
+        $this->template->load('/usuarios/regenerar', $data);
     }
 
     public function perfil($usuario_id = NULL) {

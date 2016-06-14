@@ -57,7 +57,7 @@
     <section class="large-7 columns datos tarjeta_perfil">
         <h3>Datos del articulo</h3>
         <article class="alert-box info radius">
-            <h5><?= $articulo['precio'] ?></h5>
+            <h5 class="precio_detalle"><?= $articulo['precio'] ?></h5>
             <p><?= $articulo['nombre'] ?></p>
             <p><?= $articulo['descripcion'] ?></p>
             <?php if($articulo['etiquetas'] != ""): ?>
