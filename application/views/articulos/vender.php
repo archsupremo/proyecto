@@ -81,6 +81,28 @@
     </div>
 </div>
 <script type="text/javascript">
+    $("#nick_comprador").autocomplete();
+    $("#nick_comprador").bind('input', function() {
+        var nick = $(this).val();
+        $.ajax({
+            url: "<?= base_url() ?>usuarios/sugerencias_nick/" + nick,
+            type: 'POST',
+            async: true,
+            success: function(response) {
+                var suges = [];
+                for(var usuario in response.sugerencias) {
+                    suges.push(response.sugerencias[usuario].nick);
+                }
+                $("#nick_comprador").autocomplete({
+                    source: suges
+                });
+            },
+            error: function (error) {},
+            dataType: 'json'
+        });
+    });
+</script>
+<script type="text/javascript">
     $('input[type="hidden"]').first().val("0");
     var rating = 0;
     var valores_defecto = {

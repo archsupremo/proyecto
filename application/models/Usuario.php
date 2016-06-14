@@ -48,6 +48,13 @@ class Usuario extends CI_Model {
         return $res->num_rows() > 0 ? FALSE : TRUE;
     }
 
+    public function sugerencias_nick($nick) {
+        $this->db->like('lower(nick)', strtolower($nick), 'match');
+        $this->db->select('nick');
+        $res = $this->db->get('usuarios');
+        return $res->result_array();
+    }
+
     public function usuario_baneado($usuario_id) {
         $res = $this->db->get_where('usuarios_baneados', array('usuario_id' => $usuario_id));
         return $res->num_rows() > 0 ? TRUE : FALSE;

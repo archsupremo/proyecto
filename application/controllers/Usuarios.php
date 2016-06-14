@@ -639,6 +639,18 @@ class Usuarios extends CI_Controller{
             );
     }
 
+    public function sugerencias_nick($nick = NULL) {
+        $sugerencias = array();
+        if($nick !== NULL && $this->Usuario->logueado()) {
+            $sugerencias = $this->Usuario->sugerencias_nick($nick);
+        }
+        echo json_encode(
+                array(
+                    'sugerencias' => $sugerencias
+                )
+            );
+    }
+
     public function usuarios_email($email = NULL) {
         $email_ocupado = false;
         $email = urldecode($email);
