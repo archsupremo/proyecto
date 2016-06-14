@@ -468,6 +468,7 @@ class Usuarios extends CI_Controller{
                                         base_url() . 'usuarios/perfil/' . $usuario_id);
         $this->breadcrumbcomponent->add($data['usuario']['nick'], base_url());
 
+        $this->output->delete_cache('/usuarios/perfil/' . $usuario_id);
         $this->template->load("/usuarios/perfil", $data);
     }
 
@@ -737,26 +738,33 @@ class Usuarios extends CI_Controller{
           $imagen = new Imagick($data['upload_data']['full_path']);
           $imagen->adaptiveResizeImage(70, 70);
           $imagen->writeImageFile(fopen("imagenes_usuarios/" . $usuario_id . "_thumbnail.jpeg", "w"));
+
+          $this->output->delete_cache('/usuarios/perfil/' . $usuario_id);
+          $this->output->delete_cache('/usuarios/editar_perfil/' . $usuario_id);
         }
         $this->template->load('/usuarios/editar_perfil');
     }
 
-    public function borrar_imagen($usuario_id = NULL) {
-        if($usuario_id !== NULL) {
+    public function borrar_imagen() {
+        if($this->Usuario->logueado()) {
+            $usuario_id = $this->session->userdata('usuario')['id'];
             unlink($_SERVER["DOCUMENT_ROOT"] .
                         '/imagenes_usuarios/' .
                         $usuario_id . '.jpg');
+            $this->output->delete_cache('/usuarios/perfil/' . $usuario_id);
+            $this->output->delete_cache('/usuarios/editar_perfil/' . $usuario_id);
         }
     }
 
-    public function obtener_imagen($usuario_id = NULL) {
+    public function obtener_imagen() {
         $datos = array();
-        if($usuario_id !== NULL) {
+        if($this->Usuario->logueado()) {
+            $usuario = $this->session->userdata('usuario');
+            $usuario_id = $usuario['id'];
             if(is_file($_SERVER["DOCUMENT_ROOT"] .
                         '/imagenes_usuarios/' .
                         $usuario_id . '.jpg')):
 
-                $usuario = $this->Usuario->por_id($usuario_id);
                 $datos['name'] = $usuario['nick'];
                 $datos['imagen'] = $usuario_id . '.jpg';
                 $datos['size'] = '3200';

@@ -54,10 +54,10 @@
             <!-- SLIDER PREVIEW - end -->
         </div>
     </div>
-    <section class="large-7 columns datos">
+    <section class="large-7 columns datos tarjeta_perfil">
         <h3>Datos del articulo</h3>
         <article class="alert-box info radius">
-            <p><?= $articulo['precio'] ?></p>
+            <h5><?= $articulo['precio'] ?></h5>
             <p><?= $articulo['nombre'] ?></p>
             <p><?= $articulo['descripcion'] ?></p>
             <?php if($articulo['etiquetas'] != ""): ?>
@@ -69,7 +69,7 @@
             <?php endif; ?>
         </article>
         <article class="alert-box info radius">
-            <div class="row">
+            <div class="row tarjeta_perfil">
                 <div class="large-6 columns">
                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $usuario['id'] . '.jpg')): ?>
                         <?php $url = '/imagenes_usuarios/' . $usuario['id'] . '.jpg' ?>

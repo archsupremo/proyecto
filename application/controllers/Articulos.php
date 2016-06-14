@@ -290,7 +290,7 @@ class Articulos extends CI_Controller {
       $this->template->load('/articulos/subir');
   }
 
-  public function subir_imagenes() {
+  public function subir_imagenes($articulo_id = NULL) {
       if (!$this->Usuario->logueado()) {
           $mensajes[] = array('error' =>
                   "No puedes insertar articulos si no estas logueado.");
@@ -303,11 +303,14 @@ class Articulos extends CI_Controller {
           unset($sesion['ultimo_articulo']);
           $this->session->set_userdata('usuario', $sesion);
       }
-      if(isset($this->session->userdata('usuario')['ultimo_articulo'])) {
+
+      if($articulo_id === NULL && isset($this->session->userdata('usuario')['ultimo_articulo'])) {
           $articulo_id = $this->session->userdata('usuario')['ultimo_articulo'];
+      }
+      $usuario = $this->session->userdata('usuario');
+      if($this->Articulo->es_propietario($usuario['id'], $articulo_id)) {
 
           $data['error'] = array();
-
           $config['upload_path'] = 'imagenes_articulos/';
           $config['allowed_types'] = 'jpeg|jpg|jpe';
           $config['overwrite'] = TRUE;
@@ -334,25 +337,63 @@ class Articulos extends CI_Controller {
               endif;
           }
 
+          $this->output->delete_cache('/articulos/subir_imagenes/');
+          $this->output->delete_cache('/articulos/editar_articulo/' . $data['articulo']['id']);
+
           $articulo = $this->Articulo->por_id($articulo_id);
           $this->breadcrumbcomponent->add('Home', base_url());
           $this->breadcrumbcomponent->add('Subir Imágenes',
                                           base_url() . 'articulos/subir_imagenes/');
           $this->breadcrumbcomponent->add($articulo['nombre'], base_url());
 
-          $this->template->load('/articulos/subir_imagenes');
+          $data['articulo_id'] = $articulo_id;
+          $this->template->load('/articulos/subir_imagenes', $data);
       } else {
           redirect('/frontend/portada');
       }
   }
 
-  public function borrar_imagen($numero = NULL) {
-      if($numero !== NULL && $this->Usuario->logueado()) {
-          $articulo_id = $this->session->userdata('usuario')['ultimo_articulo'];
-          unlink($_SERVER["DOCUMENT_ROOT"] .
-                      '/imagenes_articulos/' .
-                      $articulo_id . '_' . $numero .
-                      '.jpg');
+  public function obtener_imagen($articulo_id = NULL) {
+      $datos = array();
+      if($this->Usuario->logueado() && $articulo_id !== NULL) {
+          $usuario = $this->session->userdata('usuario');
+          $usuario_id = $usuario['id'];
+          if($this->Articulo->es_propietario($usuario_id, $articulo_id)) {
+              $articulo = $this->Articulo->por_id($articulo_id);
+              for($i = 1; $i <= 4; $i++) {
+                  if(is_file($_SERVER["DOCUMENT_ROOT"] .
+                              '/imagenes_articulos/' .
+                              $articulo_id . '_' . $i . '.jpg')):
+
+                      $datos[$i] = array(
+                          'name' => $articulo['nombre'],
+                          'imagen' => $articulo_id . '_' . $i . '.jpg',
+                          'numero' => $i,
+                          'size' => '3200',
+                          'type' => "image/jpeg"
+                      );
+                  endif;
+              }
+          }
+      }
+
+      echo json_encode(
+          array(
+              'imagenes' => $datos,
+          )
+      );
+  }
+
+  public function borrar_imagen($articulo_id = NULL, $numero = NULL) {
+      if($articulo_id !== NULL && $numero !== NULL && $this->Usuario->logueado()) {
+          $usuario = $this->session->userdata('usuario');
+          if($this->Articulo->es_propietario($usuario['id'], $articulo_id)) {
+              unlink($_SERVER["DOCUMENT_ROOT"] . '/imagenes_articulos/' .
+                          $articulo_id . '_' . $numero . '.jpg');
+
+              $this->output->delete_cache('/articulos/subir_imagenes/');
+              $this->output->delete_cache('/articulos/editar_articulo/' . $data['articulo']['id']);
+          }
       }
   }
 

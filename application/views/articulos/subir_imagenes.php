@@ -2,12 +2,6 @@
 
 <div class="row">
     <div class="large-12 large-centered columns menu-login">
-        <?php if ( ! empty($error)): ?>
-            <div data-alert class="alert-box alert radius alerta">
-              <?= $error ?>
-              <a href="#" class="close">&times;</a>
-            </div>
-        <?php endif ?>
         <?= form_open_multipart('/articulos/subir_imagenes', 'class="articulos_subir"') ?>
           <div class="dropzone needsclick" id="dropzone">
               <div class="dz-message needsclick">
@@ -51,22 +45,54 @@
                 alert("Solo se permiten un maximo de 4 fotos por articulo.");
             });
             drop.on("addedfile", function (file) {
+                if(drop.files.length > 4) {
+                    drop.removeFile(file);
+                    alert("Solo se permiten un maximo de 4 fotos por articulo.");
+                    return;
+                }
                 file.num = archivos.shift();
             });
             drop.on("removedfile", function (file) {
                 $.ajax({
-                    url: "<?= base_url() ?>articulos/borrar_imagen/" + file.num,
+                    url: "<?= base_url() ?>articulos/borrar_imagen/<?= $articulo_id ?>/" + file.num,
                     type: 'GET',
                     async: true,
-                    success: function() {
-                        // alert("Todo ha ido bien.");
-                    },
-                    error: function (error) {
-                        //alert("Error" + error.status);
-                    },
+                    success: function() { },
+                    error: function (error) { },
+                }).done(function () {
+                    archivos.unshift(file.num);
                 });
-                archivos.unshift(file.num);
             });
+            $.ajax({
+                url: "<?= base_url() ?>articulos/obtener_imagen/<?= $articulo_id ?>",
+                type: 'GET',
+                async: true,
+                success: function(respuesta) {
+                    for(var imagen in respuesta.imagenes) {
+                        var mockFile = {
+                            name: respuesta.imagenes[imagen].name,
+                            size: respuesta.imagenes[imagen].size,
+                            num: respuesta.imagenes[imagen].numero
+                        };
+                        var new_array = [];
+                        for(var a in archivos) {
+                            if(archivos[a] != mockFile.num) {
+                                new_array.push(archivos[a]);
+                            }
+                        }
+                        archivos = new_array;
+
+                        drop.options.addedfile.call(drop, mockFile);
+                        drop.createThumbnailFromUrl(mockFile, "/imagenes_articulos/" + respuesta.imagenes[imagen].imagen);
+                        drop.files.push(mockFile);
+                        mockFile.previewElement.classList.add('dz-success');
+                        mockFile.previewElement.classList.add('dz-complete');
+                    }
+                },
+                error: function (error) { },
+                dataType: 'json'
+            });
+
             this.on("sendingmultiple", function() {
             });
             this.on("successmultiple", function(files, response) {

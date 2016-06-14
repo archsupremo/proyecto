@@ -124,7 +124,7 @@
             });
             drop.on("removedfile", function (file) {
                 $.ajax({
-                    url: "<?= base_url() ?>usuarios/borrar_imagen/" + <?= $usuario['id'] ?>,
+                    url: "<?= base_url() ?>usuarios/borrar_imagen/",
                     type: 'GET',
                     async: true,
                     success: function() { },
@@ -132,7 +132,7 @@
                 });
             });
             $.ajax({
-                url: "<?= base_url() ?>usuarios/obtener_imagen/" + <?= $usuario['id'] ?>,
+                url: "<?= base_url() ?>usuarios/obtener_imagen/",
                 type: 'GET',
                 async: true,
                 success: function(respuesta) {
