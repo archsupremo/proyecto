@@ -17,11 +17,11 @@
     <link rel="stylesheet" href="/toogle/css/toggles-full.css">
     <link rel="stylesheet" href="/toogle/css/themes/toggles-all.css">
     <link rel="stylesheet" href="/rubytabs/rubytabs.css">
-    <link href="/tag/jquery.tag-editor.css" rel="stylesheet">
 
     <link href="http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-
+    <link href="/tag/jquery.tag-editor.css" rel="stylesheet">
+    
     <!-- Estilos propios -->
     <link href="/css/estilos_mapa.css" rel="stylesheet">
     <link href="/css/alineacion_bloques.css" rel="stylesheet">
