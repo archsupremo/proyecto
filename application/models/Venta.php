@@ -9,25 +9,26 @@ class Venta extends CI_Model{
   }
 
   public function por_id($id) {
-      $res = $this->db->get_where('v_ventas', array('venta_id' => $id));
+      $res = $this->db->query("select * from v_ventas where venta_id::text = ?", array($id));
       return $res->num_rows() > 0 ? $res->row_array() : FALSE;
   }
 
   public function es_comprador($comprador_id, $venta_id) {
-      $res = $this->db->query("select * from v_ventas_comprador where comprador_id = ? ".
-                              "and venta_id = ?",
+      $res = $this->db->query("select * from v_ventas_comprador where comprador_id::text = ? ".
+                              "and venta_id::text = ?",
                               array($comprador_id, $venta_id));
       return $res->num_rows() > 0 ? TRUE : FALSE;
   }
 
   public function es_vendedor($vendedor_id, $venta_id) {
-      $res = $this->db->query("select * from v_ventas_vendedor where vendedor_id = ? ".
-                              "and venta_id = ?",
+      $res = $this->db->query("select * from v_ventas_vendedor where vendedor_id::text = ? ".
+                              "and venta_id::text = ?",
                               array($vendedor_id, $venta_id));
       return $res->num_rows() > 0 ? TRUE : FALSE;
   }
 
   public function borrar_compra($venta_id, $valores) {
-      $res = $this->db->where('id', $venta_id)->update('ventas', $valores);
+      $query = "update ventas set comprador_id = null where id::text = ?";
+      return $this->db->query($query, array($venta_id));
   }
 }

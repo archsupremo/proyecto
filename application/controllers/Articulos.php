@@ -203,7 +203,6 @@ class Articulos extends CI_Controller {
                       'articulo_id' => $articulo_id
                   ));
               }
-
               redirect('/frontend/portada');
           }
       }
@@ -420,11 +419,16 @@ class Articulos extends CI_Controller {
                   'rules' => array(
                       'trim', 'required',
                       array('existe_nick', array($this->Usuario, 'existe_nick')),
-                      array('existe_nick_registrado', array($this->Usuario, 'existe_nick_registrado'))
+                      array('existe_nick_registrado', array($this->Usuario, 'existe_nick_registrado')),
+                      array('mismo_usuario', function ($nick) {
+                              return strtolower($nick) !== $this->session->userdata('usuario')['nick'];
+                          }
+                      )
                   ),
                   'errors' => array(
                       'existe_nick' => 'El nick debe ser de un usuario valido.',
-                      'existe_nick_registrado' => 'El nick debe ser de un usuario valido.'
+                      'existe_nick_registrado' => 'El nick debe ser de un usuario valido.',
+                      'mismo_usuario' => 'No puedes venderte un articulo a ti mismo.'
                   ),
               ),
           );

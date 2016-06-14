@@ -66,12 +66,12 @@ class Usuario extends CI_Model {
     }
 
     public function por_id_admin($id) {
-        $res = $this->db->get_where('usuarios_admin', array('id' => $id));
+        $res = $this->db->query("select * from usuarios_admin where id::text = ?", array($id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
     public function por_id_vista($id) {
-        $res = $this->db->get_where('v_articulos', array('usuario_id' => $id));
+        $res = $this->db->query("select * from v_articulos where usuario_id::text = ?", array($id));
         return $res->num_rows() > 0 ? $res->result_array() : array();
     }
 
@@ -106,7 +106,7 @@ class Usuario extends CI_Model {
     }
 
     public function existe_nick_id($nick, $usuario_id) {
-        $res = $this->db->query("select * from usuarios where nick = ? and id != ?",
+        $res = $this->db->query("select * from usuarios where nick = ? and id::text != ?",
                                 array(strtolower($nick), $usuario_id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
@@ -133,7 +133,7 @@ class Usuario extends CI_Model {
     }
 
     public function existe_email_id($email, $usuario_id) {
-        $res = $this->db->query("select * from usuarios where email = ? and id != ?",
+        $res = $this->db->query("select * from usuarios where email = ? and id::text != ?",
                                 array($email, $usuario_id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
@@ -148,16 +148,12 @@ class Usuario extends CI_Model {
     }
 
     public function ventas_usuario($id_usuario) {
-        $res = $this->db->query("select * from v_ventas_vendedor where vendedor_id = ?", array($id_usuario));
+        $res = $this->db->query("select * from v_ventas_vendedor where vendedor_id::text = ?", array($id_usuario));
         return ($res->num_rows() > 0) ? $res->result_array() : array();
     }
 
     public function compras_usuario($usuario_id) {
-        $res = $this->db->get_where('v_ventas_comprador',
-                                    array(
-                                        'comprador_id' => $usuario_id,
-                                       )
-                                    );
+        $res = $this->db->query("select * from v_ventas_comprador where comprador_id::text = ?", array($usuario_id));
         return $res->num_rows() > 0 ? $res->result_array() : array();
     }
 
@@ -168,25 +164,23 @@ class Usuario extends CI_Model {
                                 " where earth_distance(ll_to_earth(?, ?),".
                                 " ll_to_earth(latitud, longitud)) < ?",
                                  array($latitud, $longitud, $latitud, $longitud, $distancia));
-        // $res = $this->db->query("select * from v_usuarios_localizacion",
-        //                         array());
         return $res->result_array();
     }
 
     public function pm_no_vistos($usuario_id) {
-        $res = $this->db->query("select * from v_usuarios_pm_no_vistos where receptor_id = ?",
+        $res = $this->db->query("select * from v_usuarios_pm_no_vistos where receptor_id::text = ?",
                                 array($usuario_id));
         return $res->result_array();
     }
 
     public function pm_vistos($usuario_id) {
-        $res = $this->db->query("select * from v_usuarios_pm_vistos where receptor_id = ?",
+        $res = $this->db->query("select * from v_usuarios_pm_vistos where receptor_id::text = ?",
                                 array($usuario_id));
         return $res->result_array();
     }
 
     public function usuarios_nick($nick, $usuario_id) {
-        $res = $this->db->query("select * from usuarios where nick = ? and id != ?",
+        $res = $this->db->query("select * from usuarios where nick = ? and id::text != ?",
                                 array(strtolower($nick), $usuario_id));
         return $res->num_rows() > 0 ? TRUE : FALSE;
     }
@@ -198,7 +192,7 @@ class Usuario extends CI_Model {
     }
 
     public function usuarios_email($email, $usuario_id) {
-        $res = $this->db->query("select * from usuarios where email = ? and id != ?",
+        $res = $this->db->query("select * from usuarios where email = ? and id::text != ?",
                                 array($email, $usuario_id));
         return $res->num_rows() > 0 ? TRUE : FALSE;
     }
@@ -210,25 +204,17 @@ class Usuario extends CI_Model {
     }
 
     public function get_pm($pm_id) {
-        $res = $this->db->get_where('pm', array('id' => $pm_id));
+        $res = $this->db->query("select * from pm where id::text = ?", array($pm_id));
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
     public function valoraciones_a_comprador($usuario_id) {
-        $res = $this->db->get_where('v_ventas_vendedor',
-                                    array(
-                                        'comprador_id' => $usuario_id,
-                                       )
-                                    );
+        $res = $this->db->query("select * from v_ventas_vendedor where comprador_id::text = ?", array($usuario_id));
         return $res->num_rows() > 0 ? $res->result_array() : array();
     }
 
     public function valoraciones_a_vendedor($usuario_id) {
-        $res = $this->db->get_where('v_ventas_comprador',
-                                    array(
-                                        'vendedor_id' => $usuario_id,
-                                       )
-                                    );
+        $res = $this->db->query("select * from v_ventas_comprador where vendedor_id::text = ?", array($usuario_id));
         return $res->num_rows() > 0 ? $res->result_array() : array();
     }
 }

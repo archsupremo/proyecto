@@ -36,7 +36,7 @@ class Articulo extends CI_Model{
   }
 
   public function borrar($articulo_id) {
-      return $this->db->query("delete from articulos where id = ?",
+      return $this->db->query("delete from articulos where id::text = ?",
                                array($articulo_id));
   }
 
@@ -151,8 +151,7 @@ class Articulo extends CI_Model{
       return $res->result_array();
   }
   public function articulos_favoritos($usuario_id) {
-      $res = $this->db->get_where('v_favoritos',
-                                   array('usuario_favorito' => $usuario_id));
+      $res = $this->db->query("select * from v_favoritos where usuario_favorito::text = ?", array($usuario_id));
       return $res->result_array();
   }
 
@@ -304,11 +303,8 @@ class Articulo extends CI_Model{
   }
 
   public function por_id_editar($usuario_id, $articulo_id) {
-      $res = $this->db->get_where('v_articulos',
-                                  array(
-                                      'articulo_id' => $articulo_id,
-                                      'usuario_id' => $usuario_id
-                                  ));
+      $res = $this->db->query("select * from v_articulos where articulo_id::text = ? and usuario_id::text = ?",
+                              array($articulo_id, $usuario_id));
       return ($res->num_rows() > 0) ? $res->row_array() : FALSE;
   }
 
@@ -318,13 +314,13 @@ class Articulo extends CI_Model{
   }
 
   public function por_id_vista($id_usuario, $id_articulo) {
-      $res = $this->db->query("select * from v_articulos where usuario_id = ? and articulo_id != ?",
+      $res = $this->db->query("select * from v_articulos where usuario_id::text = ? and articulo_id::text != ?",
                               array($id_usuario, $id_articulo));
       return $res->num_rows() > 0 ? $res->result_array() : array();
   }
 
   public function existe_favorito($usuario_id, $articulo_id) {
-      $res = $this->db->query("select * from favoritos where usuario_id = ? and articulo_id = ?",
+      $res = $this->db->query("select * from favoritos where usuario_id::text = ? and articulo_id::text = ?",
                                array($usuario_id, $articulo_id));
 
       return ($res->num_rows() > 0) ? TRUE : FALSE;
@@ -336,24 +332,24 @@ class Articulo extends CI_Model{
   }
 
   public function borrar_favorito($usuario_id, $articulo_id) {
-      return $this->db->query("delete from favoritos where usuario_id = ? and articulo_id = ?",
+      return $this->db->query("delete from favoritos where usuario_id::text = ? and articulo_id::text = ?",
                        array($usuario_id, $articulo_id));
   }
 
   public function es_propietario($usuario_id, $articulo_id) {
-      $res = $this->db->query("select * from articulos where id = ? and usuario_id = ?",
+      $res = $this->db->query("select * from articulos where id::text = ? and usuario_id::text = ?",
                                array($articulo_id, $usuario_id));
       return ($res->num_rows() > 0) ? TRUE : FALSE;
   }
 
   public function articulo_vendido($articulo_id) {
-      $res = $this->db->query("select * from ventas where articulo_id = ?",
+      $res = $this->db->query("select * from ventas where articulo_id::text = ?",
                                array($articulo_id));
       return ($res->num_rows() > 0) ? TRUE : FALSE;
   }
 
   public function articulo_favorito_email($articulo_id) {
-      $res = $this->db->query("select * from v_favoritos_email where articulo_id = ?",
+      $res = $this->db->query("select * from v_favoritos_email where articulo_id::text = ?",
                                array($articulo_id));
       return ($res->num_rows() > 0) ? $res->result_array() : FALSE;
   }

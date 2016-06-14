@@ -138,11 +138,10 @@ class Usuarios extends CI_Controller{
 
     if (isset($_SERVER['HTTP_REFERER']) && !$this->session->has_userdata('last_uri')) {
         $this->session->set_userdata('last_uri',
-                        parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
+                                     parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
     }
     $this->breadcrumbcomponent->add('Home', base_url());
-    $this->breadcrumbcomponent->add('Login',
-                                    base_url() . 'usuarios/login/');
+    $this->breadcrumbcomponent->add('Login', base_url() . 'usuarios/login/');
 
     $this->output->delete_cache('/frontend/portada/');
     $this->template->load('/usuarios/login');
@@ -948,11 +947,8 @@ class Usuarios extends CI_Controller{
         if(!$this->Venta->es_comprador($usuario_id, $venta_id)) {
             redirect('/frontend/portada/');
         }
-        $valores = array(
-            'comprador_id' => NULL
-        );
 
-        $this->Venta->borrar_compra($venta_id, $valores);
+        $this->Venta->borrar_compra($venta_id);
         redirect('/frontend/portada/');
     }
 
