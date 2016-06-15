@@ -157,4 +157,7 @@ h5.precio_detalle {
     div.fecha_pm {
         margin-top: 2em;
     }
+    .escribir_pm {
+        margin-left: 22.5em;
+    }
 }

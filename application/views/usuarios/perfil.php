@@ -382,7 +382,7 @@
                     <div>
                         <div class="rt01pagitem">Escribir PM</div>
                         <div class="container">
-                        <div class="row font-blokk">
+                        <div class="font-blokk">
                             <div class="row large-centered columns">
                                 <?php if ( ! empty(error_array())): ?>
                                     <div data-alert class="alert-box alert radius alerta">
@@ -390,7 +390,7 @@
                                       <a href="#" class="close">&times;</a>
                                     </div>
                                 <?php endif ?>
-                                <?= form_open('/usuarios/insertar_pm/' . $usuario['id']) ?>
+                                <?= form_open('/usuarios/insertar_pm/' . $usuario['id'], 'class="escribir_pm"') ?>
                                     <div class="nick-field">
                                       <?= form_label('Mensaje:', 'mensaje') ?>
                                       <?= form_textarea('mensaje', set_value('mensaje', '', FALSE),
