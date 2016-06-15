@@ -157,7 +157,7 @@
         <?php endforeach; ?>
     </section>
     <section class="large-3 columns mapa">
-        <h4>¿Quien esta vendiendo a tu alrededor?</h4>
+        <h4>¿Quién esta vendiendo a mi alrededor?</h4>
         <input id="pac-input" class="controls" type="text" placeholder="Buscar por ciudad, región, país...">
         <div class="mapa_index" id="map"></div>
         <br>
