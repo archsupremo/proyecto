@@ -249,39 +249,39 @@ class Articulo extends CI_Model{
               if( ! empty($articulos_viejos)) {
                   $this->db->where_not_in('articulo_id', $articulos_viejos);
               }
-              if($order !== '') {
-                  switch ($order) {
-                      case 'precio_asc':
-                          $this->db->order_by('precio', 'asc');
-                          $this->db->select('distinct on (articulo_id, precio) *');
-                          break;
-                      case 'precio_desc':
-                          $this->db->order_by('precio', 'desc');
-                          $this->db->select('distinct on (articulo_id, precio) *');
-                          break;
-                      case 'prox':
-                          $this->db->order_by('distancia', 'asc');
-                          $this->db->select('distinct on (articulo_id, distancia) *');
-                          break;
-                      default:
-                          break;
-                  }
-              } else {
-                  $this->db->select('distinct on (articulo_id) *');
-              }
-              if($distancia > 0) {
-                  $this->db->where('latitud is not null and longitud is not null');
-                  $this->db->where('earth_distance(ll_to_earth('.
-                                    $latitud.', '.$longitud.
-                                    '), ll_to_earth(latitud, longitud)) < ',
-                                    $distancia);
-              }
-              $this->db->limit($limit);
-              $this->db->select('earth_distance(ll_to_earth('.
-                                $latitud.', '.$longitud.
-                                '), ll_to_earth(latitud, longitud)) as distancia');
-              $res = $this->db->get('v_articulos')->result_array();
           }
+          if($order !== '') {
+              switch ($order) {
+                  case 'precio_asc':
+                      $this->db->order_by('precio', 'asc');
+                      $this->db->select('distinct on (articulo_id, precio) *');
+                      break;
+                  case 'precio_desc':
+                      $this->db->order_by('precio', 'desc');
+                      $this->db->select('distinct on (articulo_id, precio) *');
+                      break;
+                  case 'prox':
+                      $this->db->order_by('distancia', 'asc');
+                      $this->db->select('distinct on (articulo_id, distancia) *');
+                      break;
+                  default:
+                      break;
+              }
+          } else {
+              $this->db->select('distinct on (articulo_id) *');
+          }
+          if($distancia > 0) {
+              $this->db->where('latitud is not null and longitud is not null');
+              $this->db->where('earth_distance(ll_to_earth('.
+                                $latitud.', '.$longitud.
+                                '), ll_to_earth(latitud, longitud)) < ',
+                                $distancia);
+          }
+          $this->db->limit($limit);
+          $this->db->select('earth_distance(ll_to_earth('.
+                            $latitud.', '.$longitud.
+                            '), ll_to_earth(latitud, longitud)) as distancia');
+          $res = $this->db->get('v_articulos')->result_array();
       }
       if($nombre === "" && empty($etiquetas)) {
           if($this->Usuario->logueado()):
