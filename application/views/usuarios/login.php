@@ -1,3 +1,5 @@
+<?php template_set('title', 'Login') ?>
+
 <div class="row">
     <div class="large-6 large-centered columns menu-login">
         <?php if ( ! empty(error_array())): ?>

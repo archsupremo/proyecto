@@ -9,7 +9,8 @@ class Info extends CI_Controller{
   }
 
   function index() {
-      redirect('/frontend/portada');
+      echo "asdasd";
+    //   redirect('/frontend/portada');
   }
 
   public function uso_sitio() {
@@ -23,8 +24,6 @@ class Info extends CI_Controller{
       $this->breadcrumbcomponent->add('Home', base_url());
       $this->breadcrumbcomponent->add('Info', base_url() . 'info/politica_datos/');
       $this->breadcrumbcomponent->add('Politica de datos', base_url());
-
-    //   $this->template->load('/usuarios/login');
       $this->template->load('/info/politica_datos');
   }
 
