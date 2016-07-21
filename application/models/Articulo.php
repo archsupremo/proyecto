@@ -51,8 +51,7 @@ class Articulo extends CI_Model{
   // Operaciones de lectura
   public function todos($limit, $fecha, $order, $distancia,
                         $latitud, $longitud, $articulos_viejos) {
-      echo "es posible que sea de la base de datos"; die();
-      
+
       $query = "select *, earth_distance(ll_to_earth(?, ?), ll_to_earth(latitud, longitud))
                 as distancia from v_articulos where fecha < ? ";
       $datos = array($latitud, $longitud, $fecha);
@@ -93,7 +92,9 @@ class Articulo extends CI_Model{
       $query .= " limit ?";
       array_push($datos, $limit);
 
+      echo "es posible que sea de la base de datos"; die();
       $res = $this->db->query($query, $datos);
+      echo "joder"; die();
       return ($res->num_rows() > 0) ? $res->result_array() : array();
   }
 
