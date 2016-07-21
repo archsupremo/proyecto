@@ -83,67 +83,67 @@ class Usuarios extends CI_Controller{
   }
 
   public function login() {
-    if ($this->Usuario->logueado()) {
-        redirect('/frontend/portada/');
-    }
-
-    if ($this->input->post('login') !== NULL) {
-        $nick = $this->input->post('nick');
-
-        $reglas = array(
-            array(
-                'field' => 'nick',
-                'label' => 'Nick',
-                'rules' => array(
-                    'trim', 'required',
-                    array('existe_nick', array($this->Usuario, 'existe_nick')),
-                    array('existe_nick_registrado', array($this->Usuario, 'existe_nick_registrado')),
-                    array('usuario_baneado', array($this->Usuario, 'usuario_baneado_nick')),
-                ),
-                'errors' => array(
-                    'existe_nick' => 'El nick debe existir.',
-                    'existe_nick_registrado' => 'Esta cuenta todavia no ha sido validada por' .
-                                                ' los medios correspondientes. Por favor, ' .
-                                                'valide su cuenta.',
-                    'usuario_baneado' => 'Tu usuario a sido baneado de este sitio web.'
-                ),
-            ),
-            array(
-                'field' => 'password',
-                'label' => 'Contraseña',
-                'rules' => "trim|required|callback__password_valido[$nick]"
-            )
-        );
-
-        $this->form_validation->set_rules($reglas);
-        if ($this->form_validation->run() === TRUE) {
-            $usuario = $this->Usuario->por_nick($nick);
-
-            $this->session->set_userdata('usuario', array(
-                'id' => $usuario['id'],
-                'nick' => $nick,
-                'admin' => $this->Usuario->es_admin($nick),
-            ));
-
-            if($this->session->has_userdata('last_uri')) {
-                $uri = $this->session->userdata('last_uri');
-                $this->session->unset_userdata('last_uri');
-                redirect($uri);
-            }
-            else {
-                redirect('/frontend/portada/');
-            }
-        }
-    }
-
-    if (isset($_SERVER['HTTP_REFERER']) && !$this->session->has_userdata('last_uri')) {
-        $this->session->set_userdata('last_uri',
-                                     parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
-    }
-    $this->breadcrumbcomponent->add('Home', base_url());
-    $this->breadcrumbcomponent->add('Login', base_url() . 'usuarios/login/');
-
-    $this->output->delete_cache('/frontend/portada/');
+    // if ($this->Usuario->logueado()) {
+    //     redirect('/frontend/portada/');
+    // }
+    //
+    // if ($this->input->post('login') !== NULL) {
+    //     $nick = $this->input->post('nick');
+    //
+    //     $reglas = array(
+    //         array(
+    //             'field' => 'nick',
+    //             'label' => 'Nick',
+    //             'rules' => array(
+    //                 'trim', 'required',
+    //                 array('existe_nick', array($this->Usuario, 'existe_nick')),
+    //                 array('existe_nick_registrado', array($this->Usuario, 'existe_nick_registrado')),
+    //                 array('usuario_baneado', array($this->Usuario, 'usuario_baneado_nick')),
+    //             ),
+    //             'errors' => array(
+    //                 'existe_nick' => 'El nick debe existir.',
+    //                 'existe_nick_registrado' => 'Esta cuenta todavia no ha sido validada por' .
+    //                                             ' los medios correspondientes. Por favor, ' .
+    //                                             'valide su cuenta.',
+    //                 'usuario_baneado' => 'Tu usuario a sido baneado de este sitio web.'
+    //             ),
+    //         ),
+    //         array(
+    //             'field' => 'password',
+    //             'label' => 'Contraseña',
+    //             'rules' => "trim|required|callback__password_valido[$nick]"
+    //         )
+    //     );
+    //
+    //     $this->form_validation->set_rules($reglas);
+    //     if ($this->form_validation->run() === TRUE) {
+    //         $usuario = $this->Usuario->por_nick($nick);
+    //
+    //         $this->session->set_userdata('usuario', array(
+    //             'id' => $usuario['id'],
+    //             'nick' => $nick,
+    //             'admin' => $this->Usuario->es_admin($nick),
+    //         ));
+    //
+    //         if($this->session->has_userdata('last_uri')) {
+    //             $uri = $this->session->userdata('last_uri');
+    //             $this->session->unset_userdata('last_uri');
+    //             redirect($uri);
+    //         }
+    //         else {
+    //             redirect('/frontend/portada/');
+    //         }
+    //     }
+    // }
+    //
+    // if (isset($_SERVER['HTTP_REFERER']) && !$this->session->has_userdata('last_uri')) {
+    //     $this->session->set_userdata('last_uri',
+    //                                  parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
+    // }
+    // $this->breadcrumbcomponent->add('Home', base_url());
+    // $this->breadcrumbcomponent->add('Login', base_url() . 'usuarios/login/');
+    //
+    // $this->output->delete_cache('/frontend/portada/');
     $this->template->load('/usuarios/login');
   }
 

@@ -24,8 +24,8 @@ class Info extends CI_Controller{
       $this->breadcrumbcomponent->add('Info', base_url() . 'info/politica_datos/');
       $this->breadcrumbcomponent->add('Politica de datos', base_url());
 
-      $this->template->load('/usuarios/login');
-    //   $this->template->load('/info/politica_datos');
+    //   $this->template->load('/usuarios/login');
+      $this->template->load('/info/politica_datos');
   }
 
   public function cookies() {
