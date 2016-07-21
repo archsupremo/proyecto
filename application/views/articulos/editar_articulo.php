@@ -16,7 +16,7 @@
           </div>
     </div>
     <div class="large-5 columns menu-login" id="formulario_articulo">
-          <?php if ( ! empty(error_array())): ?>
+          <?php if (count(error_array()) > 0): ?>
               <div data-alert class="alert-box alert radius alerta">
                 <?= validation_errors() ?>
                 <a href="#" class="close">&times;</a>

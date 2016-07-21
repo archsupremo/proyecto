@@ -1,7 +1,7 @@
 <?php template_set('title', 'Subir Articulo') ?>
 <div class="row">
     <div class="large-8 large-centered columns menu-login" id="formulario_articulo">
-          <?php if ( ! empty(error_array())): ?>
+          <?php if (count(error_array()) > 0): ?>
               <div data-alert class="alert-box alert radius alerta">
                 <?= validation_errors() ?>
                 <a href="#" class="close">&times;</a>

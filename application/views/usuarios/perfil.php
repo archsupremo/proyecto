@@ -1,7 +1,7 @@
 <?php template_set('title', 'Perfil de Usuario') ?>
 
 <div class="row large-6">
-    <?php if ( ! empty(error_array())): ?>
+    <?php if (count(error_array()) > 0): ?>
         <div data-alert class="alert-box alert radius alerta">
           <?= validation_errors() ?>
           <a href="#" class="close">&times;</a>

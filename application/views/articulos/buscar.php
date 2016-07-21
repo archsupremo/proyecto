@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="row large-6 large-centered columns">
-        <?php if ( ! empty(error_array())): ?>
+        <?php if (count(error_array()) > 0): ?>
             <div data-alert class="alert-box alert radius alerta">
               <?= validation_errors() ?>
               <a href="#" class="close">&times;</a>
