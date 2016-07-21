@@ -51,6 +51,8 @@ class Articulo extends CI_Model{
   // Operaciones de lectura
   public function todos($limit, $fecha, $order, $distancia,
                         $latitud, $longitud, $articulos_viejos) {
+      echo "es posible que sea de la base de datos"; die();
+      
       $query = "select *, earth_distance(ll_to_earth(?, ?), ll_to_earth(latitud, longitud))
                 as distancia from v_articulos where fecha < ? ";
       $datos = array($latitud, $longitud, $fecha);
