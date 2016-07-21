@@ -185,7 +185,7 @@
 </style>
 
 <script type="text/javascript" >
-    $("#centro").ready(function () {
+    $("#centro").load(function () {
         $('#centro').shapeshift({
             gutterY: 40,
             enableDrag: false,
