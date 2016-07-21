@@ -53,8 +53,8 @@
     <!-- FIN FAVICON -->
 
     <!-- Foundation -->
-    <script src="/js/vendor/modernizr.js"></script>
-    <script src="/js/vendor/jquery.js"></script>
+    <script src="/js/modernizr.js"></script>
+    <script src="/js/jquery.js"></script>
     <script src="/js/foundation.min.js"></script>
     <script src="/js/foundation/foundation.alert.js"></script>
 
