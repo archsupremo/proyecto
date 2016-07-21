@@ -144,7 +144,7 @@ class Usuarios extends CI_Controller{
     $this->breadcrumbcomponent->add('Login', base_url() . 'usuarios/login/');
 
     $this->output->delete_cache('/frontend/portada/');
-    $this->template->load('/usuarios/login');
+    $this->template->load('usuarios/login');
   }
 
   public function logout() {
@@ -325,7 +325,7 @@ class Usuarios extends CI_Controller{
         $this->breadcrumbcomponent->add('Home', base_url());
         $this->breadcrumbcomponent->add('Registrar',
                                         base_url() . 'usuarios/registrar/');
-        $this->template->load('/usuarios/registrar');
+        $this->template->load('usuarios/registrar');
     }
 
     public function recordar() {
@@ -377,7 +377,7 @@ class Usuarios extends CI_Controller{
             }
         }
 
-        $this->template->load('/usuarios/recordar');
+        $this->template->load('usuarios/recordar');
     }
 
     public function regenerar($usuario_id = NULL, $token = NULL) {
@@ -430,7 +430,7 @@ class Usuarios extends CI_Controller{
             'usuario_id' => $usuario_id,
             'token' => $token
         );
-        $this->template->load('/usuarios/regenerar', $data);
+        $this->template->load('usuarios/regenerar', $data);
     }
 
     public function perfil($usuario_id = NULL) {
@@ -468,7 +468,7 @@ class Usuarios extends CI_Controller{
         $this->breadcrumbcomponent->add($data['usuario']['nick'], base_url());
 
         $this->output->delete_cache('/usuarios/perfil/' . $usuario_id);
-        $this->template->load("/usuarios/perfil", $data);
+        $this->template->load("usuarios/perfil", $data);
     }
 
     public function domain_exists($email, $record = 'MX'){
@@ -599,7 +599,7 @@ class Usuarios extends CI_Controller{
         if($data['usuario']['longitud'] == '')
             $data['usuario']['longitud'] = 'null';
 
-        $this->template->load("/usuarios/editar_perfil", $data);
+        $this->template->load("usuarios/editar_perfil", $data);
     }
 
     public function usuarios_nick($nick = NULL) {
@@ -753,7 +753,7 @@ class Usuarios extends CI_Controller{
 
         $this->output->delete_cache('/usuarios/perfil/' . $usuario_id);
         $this->output->delete_cache('/usuarios/editar_perfil/' . $usuario_id);
-        $this->template->load('/usuarios/editar_perfil');
+        $this->template->load('usuarios/editar_perfil');
     }
 
     public function borrar_imagen() {
@@ -869,7 +869,7 @@ class Usuarios extends CI_Controller{
                                         base_url() . 'usuarios/valorar_vendedor/'.$data['venta']['venta_id']);
         $this->breadcrumbcomponent->add($data['venta']['vendedor_nick'], base_url());
 
-        $this->template->load('/usuarios/valorar_vendedor', $data);
+        $this->template->load('usuarios/valorar_vendedor', $data);
     }
 
     public function valorar_comprador($venta_id = NULL) {
@@ -935,7 +935,7 @@ class Usuarios extends CI_Controller{
                                         base_url() . 'usuarios/valorar_comprador/'.$data['venta']['venta_id']);
         $this->breadcrumbcomponent->add($data['venta']['comprador_nick'], base_url());
 
-        $this->template->load('/usuarios/valorar_comprador', $data);
+        $this->template->load('usuarios/valorar_comprador', $data);
     }
 
     public function borrar_compra($venta_id = NULL) {

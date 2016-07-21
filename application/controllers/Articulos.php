@@ -112,7 +112,7 @@ class Articulos extends CI_Controller {
       $data['usuario'] = $this->Usuario->por_id($id_usuario);
       $data['articulos_usuarios'] = $this->Articulo->por_id_vista($id_usuario, $id_articulo);
 
-      $this->template->load("/articulos/buscar", $data);
+      $this->template->load("articulos/buscar", $data);
   }
 
   public function eliminar_favorito($articulo_id = NULL) {
@@ -218,7 +218,7 @@ class Articulos extends CI_Controller {
                                       base_url() . 'articulos/editar_articulo/'.$data['articulo']['id']);
       $this->breadcrumbcomponent->add($data['articulo']['nombre'], base_url());
 
-      $this->template->load('/articulos/editar_articulo', $data);
+      $this->template->load('articulos/editar_articulo', $data);
   }
 
   public function subir() {
@@ -286,7 +286,7 @@ class Articulos extends CI_Controller {
       $this->breadcrumbcomponent->add('Subir Articulo',
                                       base_url() . 'articulos/subir/');
 
-      $this->template->load('/articulos/subir');
+      $this->template->load('articulos/subir');
   }
 
   public function subir_imagenes($articulo_id = NULL) {
@@ -346,7 +346,7 @@ class Articulos extends CI_Controller {
           $this->breadcrumbcomponent->add($articulo['nombre'], base_url());
 
           $data['articulo_id'] = $articulo_id;
-          $this->template->load('/articulos/subir_imagenes', $data);
+          $this->template->load('articulos/subir_imagenes', $data);
       } else {
           redirect('/frontend/portada');
       }
@@ -529,7 +529,7 @@ class Articulos extends CI_Controller {
                                       base_url() . 'articulos/vender/'.$data['articulo']['id']);
       $this->breadcrumbcomponent->add($data['articulo']['nombre'], base_url());
 
-      $this->template->load('/articulos/vender', $data);
+      $this->template->load('articulos/vender', $data);
   }
 
   public function retirar_articulo($articulo_id = NULL) {
