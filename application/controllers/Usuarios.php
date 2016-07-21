@@ -136,14 +136,14 @@ class Usuarios extends CI_Controller{
         }
     }
 
-    // if (isset($_SERVER['HTTP_REFERER']) && !$this->session->has_userdata('last_uri')) {
-    //     $this->session->set_userdata('last_uri',
-    //                                  parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
-    // }
+    if (isset($_SERVER['HTTP_REFERER']) && !$this->session->has_userdata('last_uri')) {
+        $this->session->set_userdata('last_uri',
+                                     parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
+    }
     $this->breadcrumbcomponent->add('Home', base_url());
     $this->breadcrumbcomponent->add('Login', base_url() . 'usuarios/login/');
 
-    // $this->output->delete_cache('/frontend/portada/');
+    $this->output->delete_cache('/frontend/portada/');
     $this->template->load('/usuarios/login');
   }
 
