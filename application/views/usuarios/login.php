@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="large-6 large-centered columns menu-login">
-        <?php if ( ! empty(error_array())): ?>
+        <?php if ( ! empty(array())): ?>
             <div data-alert class="alert-box alert radius alerta">
               <?= validation_errors() ?>
               <a href="#" class="close">&times;</a>
