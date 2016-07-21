@@ -66,9 +66,7 @@ class Portada extends CI_Controller {
                                                   $longitud,
                                                   array());
       } else {
-          echo "es posible que sea de la base de datos";
           if($this->Usuario->logueado()):
-              echo "es posible que sea de la base de datos logueado";
               $usuario = $this->session->userdata("usuario");
               $data['articulos'] =
                   $this->Articulo->todos_sin_favorito($usuario['id'], $limit,
@@ -76,22 +74,21 @@ class Portada extends CI_Controller {
                                                       $distancia, $latitud,
                                                       $longitud, array());
           else:
-              echo "es posible que sea de la base de datos no logueado";
               $data['articulos'] = $this->Articulo->todos($limit, "now()",
                                                           $order, $distancia,
                                                           $latitud, $longitud,
                                                           array());
           endif;
 
-          echo "es posible que sea de la base de datos";
-          die();
+
       }
       $data['nombre_busqueda'] = (isset($nombre)) ? $nombre : '';
       $data['tags_busqueda'] = ($this->input->get('tags') !== NULL) ? trim($this->input->get('tags')) : '';
       $data['order_busqueda'] = $order;
       $data['order_distancia'] = (isset($distancia)) ? $distancia: 0;
 
-      echo "llega"; die();
+      echo "no es de la base de datos";
+      die();
       $this->template->load('/frontend/index', $data);
   }
 }
