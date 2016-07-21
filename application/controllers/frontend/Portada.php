@@ -8,7 +8,6 @@ class Portada extends CI_Controller {
   }
 
   public function index() {
-      echo "asd"; die();
       $limit = 10;
       $distancia = 0;
       $latitud = 40.4168;
@@ -86,6 +85,7 @@ class Portada extends CI_Controller {
       $data['order_busqueda'] = $order;
       $data['order_distancia'] = (isset($distancia)) ? $distancia: 0;
 
+      echo "llega"; die();
       $this->template->load('/frontend/index', $data);
   }
 }
