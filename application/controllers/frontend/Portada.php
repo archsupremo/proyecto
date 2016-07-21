@@ -8,6 +8,7 @@ class Portada extends CI_Controller {
   }
 
   public function index() {
+      echo "asd"; die();
       $limit = 10;
       $distancia = 0;
       $latitud = 40.4168;

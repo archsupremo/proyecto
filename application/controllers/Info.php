@@ -9,8 +9,7 @@ class Info extends CI_Controller{
   }
 
   function index() {
-      echo "asdasd";
-    //   redirect('/frontend/portada');
+      redirect('/frontend/portada');
   }
 
   public function uso_sitio() {
