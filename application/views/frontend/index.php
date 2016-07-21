@@ -185,7 +185,7 @@
 </style>
 
 <script type="text/javascript" >
-    $("#centro").find("img").load(function () {
+    $( window ).load(function () {
         $("#centro").trigger("ss-destroy");
         $('#centro').shapeshift({
             gutterY: 40,
