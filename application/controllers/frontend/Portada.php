@@ -13,7 +13,7 @@ class Portada extends CI_Controller {
       $latitud = 40.4168;
       $longitud = -3.7038;
       $order = '';
-      
+
       if($this->input->get('nombre') !== NULL || $this->input->get('tags') !== NULL) {
           if($this->input->get('order_distancia') !== NULL) {
               $distancia = trim($this->input->get('order_distancia'));
@@ -66,7 +66,6 @@ class Portada extends CI_Controller {
                                                   $longitud,
                                                   array());
       } else {
-          echo "llega"; die();
           if($this->Usuario->logueado()):
               $usuario = $this->session->userdata("usuario");
               $data['articulos'] =
@@ -80,6 +79,8 @@ class Portada extends CI_Controller {
                                                           $latitud, $longitud,
                                                           array());
           endif;
+
+          echo "es posible que sea de la base de datos"; die();
       }
       $data['nombre_busqueda'] = (isset($nombre)) ? $nombre : '';
       $data['tags_busqueda'] = ($this->input->get('tags') !== NULL) ? trim($this->input->get('tags')) : '';
