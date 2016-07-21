@@ -108,6 +108,10 @@ h5.precio_detalle {
 .masArticulos {
     margin-bottom: 2em;
 }
+#mas {
+    width: 5em;
+    height: 5em;
+}
 
 @import url('https://fonts.googleapis.com/css?family=Tangerine');
 @media only screen and (max-width: 64em) {
@@ -115,7 +119,6 @@ h5.precio_detalle {
         font-family: 'Tangerine', cursive;
     }
 }
-
 
 @media only screen and (max-width: 64em) {
     img#mas {

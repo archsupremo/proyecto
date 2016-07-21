@@ -12,9 +12,9 @@
     <div class="row tarjeta_perfil" itemscope itemtype="http://schema.org/Person">
         <div class="large-6 columns" itemprop="image">
             <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $usuario['id'] . '.jpg')): ?>
-                <?php $url = '/imagenes_usuarios/' . $usuario['id'] . '.jpg' ?>
+                <?php $url = 'imagenes_usuarios/' . $usuario['id'] . '.jpg' ?>
             <?php else: ?>
-                <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+                <?php $url = 'imagenes_usuarios/sin-imagen.jpg' ?>
             <?php endif; ?>
             <?= anchor('/usuarios/perfil/' . $usuario['id'],
                         img(array(
@@ -120,9 +120,9 @@
                                      itemscope itemtype="http://schema.org/Product">
                                 <div class="" itemprop="logo">
                                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
-                                        <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
+                                        <?php $url = 'imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
                                     <?php else: ?>
-                                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                                        <?php $url = 'imagenes_articulos/sin-imagen.jpg' ?>
                                     <?php endif; ?>
                                     <?= anchor('/articulos/buscar/' . $v['id'],
                                     img(array(
@@ -192,9 +192,9 @@
                                  itemscope itemtype="http://schema.org/Product">
                             <div class="" itemprop="logo">
                                 <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
-                                    <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
+                                    <?php $url = 'imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
                                 <?php else: ?>
-                                    <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                                    <?php $url = 'imagenes_articulos/sin-imagen.jpg' ?>
                                 <?php endif; ?>
                                 <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                     img(array(
@@ -415,9 +415,9 @@
                                      itemscope itemtype="http://schema.org/Product">
                                 <div class="" itemprop="logo">
                                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
-                                        <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
+                                        <?php $url = 'imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
                                     <?php else: ?>
-                                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                                        <?php $url = 'imagenes_articulos/sin-imagen.jpg' ?>
                                     <?php endif; ?>
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                         img(array(
@@ -484,9 +484,9 @@
                                      itemscope itemtype="http://schema.org/Product">
                                 <div class="">
                                     <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg')): ?>
-                                        <?php $url = '/imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
+                                        <?php $url = 'imagenes_articulos/' . $v['articulo_id'] . '_1' . '.jpg' ?>
                                     <?php else: ?>
-                                        <?php $url = '/imagenes_articulos/sin-imagen.jpg' ?>
+                                        <?php $url = 'imagenes_articulos/sin-imagen.jpg' ?>
                                     <?php endif; ?>
                                     <?= anchor('/articulos/buscar/' . $v['articulo_id'],
                                         img(array(
@@ -553,9 +553,9 @@
                                     <div class="row pm" itemscope itemtype="http://schema.org/Message">
                                         <div class="large-3 columns">
                                             <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
-                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
+                                                <?php $url = 'imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
                                             <?php else: ?>
-                                                <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+                                                <?php $url = 'imagenes_usuarios/sin-imagen.jpg' ?>
                                             <?php endif; ?>
                                             <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
                                                         img(array(
@@ -598,9 +598,9 @@
                                     <div class="row pm" itemscope itemtype="http://schema.org/Message">
                                         <div class="large-3 columns">
                                             <?php if(is_file($_SERVER["DOCUMENT_ROOT"] .  '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg')): ?>
-                                                <?php $url = '/imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
+                                                <?php $url = 'imagenes_usuarios/' . $v['emisor_id'] . '.jpg' ?>
                                             <?php else: ?>
-                                                <?php $url = '/imagenes_usuarios/sin-imagen.jpg' ?>
+                                                <?php $url = 'imagenes_usuarios/sin-imagen.jpg' ?>
                                             <?php endif; ?>
                                             <?= anchor('/usuarios/perfil/' . $v['emisor_id'],
                                                         img(array(

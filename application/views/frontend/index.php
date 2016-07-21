@@ -1,11 +1,11 @@
 <?php template_set('title', 'Portada') ?>
 
-<div class="container">
+<div class="row">
     <section class="large-3 columns">
         <?= form_open('/frontend/portada/index', 'method="GET"') ?>
         <section class="orden">
             <article class="row precio">
-                <h3>Ordenar por precio</h3>
+                <h3>Ordenar</h3>
                 <?= form_radio('order', '', set_radio('order', $order_busqueda, $order_busqueda === '')) ?>
                     Por novedad
                 <br>
@@ -179,6 +179,10 @@
         <?php endif; ?>
     </div>
 </div>
+
+<style media="screen">
+    .row { max-width: 95%; }
+</style>
 
 <script type="text/javascript" >
     $("#centro").ready(function () {
@@ -500,8 +504,9 @@
                       map.setZoom(15);
                     break;
               }
-            $.cookie('latitud', latitud, { expires: 999 });
-            $.cookie('longitud', longitud, { expires: 999 });
+            cookie(latitud, longitud);
+            // $.cookie('latitud', latitud, { expires: 999, path:'/' });
+            // $.cookie('longitud', longitud, { expires: 999, path:'/' });
 
             $('input[name="latitud"]').first().val(latitud);
             $('input[name="longitud"]').first().val(longitud);
@@ -514,6 +519,14 @@
   function mostrarLocalizacion(posicion){
         latitud = posicion.coords.latitude;
         longitud = posicion.coords.longitude;
+
+        if($.cookie('latitud') != undefined && $.cookie('longitud') != undefined) {
+            latitud = $.cookie('latitud');
+            longitud = $.cookie('longitud');
+
+            $('input[name="latitud"]').first().val(latitud);
+            $('input[name="longitud"]').first().val(longitud);
+        }
         dibujarMarker(latitud, longitud);
   }
 
@@ -547,8 +560,9 @@
                   map.setCenter(pos);
                   draw_circle.setCenter(pos);
 
-                  $.cookie('latitud', latitud, { expires: 999 });
-                  $.cookie('longitud', longitud, { expires: 999 });
+                  cookie(latitud, longitud);
+                //   $.cookie('latitud', latitud, { expires: 999, path:'/' });
+                //   $.cookie('longitud', longitud, { expires: 999, path:'/' });
 
                   $('input[name="latitud"]').first().val(latitud);
                   $('input[name="longitud"]').first().val(longitud);
@@ -595,6 +609,7 @@
   function manejadorDeError(error) {
     latitud = 40.4168;
     longitud = -3.7038;
+
     if($.cookie('latitud') != undefined && $.cookie('longitud') != undefined) {
         latitud = $.cookie('latitud');
         longitud = $.cookie('longitud');
@@ -667,6 +682,10 @@
   }
   function error(error) {
       alert("Ha ocurrido el error => " + error.statusText);
+  }
+  function cookie(latitud, longitud) {
+      $.cookie('latitud', latitud, { expires: 999, path:'/' });
+      $.cookie('longitud', longitud, { expires: 999, path:'/' });
   }
   $('input[name="distancia_usuario"]').change(function () {
       draw_circle.setRadius(parseFloat($(this).val()));

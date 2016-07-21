@@ -750,7 +750,7 @@ class Usuarios extends CI_Controller{
           $imagen->adaptiveResizeImage(70, 70);
           $imagen->writeImageFile(fopen("imagenes_usuarios/" . $usuario_id . "_thumbnail.jpeg", "w"));
         }
-        
+
         $this->output->delete_cache('/usuarios/perfil/' . $usuario_id);
         $this->output->delete_cache('/usuarios/editar_perfil/' . $usuario_id);
         $this->template->load('/usuarios/editar_perfil');
@@ -791,12 +791,14 @@ class Usuarios extends CI_Controller{
     }
 
     public function update_pm($pm_id = NULL) {
-        if($pm_id !== NULL) {
-            $pm_id = (double) $pm_id;
-
+        if($this->Usuario->logueado() && $pm_id !== NULL) {
             $pm = $this->Usuario->get_pm($pm_id);
 
-            if($pm !== FALSE) {
+            $usuario = $this->session->userdata('usuario');
+            $usuario_id = $usuario['id'];
+            $es_propietario_pm = $this->Usuario->es_propietario_pm($usuario_id, $pm_id);
+
+            if($pm !== FALSE && $es_propietario_pm) {
                 $valores = array();
                 $valores['visto'] = ($pm['visto'] === "f") ? TRUE : FALSE;
                 $this->Usuario->update_pm($valores, $pm_id);

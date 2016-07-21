@@ -208,6 +208,13 @@ class Usuario extends CI_Model {
         return $res->num_rows() > 0 ? $res->row_array() : FALSE;
     }
 
+    public function es_propietario_pm($usuario_id, $pm_id) {
+        $res = $this->db->query("select * from pm where receptor_id = ? and id::text = ?",
+                                 array($usuario_id, $pm_id)
+                               );
+        return $res->num_rows() > 0 ? TRUE : FALSE;
+    }
+
     public function valoraciones_a_comprador($usuario_id) {
         $res = $this->db->query("select * from v_ventas_vendedor where comprador_id::text = ?", array($usuario_id));
         return $res->num_rows() > 0 ? $res->result_array() : array();
