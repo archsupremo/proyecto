@@ -645,18 +645,18 @@
 </div>
 <br>
 <script type="text/javascript" >
-    $(document).ready(function () {
+    $( window ).load(function () {
         $('.articulos').shapeshift({
             gutterY: 40,
             enableDrag: false,
             enableResize: false
         });
-        $( window ).resize(function() {
-            $(".articulos").trigger("ss-destroy");
-            $('.articulos').shapeshift({
-                enableDrag: false,
-                enableResize: false
-            });
+    });
+    $( window ).resize(function() {
+        $(".articulos").trigger("ss-destroy");
+        $('.articulos').shapeshift({
+            enableDrag: false,
+            enableResize: false
         });
     });
 </script>
