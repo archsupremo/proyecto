@@ -186,17 +186,18 @@
 
 <script type="text/javascript" >
     $("#centro").find("img").load(function () {
+        $("#centro").trigger("ss-destroy");
         $('#centro').shapeshift({
             gutterY: 40,
             enableDrag: false,
             enableResize: false
         });
-        $( window ).resize(function() {
-            $("#centro").trigger("ss-destroy");
-            $('#centro').shapeshift({
-                enableDrag: false,
-                enableResize: false
-            });
+    });
+    $( window ).resize(function() {
+        $("#centro").trigger("ss-destroy");
+        $('#centro').shapeshift({
+            enableDrag: false,
+            enableResize: false
         });
     });
 </script>
