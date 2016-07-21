@@ -143,9 +143,7 @@ class Usuarios extends CI_Controller{
     $this->breadcrumbcomponent->add('Home', base_url());
     $this->breadcrumbcomponent->add('Login', base_url() . 'usuarios/login/');
 
-    echo "zxczxc";
-    $this->output->delete_cache('frontend/portada/');
-    echo "asd";
+    $this->output->delete_cache('frontend/portada');
     $this->template->load('usuarios/login');
   }
 
