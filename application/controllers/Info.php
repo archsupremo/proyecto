@@ -20,7 +20,7 @@ class Info extends CI_Controller{
   }
 
   public function politica_datos() {
-      var_dump($this->Usuario->logueado());
+      var_dump($this->Usuario->por_nick('admin'));
       $this->breadcrumbcomponent->add('Home', base_url());
       $this->breadcrumbcomponent->add('Info', base_url() . 'info/politica_datos/');
       $this->breadcrumbcomponent->add('Politica de datos', base_url());
