@@ -91,11 +91,7 @@ class Articulo extends CI_Model{
       }
       $query .= " limit ?";
       array_push($datos, $limit);
-      echo "zxczxcz";
       $res = $this->db->query($query, $datos);
-      echo "asdasd";
-      var_dump($res);
-      die();
 
       return ($res->num_rows() > 0) ? $res->result_array() : array();
   }
