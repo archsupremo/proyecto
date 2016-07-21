@@ -94,9 +94,9 @@ class Articulo extends CI_Model{
       echo "zxczxcz";
       $res = $this->db->query($query, $datos);
       echo "asdasd";
-      var_dump($datos);
+      var_dump($res);
       die();
-      
+
       return ($res->num_rows() > 0) ? $res->result_array() : array();
   }
 
