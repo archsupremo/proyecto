@@ -204,7 +204,7 @@ create or replace function concat(text, text) returns text
     return $1 || $2;
 end $$;
 -- Linea fundamental la de a continuación, no quitar por nada del mundo
--- create aggregate text_concat (text) (sfunc = concat, stype = text);
+create aggregate text_concat (text) (sfunc = concat, stype = text);
 
 drop view if exists v_etiquetas cascade;
 create view v_etiquetas as
