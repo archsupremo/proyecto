@@ -479,6 +479,17 @@ class Articulos extends CI_Controller {
 
                   $usuarios_favoritos = $this->Articulo->articulo_favorito_email($articulo_id);
                   $articulo = $this->Articulo->por_id($articulo_id);
+
+                  if(isset($venta['valoracion']) && $venta['valoracion'] !== NULL &&
+                     isset($venta['valoracion_text']) && $venta['valoracion_text'] !== NULL) {
+                      $valoracion = array(
+                          'venta_id' => $venta_realizada['id'],
+                          'valoracion' => $venta['valoracion'],
+                          'valoracion_text' => $venta['valoracion_text'],
+                      );
+                      $this->Valoracion->insertar_valoracion_vendedor($valoracion);
+                  }
+
                   if($usuarios_favoritos !== FALSE) {
                       foreach ($usuarios_favoritos as $user) {
                           $enlace = anchor('/articulos/buscar/'.$articulo_id, $articulo['nombre']);
@@ -492,15 +503,7 @@ class Articulos extends CI_Controller {
                           $this->email->send();
                       }
                   }
-                  if(isset($venta['valoracion']) && $venta['valoracion'] !== NULL &&
-                     isset($venta['valoracion_text']) && $venta['valoracion_text'] !== NULL) {
-                      $valoracion = array(
-                          'venta_id' => $venta_realizada['id'],
-                          'valoracion' => $venta['valoracion'],
-                          'valoracion_text' => $venta['valoracion_text'],
-                      );
-                      $this->Valoracion->insertar_valoracion_vendedor($valoracion);
-                  }
+
                   redirect('/frontend/portada/');
               }
           } else {

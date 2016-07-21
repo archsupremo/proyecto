@@ -12,3 +12,5 @@ vendor/
 composer.phar
 application/logs/
 application/cache/
+public/imagenes_articulos/
+public/imagenes_usuarios/
