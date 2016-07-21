@@ -92,9 +92,7 @@ class Articulo extends CI_Model{
       $query .= " limit ?";
       array_push($datos, $limit);
 
-      echo "es posible que sea de la base de datos"; die();
       $res = $this->db->query($query, $datos);
-      echo "joder"; die();
       return ($res->num_rows() > 0) ? $res->result_array() : array();
   }
 
