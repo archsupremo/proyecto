@@ -91,6 +91,7 @@ class Articulo extends CI_Model{
       }
       $query .= " limit ?";
       array_push($datos, $limit);
+      //echo $query;
       $res = $this->db->query($query, $datos);
 
       return ($res->num_rows() > 0) ? $res->result_array() : array();
@@ -146,7 +147,7 @@ class Articulo extends CI_Model{
       }
       $query .= ' limit ? ';
       array_push($datos, $limit);
-
+      //echo $query;
       $res = $this->db->query($query, $datos);
 
       return $res->result_array();
